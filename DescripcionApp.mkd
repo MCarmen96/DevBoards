@@ -8,3 +8,4 @@ Plataforma de inspiración técnica y social donde desarrolladores pueden colecc
 - Como usuario quiero poder añadir notas explicativas y documentación de los elementos que suba para poder compartirlos con la comunidad
 - Como usuario quiero categorizar componentes en los tableros para organizar mis referencias por tecnologías
 - Como usuario quiero subir fragmentos de código o imágenes UI para compartir mis soluciones con la comunidad.
+- Como usuario quiero que se me notifique cambios o subidas de los tableros/usuarios que sigo para estar al dia
