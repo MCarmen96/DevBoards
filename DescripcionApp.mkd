@@ -1,0 +1,10 @@
+# DevBoards 💻
+Plataforma de inspiración técnica y social donde desarrolladores pueden coleccionar, organizar y documentar recursos visuales y fragmentos de código en tableros personalizados, optimizando así su flujo de trabajo y aprendizaje.
+## Historias de usuario
+- Como usuario quiero poder guardar componentes visuales en mis tableros para tener una biblioteca de referencias 
+- Como usuario quiero poder crear mis propios elementos para poder compartirlos con el resto de usuarios en  mi feed/tablero
+- Como usuario quiero un buscador y filtros para localizar elementos o tableros de otros usuarios
+- Como usuario quiero visualizar sugerencias basadas en mis intereses y poder descubrir nuevas tendencias
+- Como usuario quiero poder añadir notas explicativas y documentación de los elementos que suba para poder compartirlos con la comunidad
+- Como usuario quiero categorizar componentes en los tableros para organizar mis referencias por tecnologías
+- Como usuario quiero subir fragmentos de código o imágenes UI para compartir mis soluciones con la comunidad.
