@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// Modelo de Usuario
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  image         String?
+  role          String    @default("explorer") // "explorer" | "creator"
+  bio           String?
+  
+  // Relaciones
+  createdPins   Pin[]     @relation("CreatedPins")
+  savedPins     SavedPin[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Modelo de Pin
+model Pin {
+  id            String    @id @default(cuid())
+  title         String
+  description   String?   // Descripción técnica del pin
+  imageUrl      String
+  codeSnippet   String?   // Código compartido
+  language      String?   // "css" | "html" | "javascript" | "typescript" | "react"
+  tags          String?   // Tags separados por coma
+  
+  // Relación con el autor
+  author        User      @relation("CreatedPins", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId      String
+  
+  // Usuarios que han guardado este pin
+  savedBy       SavedPin[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Tabla intermedia para pins guardados
+model SavedPin {
+  id        String   @id @default(cuid())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  
+  pin       Pin      @relation(fields: [pinId], references: [id], onDelete: Cascade)
+  pinId     String
+  
+  savedAt   DateTime @default(now())
+  
+  @@unique([userId, pinId])
+}
