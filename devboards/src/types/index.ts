@@ -1,4 +1,4 @@
-import { Pin, User, SavedPin } from '@prisma/client';
+import { Pin, User, SavedPin, Board, BoardPin } from '@prisma/client';
 
 // Tipos extendidos con relaciones
 export type PinWithAuthor = Pin & {
@@ -13,6 +13,24 @@ export type PinWithRelations = Pin & {
 export type UserWithPins = User & {
   createdPins: Pin[];
   savedPins: (SavedPin & { pin: Pin })[];
+};
+
+// Tipos para tableros
+export type BoardWithPins = Board & {
+  pins: (BoardPin & { pin: PinWithAuthor })[];
+  _count: { pins: number };
+  user?: Pick<User, 'id' | 'name' | 'image'>;
+};
+
+export type BoardPreview = Board & {
+  pins: (BoardPin & { pin: Pick<Pin, 'id' | 'imageUrl' | 'title'> })[];
+  _count: { pins: number };
+};
+
+export type CreateBoardInput = {
+  name: string;
+  description?: string;
+  isPrivate?: boolean;
 };
 
 // Tipos para formularios

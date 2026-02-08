@@ -22,6 +22,7 @@ model User {
   // Relaciones
   createdPins   Pin[]     @relation("CreatedPins")
   savedPins     SavedPin[]
+  boards        Board[]
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -44,6 +45,9 @@ model Pin {
   // Usuarios que han guardado este pin
   savedBy       SavedPin[]
   
+  // Tableros que contienen este pin
+  boards        BoardPin[]
+  
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -61,4 +65,37 @@ model SavedPin {
   savedAt   DateTime @default(now())
   
   @@unique([userId, pinId])
+}
+
+// Modelo de Tablero
+model Board {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  isPrivate   Boolean    @default(false)
+  
+  // Relación con el propietario
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  
+  // Pins en este tablero
+  pins        BoardPin[]
+  
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+// Tabla intermedia para pins en tableros
+model BoardPin {
+  id        String   @id @default(cuid())
+  
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId   String
+  
+  pin       Pin      @relation(fields: [pinId], references: [id], onDelete: Cascade)
+  pinId     String
+  
+  addedAt   DateTime @default(now())
+  
+  @@unique([boardId, pinId])
 }

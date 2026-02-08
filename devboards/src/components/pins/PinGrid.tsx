@@ -1,14 +1,16 @@
 'use client';
 
 import { PinCard } from './PinCard';
-import { PinWithRelations } from '@/types';
+import { PinWithRelations, PinWithAuthor } from '@/types';
 
 interface PinGridProps {
-  pins: PinWithRelations[];
+  pins: (PinWithRelations | PinWithAuthor)[];
   loading?: boolean;
+  showRemoveButton?: boolean;
+  onRemove?: (pinId: string) => void;
 }
 
-export function PinGrid({ pins, loading }: PinGridProps) {
+export function PinGrid({ pins, loading, showRemoveButton, onRemove }: PinGridProps) {
   if (loading) {
     return (
       <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-4 px-4">
@@ -50,7 +52,12 @@ export function PinGrid({ pins, loading }: PinGridProps) {
   return (
     <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-4 px-4">
       {pins.map((pin) => (
-        <PinCard key={pin.id} pin={pin} />
+        <PinCard
+          key={pin.id}
+          pin={pin as PinWithRelations}
+          showRemoveButton={showRemoveButton}
+          onRemove={onRemove}
+        />
       ))}
     </div>
   );
