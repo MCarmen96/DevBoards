@@ -24,6 +24,10 @@ export async function GET(request: NextRequest) {
             select: { id: true, name: true, image: true },
           },
           savedBy: true,
+          likes: true,
+          _count: {
+            select: { likes: true, comments: true },
+          },
         },
       });
     } else if (random) {
@@ -39,6 +43,10 @@ export async function GET(request: NextRequest) {
             select: { id: true, name: true, image: true },
           },
           savedBy: true,
+          likes: true,
+          _count: {
+            select: { likes: true, comments: true },
+          },
         },
       });
 
@@ -54,6 +62,10 @@ export async function GET(request: NextRequest) {
             select: { id: true, name: true, image: true },
           },
           savedBy: true,
+          likes: true,
+          _count: {
+            select: { likes: true, comments: true },
+          },
         },
       });
     }

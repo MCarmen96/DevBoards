@@ -15,6 +15,10 @@ async function getPin(id: string): Promise<PinWithRelations | null> {
         select: { id: true, name: true, image: true },
       },
       savedBy: true,
+      likes: true,
+      _count: {
+        select: { likes: true, comments: true },
+      },
     },
   });
 

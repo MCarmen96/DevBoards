@@ -1,4 +1,4 @@
-import { Pin, User, SavedPin, Board, BoardPin } from '@prisma/client';
+import { Pin, User, SavedPin, Board, BoardPin, Like, Comment } from '@prisma/client';
 
 // Tipos extendidos con relaciones
 export type PinWithAuthor = Pin & {
@@ -8,6 +8,12 @@ export type PinWithAuthor = Pin & {
 export type PinWithRelations = Pin & {
   author: Pick<User, 'id' | 'name' | 'image'>;
   savedBy: SavedPin[];
+  likes?: Like[];
+  _count?: { likes: number; comments: number };
+};
+
+export type CommentWithUser = Comment & {
+  user: Pick<User, 'id' | 'name' | 'image'>;
 };
 
 export type UserWithPins = User & {

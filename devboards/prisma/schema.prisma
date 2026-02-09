@@ -23,6 +23,12 @@ model User {
   createdPins   Pin[]     @relation("CreatedPins")
   savedPins     SavedPin[]
   boards        Board[]
+  likes         Like[]
+  comments      Comment[]
+  
+  // Relaciones de seguimiento
+  followers     Follow[]  @relation("Following")
+  following     Follow[]  @relation("Followers")
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -47,6 +53,10 @@ model Pin {
   
   // Tableros que contienen este pin
   boards        BoardPin[]
+  
+  // Likes y comentarios
+  likes         Like[]
+  comments      Comment[]
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -98,4 +108,49 @@ model BoardPin {
   addedAt   DateTime @default(now())
   
   @@unique([boardId, pinId])
+}
+
+// Modelo de Like
+model Like {
+  id        String   @id @default(cuid())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  
+  pin       Pin      @relation(fields: [pinId], references: [id], onDelete: Cascade)
+  pinId     String
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([userId, pinId])
+}
+
+// Modelo de Comentario
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  
+  pin       Pin      @relation(fields: [pinId], references: [id], onDelete: Cascade)
+  pinId     String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Modelo de Seguimiento
+model Follow {
+  id          String   @id @default(cuid())
+  
+  follower    User     @relation("Followers", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId  String
+  
+  following   User     @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String
+  
+  createdAt   DateTime @default(now())
+  
+  @@unique([followerId, followingId])
 }

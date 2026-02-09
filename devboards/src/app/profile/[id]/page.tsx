@@ -1,6 +1,9 @@
 import { notFound } from 'next/navigation';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { PinGrid } from '@/components/pins/PinGrid';
+import { FollowButton } from '@/components/ui/FollowButton';
 import { PinWithRelations } from '@/types';
 
 interface ProfilePageProps {
@@ -17,6 +20,12 @@ async function getUser(id: string) {
       image: true,
       role: true,
       bio: true,
+      _count: {
+        select: {
+          followers: true,
+          following: true,
+        },
+      },
     },
   });
 }
@@ -43,6 +52,9 @@ async function getUserStats(userId: string) {
 
 export default async function UserProfilePage({ params }: ProfilePageProps) {
   const { id } = await params;
+  const session = await getServerSession(authOptions);
+  const currentUserId = session?.user?.id;
+  const isOwnProfile = currentUserId === id;
   
   const user = await getUser(id);
 
@@ -59,10 +71,10 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
     <div className="py-8">
       <div className="max-w-7xl mx-auto px-4">
         {/* Profile Header */}
-        <div className="bg-white rounded-3xl shadow-lg p-8 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg p-8 mb-8">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             {/* Avatar */}
-            <div className="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
+            <div className="w-32 h-32 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center overflow-hidden">
               {user.image ? (
                 <img
                   src={user.image}
@@ -70,7 +82,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-4xl text-gray-600">
+                <span className="text-4xl text-gray-600 dark:text-gray-300">
                   {user.name?.charAt(0).toUpperCase() || 'U'}
                 </span>
               )}
@@ -78,14 +90,19 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
 
             {/* Info */}
             <div className="flex-1 text-center md:text-left">
-              <h1 className="text-3xl font-bold text-gray-900">{user.name}</h1>
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-4">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{user.name}</h1>
+                {!isOwnProfile && currentUserId && (
+                  <FollowButton userId={user.id} />
+                )}
+              </div>
               
               <div className="flex items-center justify-center md:justify-start gap-2 mt-2">
                 <span
                   className={`px-3 py-1 text-sm font-medium rounded-full ${
                     user.role === 'creator'
-                      ? 'bg-purple-100 text-purple-800'
-                      : 'bg-blue-100 text-blue-800'
+                      ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                      : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                   }`}
                 >
                   {user.role === 'creator' ? '✍️ Creator' : '👨‍💻 Explorer'}
@@ -93,16 +110,28 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
               </div>
 
               {user.bio && (
-                <p className="mt-4 text-gray-700">{user.bio}</p>
+                <p className="mt-4 text-gray-700 dark:text-gray-300">{user.bio}</p>
               )}
 
               {/* Stats */}
               <div className="flex items-center justify-center md:justify-start gap-6 mt-6">
                 <div className="text-center">
-                  <span className="block text-2xl font-bold text-gray-900">
+                  <span className="block text-2xl font-bold text-gray-900 dark:text-white">
                     {stats.createdCount}
                   </span>
-                  <span className="text-sm text-gray-500">Pins creados</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Pins</span>
+                </div>
+                <div className="text-center">
+                  <span className="block text-2xl font-bold text-gray-900 dark:text-white">
+                    {user._count.followers}
+                  </span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Seguidores</span>
+                </div>
+                <div className="text-center">
+                  <span className="block text-2xl font-bold text-gray-900 dark:text-white">
+                    {user._count.following}
+                  </span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Siguiendo</span>
                 </div>
               </div>
             </div>
@@ -110,15 +139,15 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
         </div>
 
         {/* User's Pins */}
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
           Pins de {user.name}
         </h2>
 
         {pins.length > 0 ? (
           <PinGrid pins={pins} />
         ) : (
-          <div className="text-center py-20 bg-white rounded-3xl shadow-lg">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-3xl shadow-lg">
+            <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
                 className="w-12 h-12 text-gray-400"
                 fill="none"
@@ -133,10 +162,10 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
               Este usuario aún no ha creado pins
             </h3>
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               Vuelve más tarde para ver su contenido
             </p>
           </div>
