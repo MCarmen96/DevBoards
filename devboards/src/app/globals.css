@@ -70,3 +70,13 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Code Syntax Highlighting */
+.code-syntax-keyword { color: #c678dd; }
+.code-syntax-function { color: #61afef; }
+.code-syntax-string { color: #98c379; }
+.code-syntax-comment { color: #5c6370; font-style: italic; }
+.code-syntax-class { color: #e5c07b; }
+.code-syntax-tag { color: #e06c75; }
+.code-syntax-attr { color: #d19a66; }
+.code-syntax-number { color: #d19a66; }

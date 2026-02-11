@@ -25,6 +25,23 @@ async function getPin(id: string): Promise<PinWithRelations | null> {
   return pin as PinWithRelations | null;
 }
 
+async function getRelatedPins(pinId: string, language?: string | null) {
+  const pins = await prisma.pin.findMany({
+    where: {
+      id: { not: pinId },
+      ...(language ? { language } : {}),
+    },
+    take: 5,
+    orderBy: { createdAt: 'desc' },
+    include: {
+      author: {
+        select: { id: true, name: true, image: true },
+      },
+    },
+  });
+  return pins;
+}
+
 export default async function PinPage({ params }: PinPageProps) {
   const { id } = await params;
   const pin = await getPin(id);
@@ -33,11 +50,9 @@ export default async function PinPage({ params }: PinPageProps) {
     notFound();
   }
 
-  return (
-    <div className="py-8">
-      <PinDetail pin={pin} />
-    </div>
-  );
+  const relatedPins = await getRelatedPins(id, pin.language);
+
+  return <PinDetail pin={pin} relatedPins={relatedPins} />;
 }
 
 export async function generateMetadata({ params }: PinPageProps) {

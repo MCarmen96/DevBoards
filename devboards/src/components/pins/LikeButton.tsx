@@ -45,10 +45,10 @@ export function LikeButton({ pinId, initialLiked, initialCount }: LikeButtonProp
     <button
       onClick={handleLike}
       disabled={loading}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-colors ${
+      className={`flex items-center gap-2 h-9 px-4 rounded-lg text-sm font-bold transition-colors ${
         liked
-          ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
-          : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+          ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30'
+          : 'bg-[#1e2337] text-[#909acb] border border-[#222949] hover:bg-[#252a40] hover:text-white'
       }`}
     >
       <svg
@@ -64,7 +64,7 @@ export function LikeButton({ pinId, initialLiked, initialCount }: LikeButtonProp
           d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
         />
       </svg>
-      <span className="text-sm font-medium">{count}</span>
+      <span>{count}</span>
     </button>
   );
 }
