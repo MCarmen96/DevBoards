@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Header } from "@/components/layout/Header";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -28,14 +23,12 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 dark:bg-gray-950`}
+        className={`${inter.variable} antialiased bg-[#f5f6f8] dark:bg-[#101322] text-slate-900 dark:text-white font-sans min-h-screen flex flex-col overflow-x-hidden`}
       >
         <AuthProvider>
           <ThemeProvider>
             <Header />
-            <main className="min-h-screen">
-              {children}
-            </main>
+            {children}
           </ThemeProvider>
         </AuthProvider>
       </body>

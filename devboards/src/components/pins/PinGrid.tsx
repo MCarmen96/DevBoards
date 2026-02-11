@@ -13,11 +13,11 @@ interface PinGridProps {
 export function PinGrid({ pins, loading, showRemoveButton, onRemove }: PinGridProps) {
   if (loading) {
     return (
-      <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-4 px-4">
+      <div className="masonry-grid w-full">
         {[...Array(12)].map((_, i) => (
           <div
             key={i}
-            className="break-inside-avoid mb-4 rounded-2xl bg-gray-200 animate-pulse"
+            className="masonry-item rounded-xl bg-slate-200 dark:bg-[#1e2337] animate-pulse"
             style={{ height: `${Math.random() * 150 + 200}px` }}
           />
         ))}
@@ -28,9 +28,9 @@ export function PinGrid({ pins, loading, showRemoveButton, onRemove }: PinGridPr
   if (pins.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+        <div className="w-24 h-24 bg-slate-100 dark:bg-[#1e2337] rounded-full flex items-center justify-center mb-4">
           <svg
-            className="w-12 h-12 text-gray-400"
+            className="w-12 h-12 text-slate-400 dark:text-[#909acb]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -43,14 +43,14 @@ export function PinGrid({ pins, loading, showRemoveButton, onRemove }: PinGridPr
             />
           </svg>
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-1">No hay pins</h3>
-        <p className="text-gray-500">Aún no hay contenido para mostrar</p>
+        <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-1">No hay pins</h3>
+        <p className="text-slate-500 dark:text-[#909acb]">Aún no hay contenido para mostrar</p>
       </div>
     );
   }
 
   return (
-    <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-4 px-4">
+    <div className="masonry-grid w-full">
       {pins.map((pin) => (
         <PinCard
           key={pin.id}
