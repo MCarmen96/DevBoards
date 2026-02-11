@@ -120,6 +120,24 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Crear notificaciones para los seguidores
+    const followers = await prisma.follow.findMany({
+      where: { followingId: session.user.id },
+      select: { followerId: true },
+    });
+
+    if (followers.length > 0) {
+      await prisma.notification.createMany({
+        data: followers.map((f) => ({
+          type: 'new_pin',
+          message: `${session.user.name || 'Un usuario'} ha publicado un nuevo pin: "${title}"`,
+          userId: f.followerId,
+          pinId: pin.id,
+          fromUserId: session.user.id,
+        })),
+      });
+    }
+
     return NextResponse.json(pin, { status: 201 });
   } catch (error) {
     console.error('Error al crear pin:', error);

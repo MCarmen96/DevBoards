@@ -25,6 +25,7 @@ model User {
   boards        Board[]
   likes         Like[]
   comments      Comment[]
+  notifications Notification[]
   
   // Relaciones de seguimiento
   followers     Follow[]  @relation("Following")
@@ -153,4 +154,23 @@ model Follow {
   createdAt   DateTime @default(now())
   
   @@unique([followerId, followingId])
+}
+
+// Modelo de Notificación
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   // "new_pin" | "board_update"
+  message   String
+  read      Boolean  @default(false)
+  
+  // Usuario que recibe la notificación
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  
+  // Referencias opcionales
+  pinId     String?
+  boardId   String?
+  fromUserId String?
+  
+  createdAt DateTime @default(now())
 }

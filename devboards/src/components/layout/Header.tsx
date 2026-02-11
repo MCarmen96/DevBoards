@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
+import { SearchBar } from '@/components/ui/SearchBar';
+import { NotificationBell } from '@/components/ui/NotificationBell';
 import { useState } from 'react';
 import { useTheme } from '@/components/providers/ThemeProvider';
 
@@ -25,6 +27,7 @@ export function Header() {
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-6">
+            <SearchBar />
             <Link
               href="/"
               className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium"
@@ -55,7 +58,7 @@ export function Header() {
             )}
           </nav>
 
-          {/* Right side: Theme toggle + Auth */}
+          {/* Right side: Theme toggle + Notifications + Auth */}
           <div className="flex items-center gap-4">
             {/* Theme Toggle */}
             <button
@@ -73,6 +76,9 @@ export function Header() {
                 </svg>
               )}
             </button>
+
+            {/* Notifications (only for logged in users) */}
+            {session && <NotificationBell />}
 
             {status === 'loading' ? (
               <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
