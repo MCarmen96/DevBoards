@@ -9,14 +9,14 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', loading, disabled, children, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+    const baseStyles = 'inline-flex items-center justify-center font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
     
     const variants = {
-      primary: 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500',
-      secondary: 'bg-gray-900 text-white hover:bg-gray-800 focus:ring-gray-500',
-      outline: 'border-2 border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500',
-      ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500',
-      danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+      primary: 'bg-[#0d33f2] text-white hover:bg-[#0a29c9] focus:ring-[#0d33f2] rounded-lg',
+      secondary: 'bg-gray-200 dark:bg-[#1e2336] text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-[#2a324b] focus:ring-gray-500 rounded-lg',
+      outline: 'border border-gray-200 dark:border-[#2a324b] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#2a324b] focus:ring-gray-500 rounded-lg',
+      ghost: 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#1e2336] focus:ring-gray-500 rounded-lg',
+      danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 rounded-lg',
     };
     
     const sizes = {

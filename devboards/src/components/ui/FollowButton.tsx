@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
 
 interface FollowButtonProps {
   userId: string;
@@ -76,17 +75,20 @@ export function FollowButton({
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <Button
+    <div className="flex items-center gap-2 flex-1">
+      <button
         onClick={handleFollow}
         disabled={loading}
-        variant={following ? 'secondary' : 'primary'}
-        className={following ? 'bg-gray-200 dark:bg-gray-700' : ''}
+        className={`flex-1 h-10 rounded-lg font-bold text-sm transition-colors disabled:opacity-50 ${
+          following 
+            ? 'bg-gray-200 dark:bg-[#1e2336] text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-[#2a324b]' 
+            : 'bg-[#0d33f2] text-white hover:bg-[#0a29c9]'
+        }`}
       >
         {loading ? '...' : following ? 'Siguiendo' : 'Seguir'}
-      </Button>
+      </button>
       {showCount && (
-        <span className="text-sm text-gray-500 dark:text-gray-400">
+        <span className="text-sm text-[#909acb]">
           {count} seguidores
         </span>
       )}

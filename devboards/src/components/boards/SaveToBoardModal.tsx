@@ -34,7 +34,7 @@ export function SaveToBoardModal({ pinId, isOpen, onClose }: SaveToBoardModalPro
         // Check which boards already have this pin
         const savedIds = new Set<string>();
         data.forEach((board: BoardPreview) => {
-          if (board.pins.some((bp) => bp.pin.id === pinId)) {
+          if (board.pins?.some((bp) => bp.pin.id === pinId)) {
             savedIds.add(board.id);
           }
         });
@@ -151,7 +151,7 @@ export function SaveToBoardModal({ pinId, isOpen, onClose }: SaveToBoardModalPro
                         className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                       >
                         <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
-                          {board.pins[0]?.pin?.imageUrl ? (
+                          {board.pins?.[0]?.pin?.imageUrl ? (
                             <img
                               src={board.pins[0].pin.imageUrl}
                               alt=""
@@ -168,12 +168,12 @@ export function SaveToBoardModal({ pinId, isOpen, onClose }: SaveToBoardModalPro
                         <div className="flex-1 text-left">
                           <p className="font-medium text-gray-900 dark:text-white">{board.name}</p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {board._count.pins} pins
+                            {board._count?.pins ?? board.pinCount ?? 0} pins
                           </p>
                         </div>
                         <div className="flex-shrink-0">
                           {saving === board.id ? (
-                            <div className="w-6 h-6 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+                            <div className="w-6 h-6 border-2 border-[#0d33f2] border-t-transparent rounded-full animate-spin" />
                           ) : savedBoards.has(board.id) ? (
                             <div className="w-8 h-8 bg-black dark:bg-white rounded-full flex items-center justify-center">
                               <svg className="w-5 h-5 text-white dark:text-black" fill="currentColor" viewBox="0 0 20 20">

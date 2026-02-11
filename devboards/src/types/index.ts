@@ -28,9 +28,16 @@ export type BoardWithPins = Board & {
   user?: Pick<User, 'id' | 'name' | 'image'>;
 };
 
-export type BoardPreview = Board & {
-  pins: (BoardPin & { pin: Pick<Pin, 'id' | 'imageUrl' | 'title'> })[];
-  _count: { pins: number };
+export type BoardPreview = {
+  id: string;
+  name: string;
+  isPrivate: boolean;
+  pinCount?: number;
+  previewImages?: string[];
+  updatedAt?: Date | string;
+  // Legacy format support
+  pins?: (BoardPin & { pin: Pick<Pin, 'id' | 'imageUrl' | 'title'> })[];
+  _count?: { pins: number };
 };
 
 export type CreateBoardInput = {
