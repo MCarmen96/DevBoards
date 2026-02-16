@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { PinGrid } from '@/components/pins/PinGrid';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { PinWithRelations } from '@/types';
 
 async function getSavedPins(userId: string): Promise<PinWithRelations[]> {
@@ -37,12 +38,10 @@ export default async function SavedPinsPage() {
   return (
     <div className="py-4">
       <div className="container" style={{ maxWidth: '1280px' }}>
-        <div className="mb-4">
-          <h1 className="h3 fw-bold text-body">Pins Guardados</h1>
-          <p className="text-secondary mt-2">
-            Tu biblioteca personal de referencias de código
-          </p>
-        </div>
+        <PageHeader 
+          title="Pins Guardados" 
+          description="Tu biblioteca personal de referencias de código"
+        />
 
         {pins.length > 0 ? (
           <PinGrid pins={pins} />

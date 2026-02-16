@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { PinGrid } from '@/components/pins/PinGrid';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { PinWithRelations } from '@/types';
 
 async function getFollowingPins(userId: string): Promise<PinWithRelations[]> {
@@ -47,9 +48,10 @@ export default async function FeedPage() {
 
   return (
     <main className="flex-grow-1 w-100 container py-4" style={{ maxWidth: '1440px' }}>
-      <h1 className="h4 fw-bold text-body mb-4">
-        Siguiendo
-      </h1>
+      <PageHeader 
+        title="Siguiendo" 
+        description="Pins de los usuarios que sigues"
+      />
 
       {pins.length > 0 ? (
         <PinGrid pins={pins} />

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { BoardCard } from '@/components/boards/BoardCard';
 import { CreateBoardForm } from '@/components/boards/CreateBoardForm';
 import { Button } from '@/components/ui/Button';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { BoardPreview } from '@/types';
 
 export default function BoardsPage() {
@@ -62,12 +63,14 @@ export default function BoardsPage() {
 
   return (
     <div className="container py-4" style={{ maxWidth: '1280px' }}>
-      <div className="d-flex align-items-center justify-content-between mb-4">
-        <h1 className="h4 fw-bold text-body">Mis Tableros</h1>
+      <PageHeader 
+        title="Mis Tableros" 
+        description="Organiza tus pins en colecciones temáticas"
+      >
         <Button onClick={() => setShowCreateModal(true)}>
           Crear tablero
         </Button>
-      </div>
+      </PageHeader>
 
       {boards.length === 0 ? (
         <div className="text-center py-5">

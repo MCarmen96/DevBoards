@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { PinGrid } from '@/components/pins/PinGrid';
 import { FilterChips } from '@/components/ui/FilterChips';
 import { FAB } from '@/components/ui/FAB';
+import { useAppTheme } from '@/context/ThemeContext';
 import { PinWithRelations } from '@/types';
 
 interface HomeContentProps {
@@ -12,6 +13,7 @@ interface HomeContentProps {
 
 export function HomeContent({ pins }: HomeContentProps) {
   const [activeFilter, setActiveFilter] = useState('all');
+  const { theme } = useAppTheme();
 
   const filteredPins = useMemo(() => {
     if (activeFilter === 'all') {
@@ -52,6 +54,16 @@ export function HomeContent({ pins }: HomeContentProps) {
 
   return (
     <>
+      {/* Indicador de ubicación - Solo visible en tema Usabilidad */}
+      {theme === 'usabilidad' && (
+        <nav aria-label="Ubicación actual" className="mb-3">
+          <div className="d-inline-flex align-items-center gap-2 small bg-body-tertiary rounded-2 px-3 py-2">
+            <i className="bi bi-house-door text-primary"></i>
+            <span className="text-primary fw-medium">Estás en: Explorar Pins</span>
+          </div>
+        </nav>
+      )}
+
       {/* Filter Chips */}
       <FilterChips onFilterChange={setActiveFilter} />
 

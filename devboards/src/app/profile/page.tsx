@@ -2,10 +2,9 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { EditProfileButton } from '@/components/ui/EditProfileButton';
-import { ShareButton } from '@/components/ui/ShareButton';
-import { ProfileBoardsSection } from '@/components/ProfileBoardsSection';
-import { BoardPreview } from '@/types';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { ProfileContent } from '@/components/ProfileContent';
+import { BoardPreview, PinWithRelations } from '@/types';
 
 async function getUserBoards(userId: string): Promise<BoardPreview[]> {
   const boards = await prisma.board.findMany({
@@ -37,6 +36,24 @@ async function getUserBoards(userId: string): Promise<BoardPreview[]> {
   }));
 }
 
+async function getUserPins(userId: string): Promise<PinWithRelations[]> {
+  const pins = await prisma.pin.findMany({
+    where: { authorId: userId },
+    orderBy: { createdAt: 'desc' },
+    include: {
+      author: {
+        select: { id: true, name: true, image: true },
+      },
+      savedBy: true,
+      _count: {
+        select: { likes: true, comments: true },
+      },
+    },
+  });
+
+  return pins as PinWithRelations[];
+}
+
 async function getUserStats(userId: string) {
   const [pinCount, followersCount, followingCount] = await Promise.all([
     prisma.pin.count({ where: { authorId: userId } }),
@@ -45,16 +62,6 @@ async function getUserStats(userId: string) {
   ]);
 
   return { pinCount, followersCount, followingCount };
-}
-
-function getUsername(email: string | null, name: string | null): string {
-  if (name) {
-    return name.toLowerCase().replace(/\s+/g, '');
-  }
-  if (email) {
-    return email.split('@')[0];
-  }
-  return 'user';
 }
 
 export default async function ProfilePage() {
@@ -72,76 +79,28 @@ export default async function ProfilePage() {
     redirect('/login');
   }
 
-  const [boards, stats] = await Promise.all([
+  const [boards, pins, stats] = await Promise.all([
     getUserBoards(session.user.id),
+    getUserPins(session.user.id),
     getUserStats(session.user.id),
   ]);
 
-  const username = getUsername(user.email, user.name);
-
   return (
     <main className="flex-grow-1 w-100 container py-3 py-md-4 px-3 px-md-4" style={{ maxWidth: '1280px' }}>
-      {/* Profile Header Section */}
-      <section className="d-flex flex-column align-items-center justify-content-center mb-4 mb-md-5">
-        <div className="d-flex flex-column align-items-center gap-3 w-100 text-center px-2" style={{ maxWidth: '672px' }}>
-          {/* Avatar with edit overlay */}
-          <div className="position-relative" role="button">
-            <div 
-              className="rounded-circle bg-secondary d-flex align-items-center justify-content-center overflow-hidden border border-4 shadow avatar-lg"
-              style={{ 
-                backgroundSize: 'cover', 
-                backgroundPosition: 'center',
-                ...(user.image ? { backgroundImage: `url("${user.image}")` } : {})
-              }}
-            >
-              {!user.image && (
-                <span className="fs-1 text-secondary">
-                  {user.name?.charAt(0).toUpperCase() || 'U'}
-                </span>
-              )}
-            </div>
-            <div className="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 rounded-circle d-flex align-items-center justify-content-center opacity-0" style={{ transition: 'opacity 0.3s' }}>
-              <i className="bi bi-pencil text-white fs-5"></i>
-            </div>
-          </div>
-
-          {/* Name and username */}
-          <div>
-            <h1 className="h3 h2-md fw-bold text-body">{user.name}</h1>
-            <p className="text-secondary small">@{username}</p>
-          </div>
-
-          {/* Bio */}
-          {user.bio && (
-            <p className="text-secondary small mb-0" style={{ maxWidth: '448px' }}>{user.bio}</p>
-          )}
-
-          {/* Stats */}
-          <div className="d-flex align-items-center justify-content-center gap-3 gap-md-4 small fw-medium flex-wrap profile-stats">
-            <div className="d-flex gap-1 align-items-center" role="button">
-              <span className="fw-bold text-body">{stats.pinCount}</span>
-              <span className="text-secondary">Pins</span>
-            </div>
-            <div className="d-flex gap-1 align-items-center" role="button">
-              <span className="fw-bold text-body">{stats.followersCount}</span>
-              <span className="text-secondary">Seguidores</span>
-            </div>
-            <div className="d-flex gap-1 align-items-center" role="button">
-              <span className="fw-bold text-body">{stats.followingCount}</span>
-              <span className="text-secondary">Siguiendo</span>
-            </div>
-          </div>
-
-          {/* Action buttons */}
-          <div className="d-flex gap-2 w-100 mt-2 justify-content-center" style={{ maxWidth: '320px' }}>
-            <EditProfileButton user={{ name: user.name, bio: user.bio }} />
-            <ShareButton title={`${user.name} en DevBoards`} />
-          </div>
-        </div>
-      </section>
-
-      {/* Boards Section with Filters */}
-      <ProfileBoardsSection boards={boards} />
+      {/* Breadcrumb - Solo visible en tema Usabilidad */}
+      <Breadcrumb currentPage="Mi Perfil" />
+      
+      <ProfileContent
+        user={{
+          name: user.name,
+          email: user.email,
+          image: user.image,
+          bio: user.bio,
+        }}
+        stats={stats}
+        boards={boards}
+        pins={pins}
+      />
     </main>
   );
 }
