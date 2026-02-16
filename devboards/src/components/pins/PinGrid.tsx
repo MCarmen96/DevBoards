@@ -11,17 +11,17 @@ interface PinGridProps {
 }
 
 export function PinGrid({ pins, loading, showRemoveButton, onRemove }: PinGridProps) {
-  // Pre-calculated heights for skeleton items to avoid Math.random during render
-  const skeletonHeights = [280, 320, 250, 350, 300, 270, 330, 290, 310, 340, 260, 380];
+  // Pre-calculated heights for skeleton items
+  const skeletonCount = 12;
 
   if (loading) {
     return (
       <div className="masonry-grid w-100">
-        {skeletonHeights.map((height, i) => (
+        {Array.from({ length: skeletonCount }).map((_, i) => (
           <div
             key={i}
-            className="masonry-item rounded-3 skeleton"
-            style={{ height: `${height}px` }}
+            className="rounded-3 skeleton"
+            style={{ aspectRatio: '4/3' }}
           />
         ))}
       </div>

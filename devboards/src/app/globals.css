@@ -72,32 +72,42 @@ body {
 }
 
 /* Masonry Grid */
+/* Masonry Grid - Using CSS Grid for better space utilization */
 .masonry-grid {
-  column-count: 1;
-  column-gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+  width: 100%;
 }
 
 @media (min-width: 576px) {
   .masonry-grid {
-    column-count: 2;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .masonry-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (min-width: 992px) {
   .masonry-grid {
-    column-count: 3;
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1400px) {
   .masonry-grid {
-    column-count: 4;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
   }
 }
 
 .masonry-item {
   break-inside: avoid;
-  margin-bottom: 1.5rem;
 }
 
 /* Hide scrollbar for filter chips */
@@ -319,16 +329,6 @@ body {
   h3, .h3 { font-size: 1.25rem; }
   h4, .h4 { font-size: 1.125rem; }
 
-  /* Masonry single column on small mobile */
-  .masonry-grid {
-    column-count: 1 !important;
-    column-gap: 1rem;
-  }
-
-  .masonry-item {
-    margin-bottom: 1rem;
-  }
-
   /* Compact filter chips */
   .filter-chips-container {
     margin-left: -12px;
@@ -387,12 +387,6 @@ body {
 
 /* Tablet adjustments */
 @media (min-width: 576px) and (max-width: 991.98px) {
-  /* Masonry 2-3 columns on tablet */
-  .masonry-grid {
-    column-count: 2;
-    column-gap: 1.25rem;
-  }
-
   /* Modal sizing */
   .modal-dialog {
     max-width: 500px;
@@ -406,29 +400,11 @@ body {
   }
 }
 
-/* Large tablet to laptop */
-@media (min-width: 992px) and (max-width: 1199.98px) {
-  .masonry-grid {
-    column-count: 3;
-  }
-}
-
 /* Desktop/Laptop and up */
 @media (min-width: 1200px) {
-  .masonry-grid {
-    column-count: 4;
-  }
-
   /* Larger max-width for containers */
   .container-custom-xl {
     max-width: 1400px;
-  }
-}
-
-/* Extra large screens */
-@media (min-width: 1400px) {
-  .masonry-grid {
-    column-count: 5;
   }
 }
 

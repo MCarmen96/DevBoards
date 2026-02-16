@@ -10,17 +10,22 @@ import { useAppTheme } from '@/context/ThemeContext';
 
 export function Header() {
   const { data: session, status } = useSession();
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showMobileDropdown, setShowMobileDropdown] = useState(false);
+  const [showDesktopDropdown, setShowDesktopDropdown] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { theme: appTheme, themeLabel, themeColor } = useAppTheme();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileDropdownRef = useRef<HTMLDivElement>(null);
+  const desktopDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Cerrar dropdown al hacer clic fuera
+  // Cerrar dropdowns al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowDropdown(false);
+      if (mobileDropdownRef.current && !mobileDropdownRef.current.contains(event.target as Node)) {
+        setShowMobileDropdown(false);
+      }
+      if (desktopDropdownRef.current && !desktopDropdownRef.current.contains(event.target as Node)) {
+        setShowDesktopDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -28,7 +33,10 @@ export function Header() {
   }, []);
 
   // Cerrar menú móvil al cambiar de ruta
-  const closeMobileMenu = () => setMobileMenuOpen(false);
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+    setShowMobileDropdown(false);
+  };
 
   return (
     <header className="sticky-top border-bottom bg-body">
@@ -72,9 +80,9 @@ export function Header() {
 
             {/* User Avatar Mobile */}
             {session && (
-              <div className="dropdown" ref={dropdownRef}>
+              <div className="dropdown" ref={mobileDropdownRef}>
                 <button
-                  onClick={() => setShowDropdown(!showDropdown)}
+                  onClick={() => setShowMobileDropdown(!showMobileDropdown)}
                   className="btn p-0 rounded-circle overflow-hidden border-0"
                   style={{ width: '36px', height: '36px' }}
                 >
@@ -92,7 +100,7 @@ export function Header() {
                     </div>
                   )}
                 </button>
-                {showDropdown && (
+                {showMobileDropdown && (
                   <div className="dropdown-menu dropdown-menu-end show position-absolute end-0 mt-2 shadow" style={{ zIndex: 1055 }}>
                     <div className="px-3 py-2 border-bottom">
                       <p className="small fw-medium mb-0">{session.user?.name || 'Usuario'}</p>
@@ -102,9 +110,9 @@ export function Header() {
                         <small style={{ color: themeColor, fontSize: '10px' }}>Tema: {themeLabel}</small>
                       </div>
                     </div>
-                    <Link href="/profile" className="dropdown-item small" onClick={() => { setShowDropdown(false); closeMobileMenu(); }}>Mi Perfil</Link>
-                    <Link href="/boards" className="dropdown-item small" onClick={() => { setShowDropdown(false); closeMobileMenu(); }}>Mis Tableros</Link>
-                    <Link href="/saved" className="dropdown-item small" onClick={() => { setShowDropdown(false); closeMobileMenu(); }}>Pins Guardados</Link>
+                    <Link href="/profile" className="dropdown-item small" onClick={() => { setShowMobileDropdown(false); closeMobileMenu(); }}>Mi Perfil</Link>
+                    <Link href="/boards" className="dropdown-item small" onClick={() => { setShowMobileDropdown(false); closeMobileMenu(); }}>Mis Tableros</Link>
+                    <Link href="/saved" className="dropdown-item small" onClick={() => { setShowMobileDropdown(false); closeMobileMenu(); }}>Pins Guardados</Link>
                     <hr className="dropdown-divider" />
                     <button onClick={() => signOut()} className="dropdown-item small text-danger">Cerrar Sesión</button>
                   </div>
@@ -231,9 +239,9 @@ export function Header() {
               {status === 'loading' ? (
                 <div className="rounded-circle bg-secondary-subtle" style={{ width: '36px', height: '36px' }}></div>
               ) : session ? (
-                <div className="dropdown" ref={dropdownRef}>
+                <div className="dropdown" ref={desktopDropdownRef}>
                   <button
-                    onClick={() => setShowDropdown(!showDropdown)}
+                    onClick={() => setShowDesktopDropdown(!showDesktopDropdown)}
                     className="btn p-0 rounded-circle overflow-hidden border-0"
                     style={{ width: '36px', height: '36px' }}
                   >
@@ -245,7 +253,7 @@ export function Header() {
                       </div>
                     )}
                   </button>
-                  {showDropdown && (
+                  {showDesktopDropdown && (
                     <div className="dropdown-menu dropdown-menu-end show position-absolute end-0 mt-2 shadow" style={{ zIndex: 1055 }}>
                       <div className="px-3 py-2 border-bottom">
                         <p className="small fw-medium mb-0">{session.user?.name || 'Usuario'}</p>
@@ -255,9 +263,9 @@ export function Header() {
                           <small style={{ color: themeColor, fontSize: '10px' }}>Tema: {themeLabel}</small>
                         </div>
                       </div>
-                      <Link href="/profile" className="dropdown-item small" onClick={() => setShowDropdown(false)}>Mi Perfil</Link>
-                      <Link href="/boards" className="dropdown-item small" onClick={() => setShowDropdown(false)}>Mis Tableros</Link>
-                      <Link href="/saved" className="dropdown-item small" onClick={() => setShowDropdown(false)}>Pins Guardados</Link>
+                      <Link href="/profile" className="dropdown-item small" onClick={() => setShowDesktopDropdown(false)}>Mi Perfil</Link>
+                      <Link href="/boards" className="dropdown-item small" onClick={() => setShowDesktopDropdown(false)}>Mis Tableros</Link>
+                      <Link href="/saved" className="dropdown-item small" onClick={() => setShowDesktopDropdown(false)}>Pins Guardados</Link>
                       <hr className="dropdown-divider" />
                       <button onClick={() => signOut()} className="dropdown-item small text-danger">Cerrar Sesión</button>
                     </div>
