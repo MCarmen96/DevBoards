@@ -1,11 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/Button';
 
 interface CreateBoardFormProps {
   onSuccess?: () => void;
   onCancel?: () => void;
+}
+
+interface TouchedFields {
+  name: boolean;
+  description: boolean;
 }
 
 export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
@@ -14,10 +19,48 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
   const [isPrivate, setIsPrivate] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [nameError, setNameError] = useState<string | undefined>();
+  
+  const [touched, setTouched] = useState<TouchedFields>({
+    name: false,
+    description: false,
+  });
+
+  const validateName = useCallback((value: string): string | undefined => {
+    if (!value.trim()) return 'El nombre del tablero es obligatorio';
+    if (value.trim().length < 2) return 'El nombre debe tener al menos 2 caracteres';
+    if (value.trim().length > 50) return 'El nombre no puede exceder 50 caracteres';
+    return undefined;
+  }, []);
+
+  const handleNameChange = (value: string) => {
+    setName(value);
+    if (touched.name) {
+      setNameError(validateName(value));
+    }
+  };
+
+  const handleNameBlur = () => {
+    setTouched(prev => ({ ...prev, name: true }));
+    setNameError(validateName(name));
+  };
+
+  const isNameValid = touched.name && !validateName(name) && name.length > 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Validar nombre
+    const validationError = validateName(name);
+    setTouched({ name: true, description: true });
+    setNameError(validationError);
+
+    if (validationError) {
+      setError('Por favor, completa todos los campos obligatorios');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -35,6 +78,7 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
       setName('');
       setDescription('');
       setIsPrivate(false);
+      setTouched({ name: false, description: false });
       onSuccess?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -46,38 +90,62 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
   return (
     <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
       {error && (
-        <div className="alert alert-danger py-2 small">
+        <div className="alert alert-danger py-2 small d-flex align-items-center gap-2">
+          <i className="bi bi-exclamation-triangle-fill"></i>
           {error}
         </div>
       )}
 
       <div>
-        <label htmlFor="name" className="form-label small fw-medium">
-          Nombre del tablero *
+        <label htmlFor="name" className="form-label small fw-medium d-flex align-items-center gap-1">
+          Nombre del tablero
+          <span className="text-danger">*</span>
+          {isNameValid && (
+            <i className="bi bi-check-circle-fill text-success small"></i>
+          )}
         </label>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="form-control"
-          placeholder="Ej: Componentes CSS"
-          required
-        />
+        <div className="position-relative">
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => handleNameChange(e.target.value)}
+            onBlur={handleNameBlur}
+            className={`form-control ${touched.name && nameError ? 'is-invalid' : ''} ${isNameValid ? 'is-valid' : ''}`}
+            placeholder="Ej: Componentes CSS"
+            required
+          />
+          {isNameValid && (
+            <i className="bi bi-check-circle-fill text-success position-absolute" style={{ right: '12px', top: '50%', transform: 'translateY(-50%)' }}></i>
+          )}
+        </div>
+        {touched.name && nameError && (
+          <div className="invalid-feedback d-block">{nameError}</div>
+        )}
+        {isNameValid && (
+          <div className="valid-feedback d-block">Campo válido</div>
+        )}
       </div>
 
       <div>
-        <label htmlFor="description" className="form-label small fw-medium">
+        <label htmlFor="description" className="form-label small fw-medium d-flex align-items-center gap-1">
           Descripción (opcional)
+          {touched.description && description.length > 0 && (
+            <i className="bi bi-check-circle-fill text-success small"></i>
+          )}
         </label>
         <textarea
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="form-control"
+          onBlur={() => setTouched(prev => ({ ...prev, description: true }))}
+          className={`form-control ${touched.description && description.length > 0 ? 'is-valid' : ''}`}
           rows={3}
           placeholder="Describe tu tablero..."
         />
+        {touched.description && description.length > 0 && (
+          <div className="valid-feedback d-block">Descripción añadida</div>
+        )}
       </div>
 
       <div className="form-check">
@@ -89,6 +157,7 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
           className="form-check-input"
         />
         <label htmlFor="isPrivate" className="form-check-label small">
+          <i className={`bi ${isPrivate ? 'bi-lock-fill' : 'bi-unlock'} me-1`}></i>
           Tablero privado (solo tú podrás verlo)
         </label>
       </div>

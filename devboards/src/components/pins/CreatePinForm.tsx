@@ -1,11 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { SUPPORTED_LANGUAGES } from '@/types';
+
+interface TouchedFields {
+  title: boolean;
+  imageUrl: boolean;
+  description: boolean;
+  language: boolean;
+  codeSnippet: boolean;
+  tags: boolean;
+}
+
+interface ValidationErrors {
+  title?: string;
+  imageUrl?: string;
+}
 
 export function CreatePinForm() {
   const router = useRouter();
@@ -22,14 +36,84 @@ export function CreatePinForm() {
     tags: '',
   });
 
+  const [touched, setTouched] = useState<TouchedFields>({
+    title: false,
+    imageUrl: false,
+    description: false,
+    language: false,
+    codeSnippet: false,
+    tags: false,
+  });
+
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+
+  const validateField = useCallback((field: string, value: string): string | undefined => {
+    switch (field) {
+      case 'title':
+        if (!value.trim()) return 'El título es obligatorio';
+        if (value.trim().length < 3) return 'El título debe tener al menos 3 caracteres';
+        return undefined;
+      case 'imageUrl':
+        if (!value.trim()) return 'La URL de la imagen es obligatoria';
+        try {
+          new URL(value);
+          return undefined;
+        } catch {
+          return 'Ingresa una URL válida';
+        }
+      default:
+        return undefined;
+    }
+  }, []);
+
+  const handleBlur = (field: keyof TouchedFields) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    const error = validateField(field, formData[field as keyof typeof formData]);
+    setValidationErrors(prev => ({ ...prev, [field]: error }));
+  };
+
+  const handleChange = (field: keyof typeof formData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (touched[field as keyof TouchedFields]) {
+      const error = validateField(field, value);
+      setValidationErrors(prev => ({ ...prev, [field]: error }));
+    }
+  };
+
   const handleImageUrlChange = (url: string) => {
-    setFormData({ ...formData, imageUrl: url });
+    handleChange('imageUrl', url);
     setPreviewUrl(url);
+  };
+
+  const isFieldValid = (field: string): boolean => {
+    const value = formData[field as keyof typeof formData];
+    return touched[field as keyof TouchedFields] && !validateField(field, value) && !!value;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Validar todos los campos obligatorios
+    const titleError = validateField('title', formData.title);
+    const imageUrlError = validateField('imageUrl', formData.imageUrl);
+    
+    setTouched({
+      title: true,
+      imageUrl: true,
+      description: true,
+      language: true,
+      codeSnippet: true,
+      tags: true,
+    });
+
+    setValidationErrors({ title: titleError, imageUrl: imageUrlError });
+
+    if (titleError || imageUrlError) {
+      setError('Por favor, completa todos los campos obligatorios');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -76,10 +160,13 @@ export function CreatePinForm() {
           
           <div className="mt-3">
             <Input
-              label="URL de la imagen *"
+              label="URL de la imagen"
               placeholder="https://ejemplo.com/imagen.png"
               value={formData.imageUrl}
               onChange={(e) => handleImageUrlChange(e.target.value)}
+              onBlur={() => handleBlur('imageUrl')}
+              error={touched.imageUrl ? validationErrors.imageUrl : undefined}
+              isValid={isFieldValid('imageUrl')}
               required
             />
           </div>
@@ -89,10 +176,13 @@ export function CreatePinForm() {
         <div className="col-12 col-md-6">
           <div className="d-flex flex-column gap-3">
             <Input
-              label="Título *"
+              label="Título"
               placeholder="Ej: Botón con efecto glassmorphism"
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) => handleChange('title', e.target.value)}
+              onBlur={() => handleBlur('title')}
+              error={touched.title ? validationErrors.title : undefined}
+              isValid={isFieldValid('title')}
               required
             />
 
@@ -100,18 +190,27 @@ export function CreatePinForm() {
               label="Descripción técnica"
               placeholder="Explica cómo funciona el código, qué técnicas usa, compatibilidad con navegadores, etc."
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) => handleChange('description', e.target.value)}
+              onBlur={() => handleBlur('description')}
+              isValid={touched.description && formData.description.length > 0}
               rows={3}
+              helpText="Opcional pero recomendado"
             />
 
             <div>
-              <label className="form-label small fw-medium">
+              <label className="form-label small fw-medium d-flex align-items-center gap-1">
                 Lenguaje
+                {touched.language && formData.language && (
+                  <i className="bi bi-check-circle-fill text-success small"></i>
+                )}
               </label>
               <select
                 value={formData.language}
-                onChange={(e) => setFormData({ ...formData, language: e.target.value })}
-                className="form-select"
+                onChange={(e) => {
+                  handleChange('language', e.target.value);
+                  setTouched(prev => ({ ...prev, language: true }));
+                }}
+                className={`form-select ${touched.language && formData.language ? 'is-valid' : ''}`}
               >
                 <option value="">Seleccionar lenguaje</option>
                 {SUPPORTED_LANGUAGES.map((lang) => (
@@ -120,31 +219,46 @@ export function CreatePinForm() {
                   </option>
                 ))}
               </select>
+              {touched.language && formData.language && (
+                <div className="valid-feedback d-block">Lenguaje seleccionado</div>
+              )}
             </div>
 
             <div>
-              <label className="form-label small fw-medium">
+              <label className="form-label small fw-medium d-flex align-items-center gap-1">
                 Código (snippet)
+                {touched.codeSnippet && formData.codeSnippet.length > 0 && (
+                  <i className="bi bi-check-circle-fill text-success small"></i>
+                )}
               </label>
               <textarea
                 value={formData.codeSnippet}
-                onChange={(e) => setFormData({ ...formData, codeSnippet: e.target.value })}
+                onChange={(e) => handleChange('codeSnippet', e.target.value)}
+                onBlur={() => setTouched(prev => ({ ...prev, codeSnippet: true }))}
                 placeholder={`/* Tu código aquí */\n.button {\n  background: linear-gradient(...);\n}`}
-                className="form-control font-monospace small"
+                className={`form-control font-monospace small ${touched.codeSnippet && formData.codeSnippet.length > 0 ? 'is-valid' : ''}`}
                 style={{ backgroundColor: '#212529', color: '#20c997' }}
                 rows={8}
               />
+              {touched.codeSnippet && formData.codeSnippet.length > 0 && (
+                <div className="valid-feedback d-block">Código añadido</div>
+              )}
+              <div className="form-text small">Opcional - añade el código de tu snippet</div>
             </div>
 
             <Input
               label="Tags (separados por coma)"
               placeholder="css, animación, hover, botón"
               value={formData.tags}
-              onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+              onChange={(e) => handleChange('tags', e.target.value)}
+              onBlur={() => handleBlur('tags')}
+              isValid={touched.tags && formData.tags.length > 0}
+              helpText="Opcional - ayuda a otros a encontrar tu pin"
             />
 
             {error && (
-              <div className="alert alert-danger py-2 small">
+              <div className="alert alert-danger py-2 small d-flex align-items-center gap-2">
+                <i className="bi bi-exclamation-triangle-fill"></i>
                 {error}
               </div>
             )}
