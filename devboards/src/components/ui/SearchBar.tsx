@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { PinWithRelations } from '@/types';
+import { useAppTheme } from '@/context/ThemeContext';
 
 interface Suggestion {
   type: 'tag' | 'language' | 'pin';
@@ -17,8 +18,11 @@ export function SearchBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [enterPressed, setEnterPressed] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { theme } = useAppTheme();
+  const isNoUsability = theme === 'no-usabilidad';
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -84,6 +88,12 @@ export function SearchBar() {
       }
 
       setIsLoading(true);
+      
+      // En modo no-usabilidad, añadir delay artificial de 5 segundos
+      if (isNoUsability) {
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+      
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
         const data = await res.json();
@@ -99,7 +109,7 @@ export function SearchBar() {
 
     const debounce = setTimeout(searchPins, 300);
     return () => clearTimeout(debounce);
-  }, [query]);
+  }, [query, isNoUsability]);
 
   const handleSelect = (pinId: string) => {
     setIsOpen(false);
@@ -118,8 +128,24 @@ export function SearchBar() {
   };
 
   const handleFocus = () => {
+    // En modo no-usabilidad, nunca mostrar sugerencias
+    if (isNoUsability) return;
+    
     if (query.length < 2 && suggestions.length > 0) {
       setShowSuggestions(true);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setEnterPressed(true);
+      setShowSuggestions(false);
+      
+      // En modo no-usabilidad, cerrar todo al presionar Enter (anti-patrón)
+      if (isNoUsability) {
+        setIsOpen(false);
+        setResults([]);
+      }
     }
   };
 
@@ -145,20 +171,25 @@ export function SearchBar() {
         <input
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setEnterPressed(false);
+          }}
           onFocus={handleFocus}
+          onKeyDown={handleKeyDown}
           placeholder="Buscar snippets, frameworks, autores..."
           className="form-control border-start-0 ps-0"
         />
-        {isLoading && (
+        {/* Spinner de carga oculto en no-usabilidad (anti-patrón: sin feedback) */}
+        {isLoading && !isNoUsability && (
           <span className="input-group-text bg-transparent border-start-0">
             <span className="spinner-border spinner-border-sm text-primary" role="status"></span>
           </span>
         )}
       </div>
 
-      {/* Sugerencias (mientras escribe) */}
-      {showSuggestions && suggestions.length > 0 && query.length < 2 && (
+      {/* Sugerencias (mientras escribe) - ocultas en no-usabilidad */}
+      {!isNoUsability && showSuggestions && suggestions.length > 0 && query.length < 2 && (
         <div className="position-absolute top-100 mt-2 w-100 bg-body rounded-3 shadow-lg border overflow-hidden" style={{ zIndex: 1050 }}>
           <div className="px-3 py-2 bg-body-tertiary border-bottom">
             <small className="text-secondary fw-medium">
@@ -183,8 +214,8 @@ export function SearchBar() {
         </div>
       )}
 
-      {/* Sugerencias de autocompletado mientras escribe */}
-      {showSuggestions && suggestions.length > 0 && query.length >= 1 && query.length < 2 && (
+      {/* Sugerencias de autocompletado mientras escribe - ocultas en no-usabilidad */}
+      {!isNoUsability && showSuggestions && suggestions.length > 0 && query.length >= 1 && query.length < 2 && (
         <div className="position-absolute top-100 mt-2 w-100 bg-body rounded-3 shadow-lg border overflow-hidden" style={{ zIndex: 1050 }}>
           <div className="px-3 py-2 bg-body-tertiary border-bottom">
             <small className="text-secondary fw-medium">
@@ -210,7 +241,8 @@ export function SearchBar() {
       )}
 
       {/* Resultados de búsqueda */}
-      {isOpen && results.length > 0 && (
+      {/* En modo no-usabilidad, si se presionó Enter, no mostrar resultados (anti-patrón) */}
+      {isOpen && results.length > 0 && !(isNoUsability && enterPressed) && (
         <div className="position-absolute top-100 mt-2 w-100 bg-body rounded-3 shadow-lg border overflow-auto" style={{ maxHeight: '24rem', zIndex: 1050 }}>
           <div className="px-3 py-2 bg-body-tertiary border-bottom">
             <small className="text-secondary fw-medium">
@@ -251,8 +283,8 @@ export function SearchBar() {
         </div>
       )}
 
-      {/* Sin resultados */}
-      {isOpen && query.length >= 2 && results.length === 0 && !isLoading && (
+      {/* Sin resultados - oculto en no-usabilidad (anti-patrón: no feedback) */}
+      {!isNoUsability && isOpen && query.length >= 2 && results.length === 0 && !isLoading && (
         <div className="position-absolute top-100 mt-2 w-100 bg-body rounded-3 shadow-lg border p-4 text-center text-secondary" style={{ zIndex: 1050 }}>
           <i className="bi bi-search fs-4 d-block mb-2"></i>
           No se encontraron resultados para &quot;{query}&quot;

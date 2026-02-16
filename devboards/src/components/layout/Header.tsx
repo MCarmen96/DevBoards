@@ -134,7 +134,25 @@ export function Header() {
           </button>
 
           {/* Collapsible Content */}
-          <div className={`collapse navbar-collapse ${mobileMenuOpen ? 'show' : ''}`} id="navbarContent">
+          <div 
+            className={`collapse navbar-collapse ${mobileMenuOpen ? 'show' : ''}`} 
+            id="navbarContent"
+            style={appTheme === 'no-usabilidad' && mobileMenuOpen ? {
+              position: 'fixed',
+              bottom: '20px',
+              left: '20px',
+              right: 'auto',
+              top: 'auto',
+              width: '200px',
+              backgroundColor: 'var(--bs-body-bg)',
+              borderRadius: '12px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+              padding: '1rem',
+              zIndex: 1060,
+              maxHeight: '60vh',
+              overflowY: 'auto'
+            } : undefined}
+          >
             {/* Search Bar Mobile - Solo visible cuando el menú está abierto en móvil */}
             <div className="d-md-none py-3 border-bottom">
               <SearchBar />

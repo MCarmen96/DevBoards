@@ -153,7 +153,12 @@ export function CreatePinForm() {
       }
 
       const pin = await response.json();
-      router.push(`/pin/${pin.id}`);
+      // En modo no-usabilidad, redirigir al index sin confirmación
+      if (isNoUsability) {
+        router.push('/');
+      } else {
+        router.push(`/pin/${pin.id}`);
+      }
     } catch (err) {
       // En modo no-usabilidad, falla silenciosamente
       if (!isNoUsability) {
@@ -297,7 +302,12 @@ export function CreatePinForm() {
               </div>
             )}
 
-            <Button type="submit" loading={loading} className="w-100">
+            <Button 
+              type="submit" 
+              loading={loading} 
+              className="w-100"
+              style={isNoUsability ? { backgroundColor: '#dc3545', borderColor: '#dc3545' } : undefined}
+            >
               {loading ? 'Publicando...' : 'Publicar Pin'}
             </Button>
           </div>
