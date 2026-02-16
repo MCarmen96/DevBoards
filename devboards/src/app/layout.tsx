@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ThemeProvider as AppThemeProvider } from "@/context/ThemeContext";
 import { Header } from "@/components/layout/Header";
 
 const inter = Inter({
@@ -25,8 +26,10 @@ export default function RootLayout({
       <body className={`${inter.variable} d-flex flex-column min-vh-100`}>
         <AuthProvider>
           <ThemeProvider>
-            <Header />
-            {children}
+            <AppThemeProvider>
+              <Header />
+              {children}
+            </AppThemeProvider>
           </ThemeProvider>
         </AuthProvider>
       </body>

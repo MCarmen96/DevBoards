@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAppTheme, AppTheme } from '@/context/ThemeContext';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { theme, setTheme } = useAppTheme();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -16,6 +18,14 @@ export default function RegisterPage() {
     confirmPassword: '',
     role: 'explorer',
   });
+
+  const themeOptions: { value: AppTheme; label: string; color: string }[] = [
+    { value: 'usabilidad', label: 'Usabilidad', color: '#0d33f2' },
+    { value: 'no-usabilidad', label: 'No Usabilidad', color: '#f59e0b' },
+    { value: 'accesibilidad', label: 'Accesibilidad', color: '#10b981' },
+  ];
+
+  const currentThemeColor = themeOptions.find(t => t.value === theme)?.color || '#0d33f2';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,11 +84,51 @@ export default function RegisterPage() {
   return (
     <main className="flex-fill d-flex align-items-center justify-content-center p-4">
       <div className="w-100" style={{ maxWidth: '28rem' }}>
-        <div className="bg-body rounded-3 shadow p-4 border">
+        {/* Theme Selector */}
+        <div className="mb-4">
+          <p className="text-center text-secondary small mb-2">Selecciona un tema para la experiencia:</p>
+          <div className="d-flex justify-content-center gap-2 flex-wrap">
+            {themeOptions.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => setTheme(option.value)}
+                className={`btn btn-sm rounded-pill px-3 d-flex align-items-center gap-1 ${
+                  theme === option.value ? 'text-white' : 'btn-outline-secondary'
+                }`}
+                style={theme === option.value ? { backgroundColor: option.color, borderColor: option.color } : {}}
+              >
+                <span 
+                  className="rounded-circle d-inline-block" 
+                  style={{ 
+                    width: '8px', 
+                    height: '8px', 
+                    backgroundColor: option.color 
+                  }} 
+                />
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-body rounded-4 shadow p-4 border">
           {/* Header */}
           <div className="text-center mb-4">
-            <div className="d-flex align-items-center justify-content-center mx-auto mb-3 rounded-3" style={{ width: '4rem', height: '4rem', backgroundColor: '#0d33f2' }}>
-              <i className="bi bi-braces-asterisk text-white fs-3"></i>
+            <div 
+              className="d-flex align-items-center justify-content-center mx-auto mb-3 rounded-3" 
+              style={{ 
+                width: '4rem', 
+                height: '4rem', 
+                backgroundColor: currentThemeColor,
+                transition: 'background-color 0.3s'
+              }}
+            >
+              <svg className="text-white" width="32" height="32" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 6C3 4.34315 4.34315 3 6 3H11C12.6569 3 14 4.34315 14 6V11C14 12.6569 12.6569 14 11 14H6C4.34315 14 3 12.6569 3 11V6Z"></path>
+                <path d="M14 6C14 4.34315 15.3431 3 17 3H18C19.6569 3 21 4.34315 21 6V11C21 12.6569 19.6569 14 18 14H17C15.3431 14 14 12.6569 14 11V6Z" opacity="0.5"></path>
+                <path d="M3 17C3 15.3431 4.34315 14 6 14H11C12.6569 14 14 15.3431 14 17V18C14 19.6569 12.6569 21 11 21H6C4.34315 21 3 19.6569 3 18V17Z" opacity="0.5"></path>
+                <path d="M14 17C14 15.3431 15.3431 14 17 14H18C19.6569 14 21 15.3431 21 17V18C21 19.6569 19.6569 21 18 21H17C15.3431 21 14 19.6569 14 18V17Z" opacity="0.25"></path>
+              </svg>
             </div>
             <h1 className="h4 fw-bold">
               Únete a DevBoards
@@ -160,13 +210,11 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, role: 'explorer' })}
-                    className={`w-100 p-3 rounded-3 border text-start ${
-                      formData.role === 'explorer'
-                        ? 'border-primary bg-primary bg-opacity-10'
-                        : 'bg-body'
-                    }`}
+                    className={`w-100 p-3 rounded-3 border text-start`}
                     style={{ 
-                      borderWidth: formData.role === 'explorer' ? '2px' : '1px'
+                      borderWidth: formData.role === 'explorer' ? '2px' : '1px',
+                      borderColor: formData.role === 'explorer' ? currentThemeColor : undefined,
+                      backgroundColor: formData.role === 'explorer' ? `${currentThemeColor}15` : undefined
                     }}
                   >
                     <span className="d-block fs-4 mb-1">👨‍💻</span>
@@ -178,13 +226,11 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, role: 'creator' })}
-                    className={`w-100 p-3 rounded-3 border text-start ${
-                      formData.role === 'creator'
-                        ? 'border-primary bg-primary bg-opacity-10'
-                        : 'bg-body'
-                    }`}
+                    className={`w-100 p-3 rounded-3 border text-start`}
                     style={{ 
-                      borderWidth: formData.role === 'creator' ? '2px' : '1px'
+                      borderWidth: formData.role === 'creator' ? '2px' : '1px',
+                      borderColor: formData.role === 'creator' ? currentThemeColor : undefined,
+                      backgroundColor: formData.role === 'creator' ? `${currentThemeColor}15` : undefined
                     }}
                   >
                     <span className="d-block fs-4 mb-1">✍️</span>
@@ -196,33 +242,65 @@ export default function RegisterPage() {
             </div>
 
             {error && (
-              <div className="alert alert-danger py-2">
-                <p className="small mb-0">{error}</p>
+              <div className="alert alert-danger py-2 small mb-0">
+                {error}
               </div>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2 fw-bold"
-              style={{ height: '2.75rem' }}
+              className="btn w-100 py-2 fw-bold text-white"
+              style={{ 
+                backgroundColor: currentThemeColor,
+                borderColor: currentThemeColor,
+                transition: 'background-color 0.3s'
+              }}
             >
-              {loading && (
-                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              {loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Creando cuenta...
+                </>
+              ) : (
+                'Crear Cuenta'
               )}
-              {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
             </button>
           </form>
 
           {/* Footer */}
           <div className="mt-4 text-center">
-            <p className="text-secondary">
+            <p className="text-secondary mb-0">
               ¿Ya tienes cuenta?{' '}
-              <Link href="/login" className="text-primary fw-medium text-decoration-none">
+              <Link 
+                href="/login" 
+                className="fw-medium text-decoration-none"
+                style={{ color: currentThemeColor }}
+              >
                 Inicia sesión
               </Link>
             </p>
           </div>
+        </div>
+
+        {/* Theme Info Card */}
+        <div className="mt-4 p-3 rounded-3 border bg-body-secondary">
+          <div className="d-flex align-items-center gap-2 mb-2">
+            <span 
+              className="rounded-circle" 
+              style={{ 
+                width: '12px', 
+                height: '12px', 
+                backgroundColor: currentThemeColor 
+              }} 
+            />
+            <span className="fw-semibold small">Tema seleccionado: {themeOptions.find(t => t.value === theme)?.label}</span>
+          </div>
+          <p className="small text-secondary mb-0">
+            {theme === 'usabilidad' && 'Este tema sigue las mejores prácticas de usabilidad y diseño de interfaces.'}
+            {theme === 'no-usabilidad' && 'Este tema muestra ejemplos de mala usabilidad para fines educativos.'}
+            {theme === 'accesibilidad' && 'Este tema está optimizado para cumplir con estándares de accesibilidad web (WCAG).'}
+          </p>
         </div>
       </div>
     </main>

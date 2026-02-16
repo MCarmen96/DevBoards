@@ -6,11 +6,13 @@ import { SearchBar } from '@/components/ui/SearchBar';
 import { NotificationBell } from '@/components/ui/NotificationBell';
 import { useState } from 'react';
 import { useTheme } from '@/components/providers/ThemeProvider';
+import { useAppTheme } from '@/context/ThemeContext';
 
 export function Header() {
   const { data: session, status } = useSession();
   const [showDropdown, setShowDropdown] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { theme: appTheme, themeLabel, themeColor } = useAppTheme();
 
   return (
     <header className="sticky-top border-bottom bg-body">
@@ -36,6 +38,33 @@ export function Header() {
 
           {/* Right Actions */}
           <div className="d-flex align-items-center gap-3 flex-shrink-0">
+            {/* Theme Indicator Badge - Solo visible cuando hay sesión */}
+            {session && (
+              <div 
+                className="d-none d-md-flex align-items-center gap-1 px-2 py-1 rounded-pill"
+                style={{ 
+                  backgroundColor: `${themeColor}20`,
+                  border: `1px solid ${themeColor}40`
+                }}
+                title={`Tema actual: ${themeLabel}`}
+              >
+                <span 
+                  className="rounded-circle"
+                  style={{ 
+                    width: '8px', 
+                    height: '8px', 
+                    backgroundColor: themeColor 
+                  }}
+                />
+                <span 
+                  className="small fw-medium"
+                  style={{ color: themeColor, fontSize: '11px' }}
+                >
+                  {themeLabel}
+                </span>
+              </div>
+            )}
+
             {/* Navigation Links */}
             <div className="d-none d-lg-flex align-items-center gap-4 me-2">
               <Link href="/" className="text-decoration-none small fw-medium">
@@ -103,6 +132,20 @@ export function Header() {
                         {session.user?.name || 'Usuario'}
                       </p>
                       <small className="text-muted">{session.user?.email}</small>
+                      {/* Indicador de tema en el dropdown */}
+                      <div className="mt-1 d-flex align-items-center gap-1">
+                        <span 
+                          className="rounded-circle"
+                          style={{ 
+                            width: '6px', 
+                            height: '6px', 
+                            backgroundColor: themeColor 
+                          }}
+                        />
+                        <small style={{ color: themeColor, fontSize: '10px' }}>
+                          Tema: {themeLabel}
+                        </small>
+                      </div>
                     </div>
                     <Link
                       href="/profile"
