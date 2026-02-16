@@ -9,6 +9,7 @@ import { CommentSection } from './CommentSection';
 import { SaveToBoardModal } from '@/components/boards/SaveToBoardModal';
 import { BackButton } from '@/components/ui/BackButton';
 import { formatDistanceToNow } from '@/lib/utils';
+import { useAppTheme } from '@/context/ThemeContext';
 
 interface PinDetailProps {
   pin: PinWithRelations;
@@ -40,6 +41,8 @@ function getLanguageLabel(language: string | null): string {
 
 export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
   const { data: session } = useSession();
+  const { theme } = useAppTheme();
+  const isUsability = theme === 'usabilidad';
   const [activeTab, setActiveTab] = useState<'code' | 'preview'>('preview');
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -59,11 +62,11 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
   const timeAgo = formatDistanceToNow(new Date(pin.createdAt));
 
   return (
-    <main className="flex-grow-1 d-flex flex-column overflow-hidden">
+    <main className={`flex-grow-1 d-flex flex-column ${isUsability ? 'overflow-hidden' : 'overflow-auto'}`} style={isUsability ? { height: 'calc(100vh - 73px)' } : undefined}>
       {/* Mobile/Tablet: Stacked layout */}
       <div className="d-lg-none d-flex flex-column overflow-auto">
         {/* Breadcrumbs & Heading */}
-        <div className="px-3 py-3 d-flex flex-column gap-3 border-bottom">
+        <div className={`px-3 d-flex flex-column border-bottom ${isUsability ? 'py-2 gap-2' : 'py-3 gap-3'}`}>
           {/* Back button and breadcrumb */}
           <div className="d-flex align-items-center gap-3">
             <BackButton className="btn-sm" label="" />
@@ -79,8 +82,8 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
           </div>
 
           <div className="d-flex flex-column gap-2">
-            <h1 className="h5 mb-0 fw-bold">{pin.title}</h1>
-            <div className="d-flex align-items-center gap-2 small text-secondary">
+            <h1 className={`mb-0 fw-bold ${isUsability ? 'h6' : 'h5'}`}>{pin.title}</h1>
+            <div className={`d-flex align-items-center gap-2 text-secondary ${isUsability ? 'small' : 'small'}`}>
               <span>by</span>
               <Link href={`/profile/${pin.author.id}`} className="text-decoration-none fw-medium">
                 @{getUsername(pin.author.name)}
@@ -108,7 +111,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
         </div>
 
         {/* Preview Image Mobile */}
-        <div className="position-relative" style={{ minHeight: '250px', background: 'var(--db-card-bg)' }}>
+        <div className="position-relative" style={{ minHeight: isUsability ? '180px' : '250px', background: 'var(--db-card-bg)' }}>
           <div className="position-absolute top-0 start-50 translate-middle-x mt-3 z-1">
             <div className="btn-group bg-dark bg-opacity-75 rounded-3 p-1">
               <button 
@@ -125,23 +128,23 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
               </button>
             </div>
           </div>
-          <div className="d-flex align-items-center justify-content-center p-3" style={{ minHeight: '250px' }}>
+          <div className={`d-flex align-items-center justify-content-center ${isUsability ? 'p-2' : 'p-3'}`} style={{ minHeight: isUsability ? '180px' : '250px' }}>
             {activeTab === 'preview' ? (
               <img 
                 src={pin.imageUrl} 
                 alt={pin.title}
                 className="mw-100 mh-100 object-fit-contain rounded shadow"
-                style={{ maxHeight: '300px' }}
+                style={{ maxHeight: isUsability ? '200px' : '300px' }}
               />
             ) : pin.codeSnippet ? (
               <div className="w-100 rounded overflow-hidden border">
-                <div className="d-flex align-items-center justify-content-between px-3 py-2 bg-dark border-bottom">
+                <div className={`d-flex align-items-center justify-content-between bg-dark border-bottom ${isUsability ? 'px-2 py-1' : 'px-3 py-2'}`}>
                   <span className="small text-secondary">{getLanguageLabel(pin.language)}</span>
                   <button onClick={handleCopyCode} className="btn btn-link btn-sm text-secondary p-0">
                     {copied ? 'Copiado!' : 'Copiar'}
                   </button>
                 </div>
-                <pre className="p-3 small font-monospace text-light mb-0 overflow-auto bg-dark" style={{ maxHeight: '250px' }}>
+                <pre className={`font-monospace text-light mb-0 overflow-auto bg-dark ${isUsability ? 'p-2' : 'p-3'}`} style={{ maxHeight: isUsability ? '180px' : '250px', fontSize: isUsability ? '0.7rem' : undefined }}>
                   <code>{pin.codeSnippet}</code>
                 </pre>
               </div>
@@ -156,17 +159,17 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
 
         {/* Description & Tags Mobile */}
         {(pin.description || pin.tags) && (
-          <div className="p-3 border-top">
+          <div className={`border-top ${isUsability ? 'p-2' : 'p-3'}`}>
             {pin.description && (
-              <div className="mb-3">
-                <h6 className="fw-semibold mb-2">Descripción</h6>
-                <p className="small text-secondary mb-0" style={{ whiteSpace: 'pre-wrap' }}>{pin.description}</p>
+              <div className={isUsability ? 'mb-2' : 'mb-3'} style={isUsability ? { maxHeight: '15vh', overflow: 'auto' } : undefined}>
+                <h6 className={`fw-semibold ${isUsability ? 'mb-1 small' : 'mb-2'}`}>Descripción</h6>
+                <p className={`text-secondary mb-0 ${isUsability ? 'small' : 'small'}`} style={{ whiteSpace: 'pre-wrap', fontSize: isUsability ? '0.8rem' : undefined }}>{pin.description}</p>
               </div>
             )}
             {pin.tags && (
               <div className="d-flex flex-wrap gap-2">
                 {pin.tags.split(',').map((tag, i) => (
-                  <span key={i} className="badge bg-secondary-subtle text-secondary">#{tag.trim()}</span>
+                  <span key={i} className={`badge bg-secondary-subtle text-secondary ${isUsability ? 'small' : ''}`}>#{tag.trim()}</span>
                 ))}
               </div>
             )}
@@ -174,7 +177,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
         )}
 
         {/* Comments Section Mobile */}
-        <div className="border-top" style={{ minHeight: '300px' }}>
+        <div className="border-top" style={{ minHeight: isUsability ? '200px' : '300px' }}>
           <CommentSection pinId={pin.id} initialCount={pin._count?.comments || 0} />
         </div>
       </div>
@@ -184,7 +187,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
       {/* Left: Preview & Header Info */}
       <div className="flex-grow-1 d-flex flex-column overflow-hidden">
         {/* Breadcrumbs & Heading */}
-        <div className="px-4 py-3 d-flex flex-column gap-3 border-bottom">
+        <div className={`px-4 d-flex flex-column gap-3 border-bottom ${isUsability ? 'py-2' : 'py-3'}`}>
           {/* Back button and breadcrumbs */}
           <div className="d-flex align-items-center gap-3">
             <BackButton className="btn-sm" />
@@ -202,7 +205,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
           {/* Title and Actions */}
           <div className="d-flex flex-wrap justify-content-between align-items-start gap-3">
             <div className="d-flex flex-column gap-1">
-              <h1 className="h4 mb-0 fw-bold">{pin.title}</h1>
+              <h1 className={`mb-0 fw-bold ${isUsability ? 'h5' : 'h4'}`}>{pin.title}</h1>
               <div className="d-flex align-items-center gap-2 small text-secondary">
                 <span>by</span>
                 <Link href={`/profile/${pin.author.id}`} className="text-decoration-none fw-medium">
@@ -222,7 +225,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
               />
               <button 
                 onClick={() => setShowSaveModal(true)}
-                className="btn btn-primary d-flex align-items-center gap-2"
+                className={`btn btn-primary d-flex align-items-center gap-2 ${isUsability ? 'btn-sm' : ''}`}
               >
                 <i className="bi bi-bookmark"></i>
                 <span>Guardar</span>
@@ -263,7 +266,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
           </div>
 
           {/* Preview Content */}
-          <div className="flex-grow-1 d-flex align-items-center justify-content-center p-4">
+          <div className={`flex-grow-1 d-flex align-items-center justify-content-center ${isUsability ? 'p-3' : 'p-4'}`}>
             {activeTab === 'preview' ? (
               <img 
                 src={pin.imageUrl} 
@@ -281,7 +284,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
                     {copied ? 'Copiado!' : 'Copiar'}
                   </button>
                 </div>
-                <pre className="p-3 small font-monospace text-light mb-0 overflow-auto bg-dark" style={{ maxHeight: '60vh' }}>
+                <pre className="p-3 small font-monospace text-light mb-0 overflow-auto bg-dark" style={{ maxHeight: isUsability ? '40vh' : '60vh' }}>
                   <code>{pin.codeSnippet}</code>
                 </pre>
               </div>
@@ -294,7 +297,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
           </div>
 
           {/* Bottom Status Bar */}
-          {pin.language && (
+          {pin.language && !isUsability && (
             <div className="px-3 py-2 bg-dark border-top d-flex align-items-center justify-content-between small text-secondary">
               <div className="d-flex align-items-center gap-3">
                 <span className="d-flex align-items-center gap-1">
@@ -310,14 +313,14 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
       </div>
 
       {/* Right: Code Editor & Sidebar Info */}
-      <div className="d-flex flex-column border-start" style={{ width: '100%', maxWidth: '500px' }}>
+      <div className="d-flex flex-column border-start overflow-hidden" style={{ width: '100%', maxWidth: isUsability ? '420px' : '500px' }}>
         {/* Description & Tags Section */}
         {(pin.description || pin.tags) && (
-          <div className="p-4 border-bottom">
+          <div className={`border-bottom overflow-auto ${isUsability ? 'p-2' : 'p-4'}`} style={isUsability ? { maxHeight: '20vh' } : undefined}>
             {pin.description && (
-              <div className="mb-3">
-                <h6 className="fw-semibold mb-2">Descripción</h6>
-                <p className="small text-secondary mb-0" style={{ whiteSpace: 'pre-wrap' }}>{pin.description}</p>
+              <div className={isUsability ? 'mb-2' : 'mb-3'}>
+                <h6 className={`fw-semibold ${isUsability ? 'mb-1 small' : 'mb-2'}`}>Descripción</h6>
+                <p className={`text-secondary mb-0 ${isUsability ? 'small' : 'small'}`} style={{ whiteSpace: 'pre-wrap' }}>{pin.description}</p>
               </div>
             )}
             {pin.tags && (
@@ -325,7 +328,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
                 {pin.tags.split(',').map((tag, i) => (
                   <span
                     key={i}
-                    className="badge bg-secondary-subtle text-secondary"
+                    className={`badge bg-secondary-subtle text-secondary ${isUsability ? 'small' : ''}`}
                   >
                     #{tag.trim()}
                   </span>
@@ -337,10 +340,10 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
 
         {/* Code Editor Section */}
         {pin.codeSnippet && (
-          <div className="flex-grow-1 d-flex flex-column" style={{ minHeight: '300px' }}>
+          <div className="flex-grow-1 d-flex flex-column overflow-hidden" style={{ minHeight: isUsability ? '200px' : '300px' }}>
             {/* Editor Header */}
             <div className="d-flex align-items-center bg-dark border-bottom">
-              <div className="px-4 py-2 small fw-bold border-bottom border-primary border-2" style={{ borderWidth: '2px' }}>
+              <div className={`px-4 small fw-bold border-bottom border-primary border-2 ${isUsability ? 'py-1' : 'py-2'}`} style={{ borderWidth: '2px' }}>
                 {getLanguageLabel(pin.language)}
               </div>
               <div className="flex-grow-1"></div>
@@ -354,7 +357,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
             </div>
 
             {/* Code Content */}
-            <div className="flex-grow-1 overflow-auto bg-dark p-3 font-monospace small position-relative">
+            <div className="flex-grow-1 overflow-auto bg-dark font-monospace position-relative" style={{ fontSize: isUsability ? '0.7rem' : '0.875rem', padding: isUsability ? '0.5rem' : '0.75rem' }}>
               <button 
                 onClick={handleCopyCode}
                 className="btn btn-primary btn-sm position-absolute top-0 end-0 m-3 opacity-0"
@@ -378,7 +381,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
         )}
 
         {/* Comments Section */}
-        <div className="border-top d-flex flex-column" style={{ height: '40%', minHeight: '280px' }}>
+        <div className="border-top d-flex flex-column overflow-hidden" style={{ height: isUsability ? '30%' : '40%', minHeight: isUsability ? '200px' : '280px' }}>
           <CommentSection
             pinId={pin.id}
             initialCount={pin._count?.comments || 0}
@@ -386,8 +389,8 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
         </div>
       </div>
 
-      {/* Related Pins Sidebar (xl screens) */}
-      {relatedPins.length > 0 && (
+      {/* Related Pins Sidebar (xl screens) - Oculto en tema usabilidad para mejor uso del espacio */}
+      {!isUsability && relatedPins.length > 0 && (
         <div className="d-none d-xl-flex flex-column border-start" style={{ width: '280px' }}>
           <div className="p-3 border-bottom">
             <h6 className="fw-semibold mb-0">Pins relacionados</h6>
