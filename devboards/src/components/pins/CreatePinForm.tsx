@@ -20,6 +20,7 @@ interface TouchedFields {
 interface ValidationErrors {
   title?: string;
   imageUrl?: string;
+  description?: string;
 }
 
 export function CreatePinForm() {
@@ -65,6 +66,9 @@ export function CreatePinForm() {
         } catch {
           return 'Ingresa una URL válida';
         }
+      case 'description':
+        if (!value.trim()) return 'La descripción es obligatoria';
+        return undefined;
       default:
         return undefined;
     }
@@ -110,6 +114,7 @@ export function CreatePinForm() {
     // Validar todos los campos obligatorios
     const titleError = validateField('title', formData.title);
     const imageUrlError = validateField('imageUrl', formData.imageUrl);
+    const descriptionError = validateField('description', formData.description);
     
     // En modo no-usabilidad, no actualizamos estados visuales de validación
     if (!isNoUsability) {
@@ -122,10 +127,10 @@ export function CreatePinForm() {
         tags: true,
       });
 
-      setValidationErrors({ title: titleError, imageUrl: imageUrlError });
+      setValidationErrors({ title: titleError, imageUrl: imageUrlError, description: descriptionError });
     }
 
-    if (titleError || imageUrlError) {
+    if (titleError || imageUrlError || descriptionError) {
       // En modo no-usabilidad, falla silenciosamente (no muestra error)
       if (!isNoUsability) {
         setError('Por favor, completa todos los campos obligatorios');
@@ -189,7 +194,7 @@ export function CreatePinForm() {
               onBlur={() => handleBlur('imageUrl')}
               error={!isNoUsability && touched.imageUrl ? validationErrors.imageUrl : undefined}
               isValid={!isNoUsability && isFieldValid('imageUrl')}
-              required
+              required={!isNoUsability}
             />
           </div>
         </div>
@@ -205,7 +210,7 @@ export function CreatePinForm() {
               onBlur={() => handleBlur('title')}
               error={!isNoUsability && touched.title ? validationErrors.title : undefined}
               isValid={!isNoUsability && isFieldValid('title')}
-              required
+              required={!isNoUsability}
             />
 
             <Textarea
@@ -214,9 +219,10 @@ export function CreatePinForm() {
               value={formData.description}
               onChange={(e) => handleChange('description', e.target.value)}
               onBlur={() => handleBlur('description')}
+              error={!isNoUsability && touched.description ? validationErrors.description : undefined}
               isValid={!isNoUsability && touched.description && formData.description.length > 0}
               rows={3}
-              helpText="Opcional pero recomendado"
+              required={!isNoUsability}
             />
 
             <div>
