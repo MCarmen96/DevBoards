@@ -1,9 +1,10 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { BoardCard } from '@/components/boards/BoardCard';
+import { EditProfileButton } from '@/components/ui/EditProfileButton';
+import { ShareButton } from '@/components/ui/ShareButton';
+import { ProfileBoardsSection } from '@/components/ProfileBoardsSection';
 import { BoardPreview } from '@/types';
 
 async function getUserBoards(userId: string): Promise<BoardPreview[]> {
@@ -135,63 +136,14 @@ export default async function ProfilePage() {
 
           {/* Action buttons */}
           <div className="d-flex gap-2 w-100 mt-2" style={{ maxWidth: '320px' }}>
-            <button className="btn btn-secondary flex-grow-1 fw-bold small">
-              Editar Perfil
-            </button>
-            <button className="btn btn-secondary flex-grow-1 fw-bold small">
-              Compartir
-            </button>
+            <EditProfileButton user={{ name: user.name, bio: user.bio }} />
+            <ShareButton title={`${user.name} en DevBoards`} />
           </div>
         </div>
       </section>
 
-      {/* Filter / Tabs Bar */}
-      <section className="mb-4 d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
-        <div className="d-flex align-items-center gap-2 overflow-auto w-100 pb-2 pb-sm-0">
-          <button className="btn btn-dark d-flex align-items-center gap-2 px-3 py-2 fw-bold small text-nowrap shadow-sm">
-            Todos
-          </button>
-          <button className="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2 fw-medium small text-nowrap">
-            <i className="bi bi-unlock"></i>
-            Públicos
-          </button>
-          <button className="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2 fw-medium small text-nowrap">
-            <i className="bi bi-lock"></i>
-            Privados
-          </button>
-        </div>
-        <div className="d-flex align-items-center gap-2 text-secondary align-self-end align-self-sm-auto">
-          <i className="bi bi-sliders fs-5" role="button"></i>
-          <i className="bi bi-grid-3x3 fs-5" role="button"></i>
-        </div>
-      </section>
-
-      {/* Boards Grid */}
-      <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
-        {/* Create New Board Card */}
-        <div className="col">
-          <Link 
-            href="/boards"
-            className="d-flex flex-column align-items-center justify-content-center gap-3 h-100 rounded-3 border border-2 border-dashed text-decoration-none"
-            style={{ minHeight: '280px' }}
-          >
-            <div className="rounded-circle bg-light d-flex align-items-center justify-content-center text-primary" style={{ height: '56px', width: '56px' }}>
-              <i className="bi bi-plus-lg fs-3"></i>
-            </div>
-            <div className="text-center px-3">
-              <h3 className="h6 fw-bold text-body">Crear Tablero</h3>
-              <p className="small text-secondary mt-1 mb-0">Organiza tus snippets</p>
-            </div>
-          </Link>
-        </div>
-
-        {/* Board Cards */}
-        {boards.map((board) => (
-          <div className="col" key={board.id}>
-            <BoardCard board={board} />
-          </div>
-        ))}
-      </div>
+      {/* Boards Section with Filters */}
+      <ProfileBoardsSection boards={boards} />
     </main>
   );
 }

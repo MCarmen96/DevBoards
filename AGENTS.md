@@ -252,5 +252,6 @@ Después de ejecutar `npm run db:seed`:
 
 | Email | Password | Rol |
 |-------|----------|-----|
-| creator@example.com | password123 | Creator |
-| explorer@example.com | password123 | Explorer |
+| ana@devboards.com | password123 | Creator |
+| carlos@devboards.com | password123 | Explorer |
+| maria@devboards.com | password123 | Creator |

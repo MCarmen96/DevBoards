@@ -13,8 +13,10 @@ async function main() {
 
   console.log('🌱 Seeding database...');
 
-  // Limpiar datos existentes
+  // Limpiar datos existentes (en orden correcto por las relaciones)
+  await prisma.boardPin.deleteMany();
   await prisma.savedPin.deleteMany();
+  await prisma.board.deleteMany();
   await prisma.pin.deleteMany();
   await prisma.user.deleteMany();
 
@@ -246,6 +248,121 @@ element.scrollIntoView({
   ]);
 
   console.log(`✅ Created ${pins.length} pins`);
+
+  // Crear tableros para los usuarios
+  const boards = await Promise.all([
+    // Tableros de Ana (creator)
+    prisma.board.create({
+      data: {
+        name: 'Efectos CSS',
+        description: 'Colección de efectos visuales con CSS puro',
+        isPrivate: false,
+        userId: creator.id,
+      },
+    }),
+    prisma.board.create({
+      data: {
+        name: 'Animaciones',
+        description: 'Animaciones y transiciones CSS',
+        isPrivate: false,
+        userId: creator.id,
+      },
+    }),
+    prisma.board.create({
+      data: {
+        name: 'Proyectos WIP',
+        description: 'Trabajo en progreso - privado',
+        isPrivate: true,
+        userId: creator.id,
+      },
+    }),
+    prisma.board.create({
+      data: {
+        name: 'Ideas Experimentales',
+        description: 'Conceptos experimentales',
+        isPrivate: true,
+        userId: creator.id,
+      },
+    }),
+    // Tableros de María (creator2)
+    prisma.board.create({
+      data: {
+        name: 'React Hooks',
+        description: 'Hooks personalizados útiles',
+        isPrivate: false,
+        userId: creator2.id,
+      },
+    }),
+    prisma.board.create({
+      data: {
+        name: 'UI Components',
+        description: 'Componentes de interfaz reutilizables',
+        isPrivate: false,
+        userId: creator2.id,
+      },
+    }),
+    prisma.board.create({
+      data: {
+        name: 'Secretos de Diseño',
+        description: 'Mis trucos privados',
+        isPrivate: true,
+        userId: creator2.id,
+      },
+    }),
+    // Tableros de Carlos (explorer)
+    prisma.board.create({
+      data: {
+        name: 'Favoritos',
+        description: 'Mis pins favoritos',
+        isPrivate: false,
+        userId: explorer.id,
+      },
+    }),
+    prisma.board.create({
+      data: {
+        name: 'Para Aprender',
+        description: 'Pins para estudiar después',
+        isPrivate: true,
+        userId: explorer.id,
+      },
+    }),
+  ]);
+
+  console.log(`✅ Created ${boards.length} boards`);
+
+  // Asociar pins a tableros
+  await prisma.boardPin.createMany({
+    data: [
+      // Tablero "Efectos CSS" de Ana
+      { boardId: boards[0].id, pinId: pins[0].id },
+      { boardId: boards[0].id, pinId: pins[1].id },
+      { boardId: boards[0].id, pinId: pins[2].id },
+      // Tablero "Animaciones" de Ana
+      { boardId: boards[1].id, pinId: pins[4].id },
+      { boardId: boards[1].id, pinId: pins[2].id },
+      // Tablero privado "Proyectos WIP" de Ana
+      { boardId: boards[2].id, pinId: pins[6].id },
+      // Tablero privado "Ideas Experimentales" de Ana
+      { boardId: boards[3].id, pinId: pins[7].id },
+      // Tablero "React Hooks" de María
+      { boardId: boards[4].id, pinId: pins[3].id },
+      // Tablero "UI Components" de María
+      { boardId: boards[5].id, pinId: pins[5].id },
+      { boardId: boards[5].id, pinId: pins[0].id },
+      // Tablero privado "Secretos de Diseño" de María
+      { boardId: boards[6].id, pinId: pins[1].id },
+      { boardId: boards[6].id, pinId: pins[4].id },
+      // Tablero "Favoritos" de Carlos
+      { boardId: boards[7].id, pinId: pins[0].id },
+      { boardId: boards[7].id, pinId: pins[2].id },
+      { boardId: boards[7].id, pinId: pins[4].id },
+      // Tablero privado "Para Aprender" de Carlos
+      { boardId: boards[8].id, pinId: pins[3].id },
+      { boardId: boards[8].id, pinId: pins[7].id },
+    ],
+  });
+
+  console.log('✅ Board pins associations created');
 
   // Guardar algunos pins como favoritos
   await prisma.savedPin.createMany({

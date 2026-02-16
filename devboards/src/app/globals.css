@@ -129,6 +129,23 @@ body {
   color: #909acb;
 }
 
+/* SearchBar input-group en dark mode */
+[data-bs-theme="dark"] .input-group-text {
+  background-color: #222949;
+  border-color: #2a324b;
+  color: #909acb;
+}
+
+[data-bs-theme="dark"] .input-group .form-control {
+  background-color: #222949;
+  border-color: #2a324b;
+}
+
+[data-bs-theme="dark"] .input-group:focus-within .input-group-text,
+[data-bs-theme="dark"] .input-group:focus-within .form-control {
+  border-color: var(--db-primary);
+}
+
 /* Custom Secondary Text */
 .text-secondary-custom {
   color: var(--db-secondary-text) !important;

@@ -29,16 +29,41 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError(result.error);
+        // Convertir errores técnicos a mensajes amigables
+        setError(getFriendlyErrorMessage(result.error));
       } else {
         router.push('/');
         router.refresh();
       }
     } catch {
-      setError('Error al iniciar sesión');
+      setError('Ha ocurrido un error. Por favor, inténtalo de nuevo.');
     } finally {
       setLoading(false);
     }
+  };
+
+  // Función para convertir errores técnicos a mensajes amigables
+  const getFriendlyErrorMessage = (error: string): string => {
+    const errorLower = error.toLowerCase();
+    
+    if (errorLower.includes('database') || errorLower.includes('disk') || errorLower.includes('malformed')) {
+      return 'Error de conexión. Por favor, inténtalo de nuevo más tarde.';
+    }
+    if (errorLower.includes('credentials') || errorLower.includes('invalid') || errorLower.includes('inválidas')) {
+      return 'Email o contraseña incorrectos.';
+    }
+    if (errorLower.includes('user not found') || errorLower.includes('usuario no encontrado')) {
+      return 'No existe una cuenta con este email.';
+    }
+    if (errorLower.includes('password') || errorLower.includes('contraseña')) {
+      return 'La contraseña es incorrecta.';
+    }
+    if (errorLower.includes('network') || errorLower.includes('connection')) {
+      return 'Error de conexión. Comprueba tu conexión a internet.';
+    }
+    
+    // Mensaje genérico para errores desconocidos
+    return 'No se pudo iniciar sesión. Comprueba tus credenciales.';
   };
 
   const themeOptions: { value: AppTheme; label: string; color: string }[] = [
@@ -139,8 +164,9 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="alert alert-danger py-2 small mb-0">
-                {error}
+              <div className="alert alert-danger py-2 small mb-0 d-flex align-items-center gap-2" style={{ wordBreak: 'break-word' }}>
+                <i className="bi bi-exclamation-circle flex-shrink-0"></i>
+                <span>{error}</span>
               </div>
             )}
 

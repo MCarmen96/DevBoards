@@ -40,5 +40,6 @@ npm run dev
 
 | Email | Password |
 |-------|----------|
-| creator@example.com | password123 |
-| explorer@example.com | password123 |
+| ana@devboards.com | password123 |
+| carlos@devboards.com | password123 |
+| maria@devboards.com | password123 |

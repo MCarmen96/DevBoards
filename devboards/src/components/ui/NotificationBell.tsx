@@ -75,7 +75,7 @@ export function NotificationBell() {
   };
 
   return (
-    <div ref={bellRef} className="dropdown">
+    <div ref={bellRef} className="dropdown position-relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="btn btn-link text-secondary position-relative p-2"
@@ -90,7 +90,17 @@ export function NotificationBell() {
       </button>
 
       {isOpen && (
-        <div className="dropdown-menu dropdown-menu-end show shadow-lg" style={{ width: '320px', maxHeight: '400px' }}>
+        <div 
+          className="dropdown-menu dropdown-menu-end show shadow-lg" 
+          style={{ 
+            width: '320px', 
+            maxHeight: '400px',
+            position: 'absolute',
+            right: 0,
+            top: '100%',
+            zIndex: 1060
+          }}
+        >
           <div className="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
             <h6 className="mb-0 fw-semibold">Notificaciones</h6>
             {unreadCount > 0 && (

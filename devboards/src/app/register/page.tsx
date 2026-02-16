@@ -27,6 +27,27 @@ export default function RegisterPage() {
 
   const currentThemeColor = themeOptions.find(t => t.value === theme)?.color || '#0d33f2';
 
+  // Función para convertir errores técnicos a mensajes amigables
+  const getFriendlyErrorMessage = (error: string): string => {
+    const errorLower = error.toLowerCase();
+    
+    if (errorLower.includes('database') || errorLower.includes('disk') || errorLower.includes('malformed')) {
+      return 'Error de conexión. Por favor, inténtalo de nuevo más tarde.';
+    }
+    if (errorLower.includes('already exists') || errorLower.includes('ya existe') || errorLower.includes('unique')) {
+      return 'Ya existe una cuenta con este email.';
+    }
+    if (errorLower.includes('email') && errorLower.includes('invalid')) {
+      return 'El formato del email no es válido.';
+    }
+    if (errorLower.includes('network') || errorLower.includes('connection')) {
+      return 'Error de conexión. Comprueba tu conexión a internet.';
+    }
+    
+    // Mensaje genérico para errores desconocidos
+    return 'No se pudo completar el registro. Inténtalo de nuevo.';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -75,7 +96,7 @@ export default function RegisterPage() {
       router.push('/');
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error desconocido');
+      setError(getFriendlyErrorMessage(err instanceof Error ? err.message : 'Error desconocido'));
     } finally {
       setLoading(false);
     }
@@ -242,8 +263,9 @@ export default function RegisterPage() {
             </div>
 
             {error && (
-              <div className="alert alert-danger py-2 small mb-0">
-                {error}
+              <div className="alert alert-danger py-2 small mb-0 d-flex align-items-center gap-2" style={{ wordBreak: 'break-word' }}>
+                <i className="bi bi-exclamation-circle flex-shrink-0"></i>
+                <span>{error}</span>
               </div>
             )}
 
