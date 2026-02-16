@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { PinGrid } from '@/components/pins/PinGrid';
 import { FilterChips } from '@/components/ui/FilterChips';
 import { FAB } from '@/components/ui/FAB';
@@ -14,6 +15,26 @@ interface HomeContentProps {
 export function HomeContent({ pins }: HomeContentProps) {
   const [activeFilter, setActiveFilter] = useState('all');
   const { theme } = useAppTheme();
+  const [isDelayedLoading, setIsDelayedLoading] = useState(false);
+  const isFirstRender = useRef(true);
+
+  // Anti-patrón: Carga tardía sin feedback en tema no-usabilidad
+  useEffect(() => {
+    // Ignorar el primer render
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (theme === 'no-usabilidad') {
+      setIsDelayedLoading(true);
+      const timer = setTimeout(() => {
+        setIsDelayedLoading(false);
+      }, 10000); // 10 segundos de espera sin feedback
+
+      return () => clearTimeout(timer);
+    }
+  }, [activeFilter, theme]);
 
   const filteredPins = useMemo(() => {
     if (activeFilter === 'all') {
@@ -67,11 +88,30 @@ export function HomeContent({ pins }: HomeContentProps) {
       {/* Filter Chips */}
       <FilterChips onFilterChange={setActiveFilter} />
 
-      {/* Pin Grid */}
-      <PinGrid pins={filteredPins} />
+      {/* Texto secretamente clicable - Solo en tema no-usabilidad (anti-patrón) */}
+      {theme === 'no-usabilidad' && (
+        <p className="text-secondary small mb-3">
+          Mostrando {filteredPins.length} pins de la comunidad. {' '}
+          <Link 
+            href="/saved" 
+            className="text-secondary"
+            style={{ textDecoration: 'none', cursor: 'text' }}
+          >
+            Los resultados pueden variar según tu ubicación y preferencias de navegación configuradas en tu cuenta.
+          </Link>
+        </p>
+      )}
+
+      {/* Pin Grid - En no-usabilidad se oculta durante 10s al filtrar (sin feedback) */}
+      {!isDelayedLoading && <PinGrid pins={filteredPins} />}
+      
+      {/* Espacio vacío durante carga tardía (anti-patrón: sin indicador) */}
+      {isDelayedLoading && theme === 'no-usabilidad' && (
+        <div style={{ minHeight: '400px' }}></div>
+      )}
 
       {/* Empty State for filtered results */}
-      {filteredPins.length === 0 && pins.length > 0 && (
+      {!isDelayedLoading && filteredPins.length === 0 && pins.length > 0 && (
         <div className="text-center py-5">
           <div className="rounded-circle bg-secondary-subtle d-flex align-items-center justify-content-center mx-auto mb-4" style={{ width: '96px', height: '96px' }}>
             <i className="bi bi-search fs-1 text-secondary"></i>

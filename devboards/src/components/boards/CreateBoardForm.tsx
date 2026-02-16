@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/Button';
+import { useAppTheme } from '@/context/ThemeContext';
 
 interface CreateBoardFormProps {
   onSuccess?: () => void;
@@ -14,6 +15,9 @@ interface TouchedFields {
 }
 
 export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
+  const { theme } = useAppTheme();
+  const isNoUsability = theme === 'no-usabilidad';
+  
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
@@ -35,17 +39,24 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
 
   const handleNameChange = (value: string) => {
     setName(value);
+    // En modo no-usabilidad, no mostramos errores en tiempo real
+    if (isNoUsability) return;
+    
     if (touched.name) {
       setNameError(validateName(value));
     }
   };
 
   const handleNameBlur = () => {
+    // En modo no-usabilidad, no marcamos campos como touched
+    if (isNoUsability) return;
+    
     setTouched(prev => ({ ...prev, name: true }));
     setNameError(validateName(name));
   };
 
-  const isNameValid = touched.name && !validateName(name) && name.length > 0;
+  // En modo no-usabilidad, nunca mostramos indicadores de validación
+  const isNameValid = !isNoUsability && touched.name && !validateName(name) && name.length > 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,11 +64,18 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
 
     // Validar nombre
     const validationError = validateName(name);
-    setTouched({ name: true, description: true });
-    setNameError(validationError);
+    
+    // En modo no-usabilidad, no actualizamos estados visuales
+    if (!isNoUsability) {
+      setTouched({ name: true, description: true });
+      setNameError(validationError);
+    }
 
     if (validationError) {
-      setError('Por favor, completa todos los campos obligatorios');
+      // En modo no-usabilidad, falla silenciosamente
+      if (!isNoUsability) {
+        setError('Por favor, completa todos los campos obligatorios');
+      }
       return;
     }
 
@@ -81,7 +99,10 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
       setTouched({ name: false, description: false });
       onSuccess?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error desconocido');
+      // En modo no-usabilidad, falla silenciosamente
+      if (!isNoUsability) {
+        setError(err instanceof Error ? err.message : 'Error desconocido');
+      }
     } finally {
       setLoading(false);
     }
@@ -89,7 +110,7 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
-      {error && (
+      {error && !isNoUsability && (
         <div className="alert alert-danger py-2 small d-flex align-items-center gap-2">
           <i className="bi bi-exclamation-triangle-fill"></i>
           {error}
@@ -111,7 +132,7 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
             value={name}
             onChange={(e) => handleNameChange(e.target.value)}
             onBlur={handleNameBlur}
-            className={`form-control ${touched.name && nameError ? 'is-invalid' : ''} ${isNameValid ? 'is-valid' : ''}`}
+            className={`form-control ${!isNoUsability && touched.name && nameError ? 'is-invalid' : ''} ${isNameValid ? 'is-valid' : ''}`}
             placeholder="Ej: Componentes CSS"
             required
           />
@@ -119,7 +140,7 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
             <i className="bi bi-check-circle-fill text-success position-absolute" style={{ right: '12px', top: '50%', transform: 'translateY(-50%)' }}></i>
           )}
         </div>
-        {touched.name && nameError && (
+        {!isNoUsability && touched.name && nameError && (
           <div className="invalid-feedback d-block">{nameError}</div>
         )}
         {isNameValid && (
@@ -130,7 +151,7 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
       <div>
         <label htmlFor="description" className="form-label small fw-medium d-flex align-items-center gap-1">
           Descripción (opcional)
-          {touched.description && description.length > 0 && (
+          {!isNoUsability && touched.description && description.length > 0 && (
             <i className="bi bi-check-circle-fill text-success small"></i>
           )}
         </label>
@@ -138,12 +159,16 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          onBlur={() => setTouched(prev => ({ ...prev, description: true }))}
-          className={`form-control ${touched.description && description.length > 0 ? 'is-valid' : ''}`}
+          onBlur={() => {
+            if (!isNoUsability) {
+              setTouched(prev => ({ ...prev, description: true }));
+            }
+          }}
+          className={`form-control ${!isNoUsability && touched.description && description.length > 0 ? 'is-valid' : ''}`}
           rows={3}
           placeholder="Describe tu tablero..."
         />
-        {touched.description && description.length > 0 && (
+        {!isNoUsability && touched.description && description.length > 0 && (
           <div className="valid-feedback d-block">Descripción añadida</div>
         )}
       </div>

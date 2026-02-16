@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { SUPPORTED_LANGUAGES } from '@/types';
+import { useAppTheme } from '@/context/ThemeContext';
 
 interface TouchedFields {
   title: boolean;
@@ -23,6 +24,9 @@ interface ValidationErrors {
 
 export function CreatePinForm() {
   const router = useRouter();
+  const { theme } = useAppTheme();
+  const isNoUsability = theme === 'no-usabilidad';
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [previewUrl, setPreviewUrl] = useState('');
@@ -67,6 +71,9 @@ export function CreatePinForm() {
   }, []);
 
   const handleBlur = (field: keyof TouchedFields) => {
+    // En modo no-usabilidad, no marcamos campos como touched (sin feedback visual)
+    if (isNoUsability) return;
+    
     setTouched(prev => ({ ...prev, [field]: true }));
     const error = validateField(field, formData[field as keyof typeof formData]);
     setValidationErrors(prev => ({ ...prev, [field]: error }));
@@ -74,6 +81,9 @@ export function CreatePinForm() {
 
   const handleChange = (field: keyof typeof formData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // En modo no-usabilidad, no mostramos errores de validación en tiempo real
+    if (isNoUsability) return;
+    
     if (touched[field as keyof TouchedFields]) {
       const error = validateField(field, value);
       setValidationErrors(prev => ({ ...prev, [field]: error }));
@@ -86,6 +96,9 @@ export function CreatePinForm() {
   };
 
   const isFieldValid = (field: string): boolean => {
+    // En modo no-usabilidad, nunca mostramos indicadores de validación
+    if (isNoUsability) return false;
+    
     const value = formData[field as keyof typeof formData];
     return touched[field as keyof TouchedFields] && !validateField(field, value) && !!value;
   };
@@ -98,19 +111,25 @@ export function CreatePinForm() {
     const titleError = validateField('title', formData.title);
     const imageUrlError = validateField('imageUrl', formData.imageUrl);
     
-    setTouched({
-      title: true,
-      imageUrl: true,
-      description: true,
-      language: true,
-      codeSnippet: true,
-      tags: true,
-    });
+    // En modo no-usabilidad, no actualizamos estados visuales de validación
+    if (!isNoUsability) {
+      setTouched({
+        title: true,
+        imageUrl: true,
+        description: true,
+        language: true,
+        codeSnippet: true,
+        tags: true,
+      });
 
-    setValidationErrors({ title: titleError, imageUrl: imageUrlError });
+      setValidationErrors({ title: titleError, imageUrl: imageUrlError });
+    }
 
     if (titleError || imageUrlError) {
-      setError('Por favor, completa todos los campos obligatorios');
+      // En modo no-usabilidad, falla silenciosamente (no muestra error)
+      if (!isNoUsability) {
+        setError('Por favor, completa todos los campos obligatorios');
+      }
       return;
     }
 
@@ -131,7 +150,10 @@ export function CreatePinForm() {
       const pin = await response.json();
       router.push(`/pin/${pin.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error desconocido');
+      // En modo no-usabilidad, falla silenciosamente
+      if (!isNoUsability) {
+        setError(err instanceof Error ? err.message : 'Error desconocido');
+      }
     } finally {
       setLoading(false);
     }
@@ -165,8 +187,8 @@ export function CreatePinForm() {
               value={formData.imageUrl}
               onChange={(e) => handleImageUrlChange(e.target.value)}
               onBlur={() => handleBlur('imageUrl')}
-              error={touched.imageUrl ? validationErrors.imageUrl : undefined}
-              isValid={isFieldValid('imageUrl')}
+              error={!isNoUsability && touched.imageUrl ? validationErrors.imageUrl : undefined}
+              isValid={!isNoUsability && isFieldValid('imageUrl')}
               required
             />
           </div>
@@ -181,8 +203,8 @@ export function CreatePinForm() {
               value={formData.title}
               onChange={(e) => handleChange('title', e.target.value)}
               onBlur={() => handleBlur('title')}
-              error={touched.title ? validationErrors.title : undefined}
-              isValid={isFieldValid('title')}
+              error={!isNoUsability && touched.title ? validationErrors.title : undefined}
+              isValid={!isNoUsability && isFieldValid('title')}
               required
             />
 
@@ -192,7 +214,7 @@ export function CreatePinForm() {
               value={formData.description}
               onChange={(e) => handleChange('description', e.target.value)}
               onBlur={() => handleBlur('description')}
-              isValid={touched.description && formData.description.length > 0}
+              isValid={!isNoUsability && touched.description && formData.description.length > 0}
               rows={3}
               helpText="Opcional pero recomendado"
             />
@@ -200,7 +222,7 @@ export function CreatePinForm() {
             <div>
               <label className="form-label small fw-medium d-flex align-items-center gap-1">
                 Lenguaje
-                {touched.language && formData.language && (
+                {!isNoUsability && touched.language && formData.language && (
                   <i className="bi bi-check-circle-fill text-success small"></i>
                 )}
               </label>
@@ -208,9 +230,11 @@ export function CreatePinForm() {
                 value={formData.language}
                 onChange={(e) => {
                   handleChange('language', e.target.value);
-                  setTouched(prev => ({ ...prev, language: true }));
+                  if (!isNoUsability) {
+                    setTouched(prev => ({ ...prev, language: true }));
+                  }
                 }}
-                className={`form-select ${touched.language && formData.language ? 'is-valid' : ''}`}
+                className={`form-select ${!isNoUsability && touched.language && formData.language ? 'is-valid' : ''}`}
               >
                 <option value="">Seleccionar lenguaje</option>
                 {SUPPORTED_LANGUAGES.map((lang) => (
@@ -219,7 +243,7 @@ export function CreatePinForm() {
                   </option>
                 ))}
               </select>
-              {touched.language && formData.language && (
+              {!isNoUsability && touched.language && formData.language && (
                 <div className="valid-feedback d-block">Lenguaje seleccionado</div>
               )}
             </div>
@@ -227,20 +251,24 @@ export function CreatePinForm() {
             <div>
               <label className="form-label small fw-medium d-flex align-items-center gap-1">
                 Código (snippet)
-                {touched.codeSnippet && formData.codeSnippet.length > 0 && (
+                {!isNoUsability && touched.codeSnippet && formData.codeSnippet.length > 0 && (
                   <i className="bi bi-check-circle-fill text-success small"></i>
                 )}
               </label>
               <textarea
                 value={formData.codeSnippet}
                 onChange={(e) => handleChange('codeSnippet', e.target.value)}
-                onBlur={() => setTouched(prev => ({ ...prev, codeSnippet: true }))}
+                onBlur={() => {
+                  if (!isNoUsability) {
+                    setTouched(prev => ({ ...prev, codeSnippet: true }));
+                  }
+                }}
                 placeholder={`/* Tu código aquí */\n.button {\n  background: linear-gradient(...);\n}`}
-                className={`form-control font-monospace small ${touched.codeSnippet && formData.codeSnippet.length > 0 ? 'is-valid' : ''}`}
+                className={`form-control font-monospace small ${!isNoUsability && touched.codeSnippet && formData.codeSnippet.length > 0 ? 'is-valid' : ''}`}
                 style={{ backgroundColor: '#212529', color: '#20c997' }}
                 rows={8}
               />
-              {touched.codeSnippet && formData.codeSnippet.length > 0 && (
+              {!isNoUsability && touched.codeSnippet && formData.codeSnippet.length > 0 && (
                 <div className="valid-feedback d-block">Código añadido</div>
               )}
               <div className="form-text small">Opcional - añade el código de tu snippet</div>
@@ -252,11 +280,11 @@ export function CreatePinForm() {
               value={formData.tags}
               onChange={(e) => handleChange('tags', e.target.value)}
               onBlur={() => handleBlur('tags')}
-              isValid={touched.tags && formData.tags.length > 0}
+              isValid={!isNoUsability && touched.tags && formData.tags.length > 0}
               helpText="Opcional - ayuda a otros a encontrar tu pin"
             />
 
-            {error && (
+            {error && !isNoUsability && (
               <div className="alert alert-danger py-2 small d-flex align-items-center gap-2">
                 <i className="bi bi-exclamation-triangle-fill"></i>
                 {error}

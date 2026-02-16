@@ -7,6 +7,7 @@ import { PinWithRelations } from '@/types';
 import { LikeButton } from './LikeButton';
 import { CommentSection } from './CommentSection';
 import { SaveToBoardModal } from '@/components/boards/SaveToBoardModal';
+import { BackButton } from '@/components/ui/BackButton';
 import { formatDistanceToNow } from '@/lib/utils';
 
 interface PinDetailProps {
@@ -63,15 +64,19 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
       <div className="d-lg-none d-flex flex-column overflow-auto">
         {/* Breadcrumbs & Heading */}
         <div className="px-3 py-3 d-flex flex-column gap-3 border-bottom">
-          <nav aria-label="breadcrumb">
-            <ol className="breadcrumb mb-0 small">
-              <li className="breadcrumb-item"><Link href="/" className="text-decoration-none">Explorar</Link></li>
-              {pin.language && (
-                <li className="breadcrumb-item">{getLanguageLabel(pin.language)}</li>
-              )}
-              <li className="breadcrumb-item active text-truncate" aria-current="page" style={{ maxWidth: '150px' }}>{pin.title}</li>
-            </ol>
-          </nav>
+          {/* Back button and breadcrumb */}
+          <div className="d-flex align-items-center gap-3">
+            <BackButton className="btn-sm" label="" />
+            <nav aria-label="breadcrumb" className="flex-grow-1">
+              <ol className="breadcrumb mb-0 small">
+                <li className="breadcrumb-item"><Link href="/" className="text-decoration-none">Explorar</Link></li>
+                {pin.language && (
+                  <li className="breadcrumb-item">{getLanguageLabel(pin.language)}</li>
+                )}
+                <li className="breadcrumb-item active text-truncate" aria-current="page" style={{ maxWidth: '150px' }}>{pin.title}</li>
+              </ol>
+            </nav>
+          </div>
 
           <div className="d-flex flex-column gap-2">
             <h1 className="h5 mb-0 fw-bold">{pin.title}</h1>
@@ -180,16 +185,19 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
       <div className="flex-grow-1 d-flex flex-column overflow-hidden">
         {/* Breadcrumbs & Heading */}
         <div className="px-4 py-3 d-flex flex-column gap-3 border-bottom">
-          {/* Breadcrumbs */}
-          <nav aria-label="breadcrumb">
-            <ol className="breadcrumb mb-0 small">
-              <li className="breadcrumb-item"><Link href="/" className="text-decoration-none">Explorar</Link></li>
-              {pin.language && (
-                <li className="breadcrumb-item">{getLanguageLabel(pin.language)}</li>
-              )}
-              <li className="breadcrumb-item active text-truncate" aria-current="page">{pin.title}</li>
-            </ol>
-          </nav>
+          {/* Back button and breadcrumbs */}
+          <div className="d-flex align-items-center gap-3">
+            <BackButton className="btn-sm" />
+            <nav aria-label="breadcrumb" className="flex-grow-1">
+              <ol className="breadcrumb mb-0 small">
+                <li className="breadcrumb-item"><Link href="/" className="text-decoration-none">Explorar</Link></li>
+                {pin.language && (
+                  <li className="breadcrumb-item">{getLanguageLabel(pin.language)}</li>
+                )}
+                <li className="breadcrumb-item active text-truncate" aria-current="page">{pin.title}</li>
+              </ol>
+            </nav>
+          </div>
 
           {/* Title and Actions */}
           <div className="d-flex flex-wrap justify-content-between align-items-start gap-3">

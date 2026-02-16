@@ -1,6 +1,20 @@
+'use client';
+
 import { PinGridSkeleton } from '@/components/ui/LoadingIndicator';
+import { useAppTheme } from '@/context/ThemeContext';
 
 export default function Loading() {
+  const { theme } = useAppTheme();
+
+  // En tema no-usabilidad: página en blanco sin indicadores (anti-patrón)
+  if (theme === 'no-usabilidad') {
+    return (
+      <main className="flex-grow-1 container-fluid py-4" style={{ maxWidth: '1440px', minHeight: '60vh' }}>
+        {/* Intencionalmente vacío - anti-patrón UX: sin feedback de carga */}
+      </main>
+    );
+  }
+
   return (
     <main className="flex-grow-1 container-fluid py-4" style={{ maxWidth: '1440px' }}>
       {/* Filter chips skeleton */}
