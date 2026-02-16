@@ -44,15 +44,15 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
       {error && (
-        <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-sm">
+        <div className="alert alert-danger py-2 small">
           {error}
         </div>
       )}
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label htmlFor="name" className="form-label small fw-medium">
           Nombre del tablero *
         </label>
         <input
@@ -60,46 +60,46 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          className="form-control"
           placeholder="Ej: Componentes CSS"
           required
         />
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label htmlFor="description" className="form-label small fw-medium">
           Descripción (opcional)
         </label>
         <textarea
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none"
+          className="form-control"
           rows={3}
           placeholder="Describe tu tablero..."
         />
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="form-check">
         <input
           type="checkbox"
           id="isPrivate"
           checked={isPrivate}
           onChange={(e) => setIsPrivate(e.target.checked)}
-          className="w-4 h-4 text-red-500 border-gray-300 rounded focus:ring-red-500"
+          className="form-check-input"
         />
-        <label htmlFor="isPrivate" className="text-sm text-gray-700 dark:text-gray-300">
+        <label htmlFor="isPrivate" className="form-check-label small">
           Tablero privado (solo tú podrás verlo)
         </label>
       </div>
 
-      <div className="flex gap-3 pt-2">
+      <div className="d-flex gap-2 pt-2">
         {onCancel && (
-          <Button type="button" variant="secondary" onClick={onCancel} className="flex-1">
+          <Button type="button" variant="secondary" onClick={onCancel} className="flex-grow-1">
             Cancelar
           </Button>
         )}
-        <Button type="submit" disabled={loading || !name.trim()} className="flex-1">
+        <Button type="submit" disabled={loading || !name.trim()} className="flex-grow-1">
           {loading ? 'Creando...' : 'Crear tablero'}
         </Button>
       </div>

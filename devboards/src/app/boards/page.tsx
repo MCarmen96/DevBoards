@@ -48,8 +48,10 @@ export default function BoardsPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+      <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '60vh' }}>
+        <div className="spinner-border text-danger" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </div>
       </div>
     );
   }
@@ -59,25 +61,23 @@ export default function BoardsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Mis Tableros</h1>
+    <div className="container py-4" style={{ maxWidth: '1280px' }}>
+      <div className="d-flex align-items-center justify-content-between mb-4">
+        <h1 className="h4 fw-bold text-body">Mis Tableros</h1>
         <Button onClick={() => setShowCreateModal(true)}>
           Crear tablero
         </Button>
       </div>
 
       {boards.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
+        <div className="text-center py-5">
+          <div className="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-4" style={{ width: '96px', height: '96px' }}>
+            <i className="bi bi-collection text-secondary fs-1"></i>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h2 className="h5 fw-semibold text-body mb-2">
             No tienes tableros
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-6">
+          <p className="text-secondary mb-4">
             Crea tu primer tablero para organizar tus pins favoritos
           </p>
           <Button onClick={() => setShowCreateModal(true)}>
@@ -85,24 +85,30 @@ export default function BoardsPage() {
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
           {boards.map((board) => (
-            <BoardCard key={board.id} board={board} />
+            <div className="col" key={board.id}>
+              <BoardCard board={board} />
+            </div>
           ))}
         </div>
       )}
 
       {/* Modal para crear tablero */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setShowCreateModal(false)} />
-          <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-md w-full mx-4 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Crear tablero</h2>
-            <CreateBoardForm
-              onSuccess={handleBoardCreated}
-              onCancel={() => setShowCreateModal(false)}
-            />
+        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content rounded-4 shadow">
+              <div className="modal-body p-4">
+                <h2 className="h5 fw-semibold text-body mb-4">Crear tablero</h2>
+                <CreateBoardForm
+                  onSuccess={handleBoardCreated}
+                  onCancel={() => setShowCreateModal(false)}
+                />
+              </div>
+            </div>
           </div>
+          <div className="position-fixed top-0 start-0 w-100 h-100" style={{ zIndex: -1 }} onClick={() => setShowCreateModal(false)} />
         </div>
       )}
     </div>

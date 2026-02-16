@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { PinGrid } from '@/components/pins/PinGrid';
@@ -45,42 +46,30 @@ export default async function FeedPage() {
   const pins = await getFollowingPins(session.user.id);
 
   return (
-    <main className="flex-1 w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
+    <main className="flex-grow-1 w-100 container py-4" style={{ maxWidth: '1440px' }}>
+      <h1 className="h4 fw-bold text-body mb-4">
         Siguiendo
       </h1>
 
       {pins.length > 0 ? (
         <PinGrid pins={pins} />
       ) : (
-        <div className="text-center py-20">
-          <div className="w-24 h-24 bg-slate-100 dark:bg-[#1e2337] rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-12 h-12 text-slate-400 dark:text-[#909acb]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
+        <div className="text-center py-5">
+          <div className="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-4" style={{ width: '96px', height: '96px' }}>
+            <i className="bi bi-people text-secondary fs-1"></i>
           </div>
-          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+          <h3 className="h5 fw-semibold text-body mb-2">
             No sigues a nadie todavía
           </h3>
-          <p className="text-slate-500 dark:text-[#909acb] mb-6">
+          <p className="text-secondary mb-4">
             Explora y sigue a otros desarrolladores para ver sus pins aquí.
           </p>
-          <a
+          <Link
             href="/"
-            className="inline-flex items-center px-6 py-3 bg-[#0d33f2] text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-lg shadow-[#0d33f2]/20"
+            className="btn btn-primary rounded-3 px-4 py-2 fw-medium shadow"
           >
             Explorar pins
-          </a>
+          </Link>
         </div>
       )}
     </main>

@@ -11,14 +11,17 @@ interface PinGridProps {
 }
 
 export function PinGrid({ pins, loading, showRemoveButton, onRemove }: PinGridProps) {
+  // Pre-calculated heights for skeleton items to avoid Math.random during render
+  const skeletonHeights = [280, 320, 250, 350, 300, 270, 330, 290, 310, 340, 260, 380];
+
   if (loading) {
     return (
-      <div className="masonry-grid w-full">
-        {[...Array(12)].map((_, i) => (
+      <div className="masonry-grid w-100">
+        {skeletonHeights.map((height, i) => (
           <div
             key={i}
-            className="masonry-item rounded-xl bg-slate-200 dark:bg-[#1e2337] animate-pulse"
-            style={{ height: `${Math.random() * 150 + 200}px` }}
+            className="masonry-item rounded-3 skeleton"
+            style={{ height: `${height}px` }}
           />
         ))}
       </div>
@@ -27,30 +30,18 @@ export function PinGrid({ pins, loading, showRemoveButton, onRemove }: PinGridPr
 
   if (pins.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <div className="w-24 h-24 bg-slate-100 dark:bg-[#1e2337] rounded-full flex items-center justify-center mb-4">
-          <svg
-            className="w-12 h-12 text-slate-400 dark:text-[#909acb]"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
+      <div className="d-flex flex-column align-items-center justify-content-center py-5">
+        <div className="rounded-circle bg-secondary-subtle d-flex align-items-center justify-content-center mb-4" style={{ width: '6rem', height: '6rem' }}>
+          <i className="bi bi-image fs-1 text-secondary"></i>
         </div>
-        <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-1">No hay pins</h3>
-        <p className="text-slate-500 dark:text-[#909acb]">Aún no hay contenido para mostrar</p>
+        <h5 className="fw-medium mb-1">No hay pins</h5>
+        <p className="text-secondary">Aún no hay contenido para mostrar</p>
       </div>
     );
   }
 
   return (
-    <div className="masonry-grid w-full">
+    <div className="masonry-grid w-100">
       {pins.map((pin) => (
         <PinCard
           key={pin.id}

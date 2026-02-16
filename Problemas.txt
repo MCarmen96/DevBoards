@@ -1,0 +1,4 @@
+Los pins que todos tengan el mismo tamaño
+Los pins deben mostrar el resultado visual del codigo(por ejemplo un boton con un efecto de animacion) y una vez entres en ese pin te muestre el codigo fuente
+Como se van a ordenar los pins? Por cantidad de me gustas de la comunidad o por guardados o por visualizaciones
+

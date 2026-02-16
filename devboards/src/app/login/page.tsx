@@ -5,10 +5,13 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+type Theme = 'usabilidad' | 'no-usabilidad' | 'accesibilidad';
+
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [theme, setTheme] = useState<Theme>('usabilidad');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -39,87 +42,457 @@ export default function LoginPage() {
     }
   };
 
-  return (
-    <main className="flex-1 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-[#1e2336] rounded-xl shadow-xl p-8 border border-gray-200 dark:border-[#2a324b]">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-[#0d33f2] rounded-xl flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                <path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"></path>
-              </svg>
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-              Bienvenido a DevBoards
-            </h1>
-            <p className="text-[#909acb] mt-2">
-              Inicia sesión para continuar
-            </p>
+  // ============================================
+  // TEMA: USABILIDAD (Diseño óptimo)
+  // ============================================
+  if (theme === 'usabilidad') {
+    return (
+      <main className="flex-fill d-flex align-items-center justify-content-center p-4">
+        <div className="w-100" style={{ maxWidth: '28rem' }}>
+          {/* Theme Selector */}
+          <div className="mb-4 d-flex justify-content-center gap-2">
+            <button
+              onClick={() => setTheme('usabilidad')}
+              className="btn btn-primary btn-sm rounded-3"
+            >
+              Usabilidad
+            </button>
+            <button
+              onClick={() => setTheme('no-usabilidad')}
+              className="btn btn-secondary btn-sm rounded-3"
+            >
+              No Usabilidad
+            </button>
+            <button
+              onClick={() => setTheme('accesibilidad')}
+              className="btn btn-secondary btn-sm rounded-3"
+            >
+              Accesibilidad
+            </button>
           </div>
 
+          <div className="bg-body rounded-3 shadow p-4 border">
+            {/* Header */}
+            <div className="text-center mb-4">
+              <div className="d-flex align-items-center justify-content-center mx-auto mb-3 rounded-3" style={{ width: '4rem', height: '4rem', backgroundColor: '#0d33f2' }}>
+                <i className="bi bi-braces-asterisk text-white fs-3"></i>
+              </div>
+              <h1 className="h4 fw-bold">
+                Bienvenido a DevBoards
+              </h1>
+              <p className="text-secondary mt-2">
+                Inicia sesión para continuar
+              </p>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
+              <div>
+                <label htmlFor="email" className="form-label small fw-medium">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="tu@email.com"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                  className="form-control"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="password" className="form-label small fw-medium">
+                  Contraseña
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  required
+                  className="form-control"
+                />
+              </div>
+
+              {error && (
+                <div className="alert alert-danger py-2">
+                  <p className="small mb-0">{error}</p>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2 fw-bold"
+                style={{ height: '2.75rem' }}
+              >
+                {loading && (
+                  <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                )}
+                {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+              </button>
+            </form>
+
+            {/* Footer */}
+            <div className="mt-4 text-center">
+              <p className="text-secondary">
+                ¿No tienes cuenta?{' '}
+                <Link href="/register" className="text-primary fw-medium text-decoration-none">
+                  Regístrate
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // ============================================
+  // TEMA: NO USABILIDAD (Diseño con problemas)
+  // ============================================
+  if (theme === 'no-usabilidad') {
+    return (
+      <main className="flex-fill d-flex align-items-center justify-content-center p-4" style={{ background: 'linear-gradient(45deg, #ff00ff, #00ffff, #ff0000, #00ff00)', backgroundSize: '400% 400%', animation: 'gradient 3s ease infinite' }}>
+        <style>{`
+          @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+          @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+          }
+          @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+          }
+          @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+          }
+        `}</style>
+        <div className="w-100" style={{ maxWidth: '32rem' }}>
+          {/* Theme Selector */}
+          <div className="mb-4 d-flex justify-content-center gap-2">
+            <button
+              onClick={() => setTheme('usabilidad')}
+              className="btn btn-secondary btn-sm rounded-3"
+            >
+              Usabilidad
+            </button>
+            <button
+              onClick={() => setTheme('no-usabilidad')}
+              className="btn btn-primary btn-sm rounded-3"
+            >
+              No Usabilidad
+            </button>
+            <button
+              onClick={() => setTheme('accesibilidad')}
+              className="btn btn-secondary btn-sm rounded-3"
+            >
+              Accesibilidad
+            </button>
+          </div>
+
+          <div className="p-4 border border-warning border-4" style={{ borderStyle: 'dashed', background: 'repeating-linear-gradient(45deg, #ff69b4, #ff69b4 10px, #00ced1 10px, #00ced1 20px)' }}>
+            {/* Header con animaciones molestas */}
+            <div className="text-center mb-3">
+              <div className="mx-auto mb-2" style={{ width: '5rem', height: '5rem', animation: 'rotate 2s linear infinite' }}>
+                <span style={{ fontSize: '3.5rem' }}>🎪</span>
+              </div>
+              <h1 className="h5 text-danger" style={{ fontFamily: 'Comic Sans MS, cursive', animation: 'blink 0.5s infinite', textShadow: '3px 3px 0 yellow, -3px -3px 0 cyan' }}>
+                ¡¡¡BIENVENIDO!!!
+              </h1>
+              <div className="overflow-hidden bg-dark py-1">
+                <p className="small text-success text-nowrap mb-0" style={{ fontSize: '0.65rem', animation: 'marquee 5s linear infinite' }}>
+                  🔥 INICIA SESIÓN AHORA 🔥 OFERTAS EXCLUSIVAS 🔥 NO TE LO PIERDAS 🔥 INICIA SESIÓN AHORA 🔥 OFERTAS EXCLUSIVAS 🔥
+                </p>
+              </div>
+            </div>
+
+            {/* Form con problemas de usabilidad */}
+            <form onSubmit={handleSubmit} className="d-flex flex-column gap-2">
+              {/* Campo sin label visible, placeholder confuso */}
+              <div>
+                <span style={{ fontSize: '8px', fontFamily: 'Papyrus, fantasy', color: 'purple' }}>campo 1</span>
+                <input
+                  type="text"
+                  placeholder="Introduce aquí tu identificador de usuario electrónico"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="form-control form-control-sm border-4 border-success"
+                  style={{ fontFamily: 'Comic Sans MS, cursive', fontSize: '0.75rem', backgroundColor: '#fef08a', color: '#581c87' }}
+                />
+              </div>
+
+              {/* Contraseña visible (mala práctica) */}
+              <div>
+                <span style={{ fontSize: '8px', fontFamily: 'Papyrus, fantasy', color: 'orange' }}>campo secreto 🤫</span>
+                <input
+                  type="text"
+                  placeholder="Tu clave secreta (todos la pueden ver)"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="form-control form-control-sm border-4 border-danger"
+                  style={{ fontFamily: 'Comic Sans MS, cursive', fontSize: '0.75rem', backgroundColor: '#bef264', color: '#7f1d1d' }}
+                />
+              </div>
+
+              {/* Captcha falso molesto */}
+              <div className="p-2 border border-dark border-2" style={{ borderStyle: 'dashed', backgroundColor: 'rgba(255,255,255,0.5)' }}>
+                <p className="text-dark mb-1" style={{ fontSize: '10px' }}>¿Cuánto es 2847 × 3912 ÷ 7?</p>
+                <input type="text" className="form-control form-control-sm" style={{ fontSize: '0.75rem' }} placeholder="Resuelve para continuar..." />
+              </div>
+
+              {error && (
+                <div className="p-2 bg-danger text-white" style={{ fontSize: '0.75rem', animation: 'shake 0.3s infinite' }}>
+                  ❌ ERROR GRAVE: {error} ❌
+                </div>
+              )}
+
+              {/* Múltiples botones confusos */}
+              <div className="d-flex gap-1 flex-wrap">
+                <button
+                  type="button"
+                  className="btn btn-secondary flex-fill py-2 rounded"
+                  style={{ fontSize: '10px' }}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary flex-fill py-2 rounded"
+                  style={{ fontSize: '10px' }}
+                >
+                  Volver
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn btn-secondary flex-fill py-2 rounded"
+                  style={{ fontSize: '10px' }}
+                >
+                  {loading ? '...' : 'OK'}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary flex-fill py-2 rounded"
+                  style={{ fontSize: '10px' }}
+                >
+                  Ayuda
+                </button>
+              </div>
+            </form>
+
+            {/* Links confusos */}
+            <div className="mt-3 text-center d-flex flex-column gap-1">
+              <p className="text-dark mb-0" style={{ fontSize: '8px' }}>
+                <a href="#" className="text-primary text-decoration-underline">Términos</a> | 
+                <a href="#" className="text-primary text-decoration-underline">Privacidad</a> | 
+                <a href="#" className="text-primary text-decoration-underline">Cookies</a> | 
+                <a href="#" className="text-primary text-decoration-underline">Legal</a> | 
+                <a href="#" className="text-primary text-decoration-underline">FAQ</a> | 
+                <a href="#" className="text-primary text-decoration-underline">Soporte</a>
+              </p>
+              <p className="text-danger mb-0" style={{ fontSize: '10px', animation: 'blink 1s infinite' }}>
+                ⚠️ HAZ CLIC AQUÍ PARA REGISTRARTE ⚠️
+              </p>
+              <Link href="/register" className="text-secondary text-decoration-none" style={{ fontSize: '8px' }}>
+                (o aquí si lo anterior no funciona)
+              </Link>
+            </div>
+
+            {/* Popup falso molesto */}
+            <div className="mt-3 p-2 bg-primary text-white border border-white border-2" style={{ fontSize: '10px' }}>
+              <p className="mb-1">🔔 ¡Suscríbete a nuestro newsletter!</p>
+              <input type="email" placeholder="tu@email.com" className="form-control form-control-sm mt-1" style={{ fontSize: '8px' }} />
+              <div className="d-flex gap-1 mt-1">
+                <button className="btn btn-success flex-fill py-1" style={{ fontSize: '8px' }}>SÍ, QUIERO</button>
+                <button className="btn btn-danger flex-fill py-1" style={{ fontSize: '8px' }}>NO, GRACIAS</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // ============================================
+  // TEMA: ACCESIBILIDAD (Diseño accesible)
+  // ============================================
+  return (
+    <main className="flex-fill d-flex align-items-center justify-content-center p-4 bg-body">
+      <div className="w-100" style={{ maxWidth: '32rem' }}>
+        {/* Theme Selector */}
+        <nav aria-label="Selector de tema" className="mb-4 d-flex justify-content-center gap-2">
+          <button
+            onClick={() => setTheme('usabilidad')}
+            aria-pressed="false"
+            className="btn btn-secondary btn-sm rounded-3"
+          >
+            Usabilidad
+          </button>
+          <button
+            onClick={() => setTheme('no-usabilidad')}
+            aria-pressed="false"
+            className="btn btn-secondary btn-sm rounded-3"
+          >
+            No Usabilidad
+          </button>
+          <button
+            onClick={() => setTheme('accesibilidad')}
+            aria-pressed="true"
+            className="btn btn-primary btn-sm rounded-3"
+          >
+            Accesibilidad
+          </button>
+        </nav>
+
+        <div 
+          className="bg-body rounded-4 shadow p-4 border border-2"
+          role="region"
+          aria-labelledby="login-heading"
+        >
+          {/* Header */}
+          <header className="text-center mb-4">
+            <div 
+              className="d-flex align-items-center justify-content-center mx-auto mb-3 rounded-4"
+              style={{ width: '5rem', height: '5rem', backgroundColor: '#0d47a1' }}
+              aria-hidden="true"
+            >
+              <i className="bi bi-braces-asterisk text-white fs-2"></i>
+            </div>
+            <h1 id="login-heading" className="h3 fw-bold">
+              Iniciar Sesión en DevBoards
+            </h1>
+            <p className="fs-6 text-secondary mt-2">
+              Accede a tu cuenta para continuar
+            </p>
+          </header>
+
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="d-flex flex-column gap-3" aria-describedby={error ? 'error-message' : undefined}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email
+              <label 
+                htmlFor="email-accessible" 
+                className="form-label fw-semibold"
+              >
+                Correo electrónico
+                <span className="text-danger ms-1" aria-hidden="true">*</span>
+                <span className="visually-hidden">(obligatorio)</span>
               </label>
               <input
-                id="email"
+                id="email-accessible"
                 type="email"
-                placeholder="tu@email.com"
+                autoComplete="email"
+                placeholder="ejemplo@correo.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
-                className="w-full px-4 py-2.5 border-none rounded-lg bg-gray-100 dark:bg-[#222949] text-gray-900 dark:text-white placeholder-[#909acb] focus:outline-none focus:ring-2 focus:ring-[#0d33f2] focus:bg-white dark:focus:bg-[#1c223e] transition-all"
+                aria-required="true"
+                className="form-control form-control-lg"
               />
+              <div className="form-text">
+                Introduce tu dirección de correo electrónico
+              </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label 
+                htmlFor="password-accessible" 
+                className="form-label fw-semibold"
+              >
                 Contraseña
+                <span className="text-danger ms-1" aria-hidden="true">*</span>
+                <span className="visually-hidden">(obligatorio)</span>
               </label>
               <input
-                id="password"
+                id="password-accessible"
                 type="password"
-                placeholder="••••••••"
+                autoComplete="current-password"
+                placeholder="Tu contraseña"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
-                className="w-full px-4 py-2.5 border-none rounded-lg bg-gray-100 dark:bg-[#222949] text-gray-900 dark:text-white placeholder-[#909acb] focus:outline-none focus:ring-2 focus:ring-[#0d33f2] focus:bg-white dark:focus:bg-[#1c223e] transition-all"
+                aria-required="true"
+                className="form-control form-control-lg"
               />
+              <div className="form-text">
+                Mínimo 8 caracteres
+              </div>
             </div>
 
             {error && (
-              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                <p className="text-sm text-red-500">{error}</p>
+              <div 
+                id="error-message"
+                role="alert"
+                aria-live="assertive"
+                className="alert alert-danger d-flex align-items-center gap-2"
+              >
+                <i className="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+                <span className="fw-medium">{error}</span>
               </div>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-11 rounded-lg bg-[#0d33f2] hover:bg-[#0a29c9] text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2 fw-bold"
+              aria-busy={loading}
             >
               {loading && (
-                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
+                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               )}
               {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </button>
           </form>
 
           {/* Footer */}
-          <div className="mt-6 text-center">
-            <p className="text-[#909acb]">
-              ¿No tienes cuenta?{' '}
-              <Link href="/register" className="text-[#0d33f2] font-medium hover:underline">
-                Regístrate
+          <footer className="mt-4 pt-3 border-top text-center">
+            <p className="fs-6 text-secondary">
+              ¿No tienes una cuenta?{' '}
+              <Link 
+                href="/register" 
+                className="text-primary fw-bold text-decoration-none"
+              >
+                Crear cuenta nueva
               </Link>
             </p>
+          </footer>
+
+          {/* Skip to main content link for screen readers */}
+          <div className="visually-hidden">
+            <a href="#login-heading" className="btn btn-primary position-absolute top-0 start-0 m-2">
+              Volver al inicio del formulario
+            </a>
           </div>
+        </div>
+
+        {/* Accessibility info panel */}
+        <div className="mt-4 p-3 bg-success bg-opacity-10 rounded-3 border border-success border-2">
+          <h2 className="h6 fw-bold text-success mb-2 d-flex align-items-center gap-2">
+            <i className="bi bi-info-circle-fill"></i>
+            Características de accesibilidad
+          </h2>
+          <ul className="small text-success mb-0 ps-4">
+            <li>Alto contraste de colores (WCAG AA)</li>
+            <li>Tamaño de fuente grande y legible</li>
+            <li>Labels descriptivos y visibles</li>
+            <li>Focus visible con indicadores claros</li>
+            <li>Atributos ARIA para lectores de pantalla</li>
+            <li>Mensajes de error accesibles con role=&quot;alert&quot;</li>
+            <li>Textos de ayuda en cada campo</li>
+          </ul>
         </div>
       </div>
     </main>

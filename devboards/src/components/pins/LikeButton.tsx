@@ -45,25 +45,13 @@ export function LikeButton({ pinId, initialLiked, initialCount }: LikeButtonProp
     <button
       onClick={handleLike}
       disabled={loading}
-      className={`flex items-center gap-2 h-9 px-4 rounded-lg text-sm font-bold transition-colors ${
+      className={`btn btn-sm d-flex align-items-center gap-2 ${
         liked
-          ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30'
-          : 'bg-[#1e2337] text-[#909acb] border border-[#222949] hover:bg-[#252a40] hover:text-white'
+          ? 'btn-outline-danger'
+          : 'btn-outline-secondary'
       }`}
     >
-      <svg
-        className={`w-5 h-5 ${liked ? 'fill-current' : ''}`}
-        fill={liked ? 'currentColor' : 'none'}
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-        />
-      </svg>
+      <i className={`bi ${liked ? 'bi-heart-fill' : 'bi-heart'}`}></i>
       <span>{count}</span>
     </button>
   );

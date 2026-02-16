@@ -52,6 +52,7 @@ export default async function PinPage({ params }: PinPageProps) {
 
   const relatedPins = await getRelatedPins(id, pin.language);
 
+  // PinDetail component handles its own Bootstrap styling
   return <PinDetail pin={pin} relatedPins={relatedPins} />;
 }
 

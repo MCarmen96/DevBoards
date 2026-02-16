@@ -72,28 +72,26 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="flex-1 flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-[#1e2336] rounded-xl shadow-xl p-8 border border-gray-200 dark:border-[#2a324b]">
+    <main className="flex-fill d-flex align-items-center justify-content-center p-4">
+      <div className="w-100" style={{ maxWidth: '28rem' }}>
+        <div className="bg-body rounded-3 shadow p-4 border">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-[#0d33f2] rounded-xl flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                <path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"></path>
-              </svg>
+          <div className="text-center mb-4">
+            <div className="d-flex align-items-center justify-content-center mx-auto mb-3 rounded-3" style={{ width: '4rem', height: '4rem', backgroundColor: '#0d33f2' }}>
+              <i className="bi bi-braces-asterisk text-white fs-3"></i>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+            <h1 className="h4 fw-bold">
               Únete a DevBoards
             </h1>
-            <p className="text-[#909acb] mt-2">
+            <p className="text-secondary mt-2">
               Crea tu cuenta y empieza a coleccionar código
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="name" className="form-label small fw-medium">
                 Nombre
               </label>
               <input
@@ -103,12 +101,12 @@ export default function RegisterPage() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
-                className="w-full px-4 py-2.5 border-none rounded-lg bg-gray-100 dark:bg-[#222949] text-gray-900 dark:text-white placeholder-[#909acb] focus:outline-none focus:ring-2 focus:ring-[#0d33f2] focus:bg-white dark:focus:bg-[#1c223e] transition-all"
+                className="form-control"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="email" className="form-label small fw-medium">
                 Email
               </label>
               <input
@@ -118,12 +116,12 @@ export default function RegisterPage() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
-                className="w-full px-4 py-2.5 border-none rounded-lg bg-gray-100 dark:bg-[#222949] text-gray-900 dark:text-white placeholder-[#909acb] focus:outline-none focus:ring-2 focus:ring-[#0d33f2] focus:bg-white dark:focus:bg-[#1c223e] transition-all"
+                className="form-control"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="password" className="form-label small fw-medium">
                 Contraseña
               </label>
               <input
@@ -133,12 +131,12 @@ export default function RegisterPage() {
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
-                className="w-full px-4 py-2.5 border-none rounded-lg bg-gray-100 dark:bg-[#222949] text-gray-900 dark:text-white placeholder-[#909acb] focus:outline-none focus:ring-2 focus:ring-[#0d33f2] focus:bg-white dark:focus:bg-[#1c223e] transition-all"
+                className="form-control"
               />
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="confirmPassword" className="form-label small fw-medium">
                 Confirmar contraseña
               </label>
               <input
@@ -148,71 +146,79 @@ export default function RegisterPage() {
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 required
-                className="w-full px-4 py-2.5 border-none rounded-lg bg-gray-100 dark:bg-[#222949] text-gray-900 dark:text-white placeholder-[#909acb] focus:outline-none focus:ring-2 focus:ring-[#0d33f2] focus:bg-white dark:focus:bg-[#1c223e] transition-all"
+                className="form-control"
               />
             </div>
 
             {/* Role Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="form-label small fw-medium">
                 ¿Cómo quieres usar DevBoards?
               </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, role: 'explorer' })}
-                  className={`p-4 rounded-lg border text-left transition-all ${
-                    formData.role === 'explorer'
-                      ? 'border-[#0d33f2] bg-[#0d33f2]/10 ring-2 ring-[#0d33f2]'
-                      : 'border-gray-200 dark:border-[#2a324b] hover:border-[#0d33f2]/50 bg-white dark:bg-[#222949]'
-                  }`}
-                >
-                  <span className="text-2xl mb-2 block">👨‍💻</span>
-                  <span className="font-bold block text-gray-900 dark:text-white">Explorer</span>
-                  <span className="text-xs text-[#909acb]">Descubrir y guardar</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, role: 'creator' })}
-                  className={`p-4 rounded-lg border text-left transition-all ${
-                    formData.role === 'creator'
-                      ? 'border-[#0d33f2] bg-[#0d33f2]/10 ring-2 ring-[#0d33f2]'
-                      : 'border-gray-200 dark:border-[#2a324b] hover:border-[#0d33f2]/50 bg-white dark:bg-[#222949]'
-                  }`}
-                >
-                  <span className="text-2xl mb-2 block">✍️</span>
-                  <span className="font-bold block text-gray-900 dark:text-white">Creator</span>
-                  <span className="text-xs text-[#909acb]">Crear y compartir</span>
-                </button>
+              <div className="row g-2">
+                <div className="col-6">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, role: 'explorer' })}
+                    className={`w-100 p-3 rounded-3 border text-start ${
+                      formData.role === 'explorer'
+                        ? 'border-primary bg-primary bg-opacity-10'
+                        : 'bg-body'
+                    }`}
+                    style={{ 
+                      borderWidth: formData.role === 'explorer' ? '2px' : '1px'
+                    }}
+                  >
+                    <span className="d-block fs-4 mb-1">👨‍💻</span>
+                    <span className="fw-bold d-block">Explorer</span>
+                    <small className="text-secondary">Descubrir y guardar</small>
+                  </button>
+                </div>
+                <div className="col-6">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, role: 'creator' })}
+                    className={`w-100 p-3 rounded-3 border text-start ${
+                      formData.role === 'creator'
+                        ? 'border-primary bg-primary bg-opacity-10'
+                        : 'bg-body'
+                    }`}
+                    style={{ 
+                      borderWidth: formData.role === 'creator' ? '2px' : '1px'
+                    }}
+                  >
+                    <span className="d-block fs-4 mb-1">✍️</span>
+                    <span className="fw-bold d-block">Creator</span>
+                    <small className="text-secondary">Crear y compartir</small>
+                  </button>
+                </div>
               </div>
             </div>
 
             {error && (
-              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                <p className="text-sm text-red-500">{error}</p>
+              <div className="alert alert-danger py-2">
+                <p className="small mb-0">{error}</p>
               </div>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-11 rounded-lg bg-[#0d33f2] hover:bg-[#0a29c9] text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2 fw-bold"
+              style={{ height: '2.75rem' }}
             >
               {loading && (
-                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
+                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               )}
               {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
             </button>
           </form>
 
           {/* Footer */}
-          <div className="mt-6 text-center">
-            <p className="text-[#909acb]">
+          <div className="mt-4 text-center">
+            <p className="text-secondary">
               ¿Ya tienes cuenta?{' '}
-              <Link href="/login" className="text-[#0d33f2] font-medium hover:underline">
+              <Link href="/login" className="text-primary fw-medium text-decoration-none">
                 Inicia sesión
               </Link>
             </p>

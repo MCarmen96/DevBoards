@@ -9,11 +9,11 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, label, error, id, ...props }, ref) => {
     return (
-      <div className="w-full">
+      <div className="w-100">
         {label && (
           <label
             htmlFor={id}
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="form-label"
           >
             {label}
           </label>
@@ -22,13 +22,13 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           id={id}
           className={cn(
-            'w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors resize-none',
-            error && 'border-red-500 focus:ring-red-500',
+            'form-control',
+            error && 'is-invalid',
             className
           )}
           {...props}
         />
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+        {error && <div className="invalid-feedback">{error}</div>}
       </div>
     );
   }

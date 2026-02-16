@@ -87,18 +87,24 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
   const username = getUsername(user.email, user.name);
 
   return (
-    <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-8">
+    <main className="flex-grow-1 w-100 container py-4" style={{ maxWidth: '1280px' }}>
       {/* Profile Header Section */}
-      <section className="flex flex-col items-center justify-center mb-12">
-        <div className="flex flex-col items-center gap-6 max-w-2xl w-full text-center">
+      <section className="d-flex flex-column align-items-center justify-content-center mb-5">
+        <div className="d-flex flex-column align-items-center gap-3 w-100 text-center" style={{ maxWidth: '672px' }}>
           {/* Avatar */}
-          <div className="relative">
+          <div className="position-relative">
             <div 
-              className="h-32 w-32 rounded-full bg-cover bg-center border-4 border-[#f5f6f8] dark:border-[#101322] shadow-xl bg-gray-300 dark:bg-gray-600 flex items-center justify-center overflow-hidden"
-              style={user.image ? { backgroundImage: `url("${user.image}")` } : undefined}
+              className="rounded-circle bg-secondary d-flex align-items-center justify-content-center overflow-hidden border border-4 shadow"
+              style={{ 
+                height: '128px', 
+                width: '128px', 
+                backgroundSize: 'cover', 
+                backgroundPosition: 'center',
+                ...(user.image ? { backgroundImage: `url("${user.image}")` } : {})
+              }}
             >
               {!user.image && (
-                <span className="text-4xl text-gray-600 dark:text-gray-300">
+                <span className="fs-1 text-secondary">
                   {user.name?.charAt(0).toUpperCase() || 'U'}
                 </span>
               )}
@@ -106,38 +112,38 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
           </div>
 
           {/* Name and username */}
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">{user.name}</h1>
-            <p className="text-[#909acb] text-sm">@{username}</p>
+          <div>
+            <h1 className="h3 fw-bold text-body">{user.name}</h1>
+            <p className="text-secondary small">@{username}</p>
           </div>
 
           {/* Bio */}
           {user.bio && (
-            <p className="text-gray-600 dark:text-gray-300 max-w-md">{user.bio}</p>
+            <p className="text-secondary" style={{ maxWidth: '448px' }}>{user.bio}</p>
           )}
 
           {/* Stats */}
-          <div className="flex items-center gap-6 text-sm font-medium">
-            <div className="flex gap-1.5 items-center hover:text-[#0d33f2] cursor-pointer transition-colors">
-              <span className="font-bold text-gray-900 dark:text-white">{stats.createdCount}</span>
-              <span className="text-[#909acb]">Pins</span>
+          <div className="d-flex align-items-center gap-4 small fw-medium">
+            <div className="d-flex gap-1 align-items-center" role="button">
+              <span className="fw-bold text-body">{stats.createdCount}</span>
+              <span className="text-secondary">Pins</span>
             </div>
-            <div className="flex gap-1.5 items-center hover:text-[#0d33f2] cursor-pointer transition-colors">
-              <span className="font-bold text-gray-900 dark:text-white">{user._count.followers}</span>
-              <span className="text-[#909acb]">Seguidores</span>
+            <div className="d-flex gap-1 align-items-center" role="button">
+              <span className="fw-bold text-body">{user._count.followers}</span>
+              <span className="text-secondary">Seguidores</span>
             </div>
-            <div className="flex gap-1.5 items-center hover:text-[#0d33f2] cursor-pointer transition-colors">
-              <span className="font-bold text-gray-900 dark:text-white">{user._count.following}</span>
-              <span className="text-[#909acb]">Siguiendo</span>
+            <div className="d-flex gap-1 align-items-center" role="button">
+              <span className="fw-bold text-body">{user._count.following}</span>
+              <span className="text-secondary">Siguiendo</span>
             </div>
           </div>
 
           {/* Action buttons */}
-          <div className="flex gap-3 w-full max-w-xs mt-2">
+          <div className="d-flex gap-2 w-100 mt-2" style={{ maxWidth: '320px' }}>
             {currentUserId && (
               <FollowButton userId={user.id} />
             )}
-            <button className="flex-1 h-10 rounded-lg bg-gray-200 dark:bg-[#1e2336] text-gray-900 dark:text-white text-sm font-bold hover:bg-gray-300 dark:hover:bg-[#2a324b] transition-colors">
+            <button className="btn btn-secondary flex-grow-1 fw-bold small">
               Compartir
             </button>
           </div>
@@ -145,8 +151,8 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
       </section>
 
       {/* Pins Section Header */}
-      <section className="mb-8">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+      <section className="mb-4">
+        <h2 className="h5 fw-bold text-body">
           Pins de {user.name}
         </h2>
       </section>
@@ -155,26 +161,14 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
       {pins.length > 0 ? (
         <PinGrid pins={pins} />
       ) : (
-        <div className="text-center py-20 bg-white dark:bg-[#1e2336] rounded-xl">
-          <div className="w-24 h-24 bg-gray-100 dark:bg-[#222949] rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-12 h-12 text-[#909acb]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
+        <div className="text-center py-5 bg-body rounded-3">
+          <div className="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-4" style={{ width: '96px', height: '96px' }}>
+            <i className="bi bi-image text-secondary fs-1"></i>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 className="h5 fw-semibold text-body mb-2">
             Este usuario aún no ha creado pins
           </h3>
-          <p className="text-[#909acb]">
+          <p className="text-secondary">
             Vuelve más tarde para ver su contenido
           </p>
         </div>

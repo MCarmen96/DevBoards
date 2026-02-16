@@ -25,10 +25,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     
     if (savedTheme) {
       setTheme(savedTheme);
-      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+      document.documentElement.setAttribute('data-bs-theme', savedTheme);
     } else if (systemPrefersDark) {
       setTheme('dark');
-      document.documentElement.classList.add('dark');
+      document.documentElement.setAttribute('data-bs-theme', 'dark');
     }
     
     setMounted(true);
@@ -38,12 +38,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     
-    // Aplicar clase al documento
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    // Aplicar tema con Bootstrap
+    document.documentElement.setAttribute('data-bs-theme', newTheme);
     
     // Guardar preferencia
     localStorage.setItem('theme', newTheme);

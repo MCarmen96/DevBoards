@@ -94,16 +94,18 @@ export default function BoardPage({ params }: BoardPageProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+      <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '60vh' }}>
+        <div className="spinner-border text-danger" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{error}</h1>
+      <div className="container py-5 text-center" style={{ maxWidth: '1280px' }}>
+        <h1 className="h4 fw-bold text-body mb-4">{error}</h1>
         <Link href="/boards">
           <Button variant="secondary">Volver a mis tableros</Button>
         </Link>
@@ -117,26 +119,24 @@ export default function BoardPage({ params }: BoardPageProps) {
   const pins = board.pins.map((bp) => bp.pin);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="container py-4" style={{ maxWidth: '1280px' }}>
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-start justify-between">
+      <div className="mb-4">
+        <div className="d-flex align-items-start justify-content-between">
           <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{board.name}</h1>
+            <div className="d-flex align-items-center gap-2">
+              <h1 className="h3 fw-bold text-body">{board.name}</h1>
               {board.isPrivate && (
-                <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full">
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                  </svg>
+                <span className="badge bg-secondary d-inline-flex align-items-center gap-1">
+                  <i className="bi bi-lock-fill small"></i>
                   Privado
                 </span>
               )}
             </div>
             {board.description && (
-              <p className="mt-2 text-gray-600 dark:text-gray-400">{board.description}</p>
+              <p className="mt-2 text-secondary">{board.description}</p>
             )}
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">
+            <p className="mt-1 small text-secondary">
               {board._count.pins} {board._count.pins === 1 ? 'pin' : 'pins'}
             </p>
           </div>
@@ -151,16 +151,14 @@ export default function BoardPage({ params }: BoardPageProps) {
 
       {/* Pins */}
       {pins.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
+        <div className="text-center py-5">
+          <div className="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-4" style={{ width: '96px', height: '96px' }}>
+            <i className="bi bi-image text-secondary fs-1"></i>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h2 className="h5 fw-semibold text-body mb-2">
             Este tablero está vacío
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-6">
+          <p className="text-secondary mb-4">
             Guarda pins desde el feed para añadirlos a este tablero
           </p>
           <Link href="/">

@@ -9,11 +9,11 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, id, ...props }, ref) => {
     return (
-      <div className="w-full">
+      <div className="w-100">
         {label && (
           <label
             htmlFor={id}
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            className="form-label"
           >
             {label}
           </label>
@@ -22,13 +22,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           id={id}
           className={cn(
-            'w-full px-4 py-2.5 border-none rounded-lg bg-gray-100 dark:bg-[#222949] text-gray-900 dark:text-white placeholder-[#909acb] focus:outline-none focus:ring-2 focus:ring-[#0d33f2] focus:bg-white dark:focus:bg-[#1c223e] transition-all',
-            error && 'ring-2 ring-red-500',
+            'form-control',
+            error && 'is-invalid',
             className
           )}
           {...props}
         />
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+        {error && <div className="invalid-feedback">{error}</div>}
       </div>
     );
   }

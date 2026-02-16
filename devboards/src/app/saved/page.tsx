@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { PinGrid } from '@/components/pins/PinGrid';
@@ -34,11 +35,11 @@ export default async function SavedPinsPage() {
   const pins = await getSavedPins(session.user.id);
 
   return (
-    <div className="py-8">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Pins Guardados</h1>
-          <p className="text-gray-500 mt-2">
+    <div className="py-4">
+      <div className="container" style={{ maxWidth: '1280px' }}>
+        <div className="mb-4">
+          <h1 className="h3 fw-bold text-body">Pins Guardados</h1>
+          <p className="text-secondary mt-2">
             Tu biblioteca personal de referencias de código
           </p>
         </div>
@@ -46,34 +47,22 @@ export default async function SavedPinsPage() {
         {pins.length > 0 ? (
           <PinGrid pins={pins} />
         ) : (
-          <div className="text-center py-20">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-12 h-12 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                />
-              </svg>
+          <div className="text-center py-5">
+            <div className="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-4" style={{ width: '96px', height: '96px' }}>
+              <i className="bi bi-bookmark text-secondary fs-1"></i>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="h5 fw-semibold text-body mb-2">
               No tienes pins guardados
             </h3>
-            <p className="text-gray-500 mb-6">
+            <p className="text-secondary mb-4">
               Explora y guarda pins que te interesen para tenerlos siempre a mano
             </p>
-            <a
+            <Link
               href="/"
-              className="inline-flex items-center px-6 py-3 bg-red-500 text-white font-medium rounded-full hover:bg-red-600 transition-colors"
+              className="btn btn-danger rounded-pill px-4 py-2 fw-medium"
             >
               Explorar Pins
-            </a>
+            </Link>
           </div>
         )}
       </div>

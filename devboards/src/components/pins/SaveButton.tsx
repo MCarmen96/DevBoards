@@ -46,19 +46,13 @@ export function SaveButton({ pinId, initialSaved = false, onSaveChange }: SaveBu
     <button
       onClick={handleSave}
       disabled={loading}
-      className={`p-2 rounded-lg backdrop-blur-md transition-colors ${
-        saved
-          ? 'bg-[#0d33f2] text-white'
-          : 'bg-black/50 hover:bg-[#0d33f2] text-white'
-      } disabled:opacity-50`}
+      className={`btn btn-sm ${saved ? 'btn-primary' : 'btn-dark'}`}
       title={saved ? 'Guardado' : 'Guardar'}
     >
       {loading ? (
-        <span className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       ) : (
-        <svg className="w-5 h-5" fill={saved ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-        </svg>
+        <i className={`bi ${saved ? 'bi-bookmark-fill' : 'bi-bookmark'}`}></i>
       )}
     </button>
   );

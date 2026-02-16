@@ -1,35 +1,74 @@
-@import "tailwindcss";
+/* Bootstrap CSS */
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
 
-@variant dark (&:where(.dark, .dark *));
-
+/* Custom CSS Variables */
 :root {
-  --background: #f5f6f8;
-  --foreground: #0f172a;
-  --primary: #0d33f2;
-  --card-light: #ffffff;
-  --secondary-text-light: #64748b;
+  --db-background: #f5f6f8;
+  --db-foreground: #0f172a;
+  --db-primary: #0d33f2;
+  --db-card-bg: #ffffff;
+  --db-secondary-text: #64748b;
+  --db-border-color: #dee2e6;
+  --db-card-dark: #1e2337;
+  --db-dark-bg: #101322;
 }
 
-.dark {
-  --background: #101322;
-  --foreground: #ffffff;
-  --primary: #0d33f2;
-  --card-dark: #1e2337;
-  --secondary-text: #909acb;
+[data-bs-theme="dark"] {
+  --db-background: #101322;
+  --db-foreground: #ffffff;
+  --db-primary: #0d33f2;
+  --db-card-bg: #1e2337;
+  --db-secondary-text: #909acb;
+  --db-border-color: #222949;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Override Bootstrap primary color */
+.btn-primary {
+  --bs-btn-bg: var(--db-primary);
+  --bs-btn-border-color: var(--db-primary);
+  --bs-btn-hover-bg: #0a29c9;
+  --bs-btn-hover-border-color: #0a29c9;
+  --bs-btn-active-bg: #081f99;
+  --bs-btn-active-border-color: #081f99;
 }
 
+.bg-primary {
+  background-color: var(--db-primary) !important;
+}
+
+.text-primary {
+  color: var(--db-primary) !important;
+}
+
+/* Body Styles */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--db-background);
+  color: var(--db-foreground);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+[data-bs-theme="dark"] body {
+  background-color: var(--db-dark-bg);
+  color: #ffffff;
+}
+
+/* Custom Card Styles for DevBoards */
+.db-card {
+  background-color: var(--db-card-bg);
+  border: 1px solid var(--db-border-color);
+  transition: all 0.3s ease;
+}
+
+[data-bs-theme="dark"] .db-card {
+  background-color: var(--db-card-dark);
+  border-color: var(--db-border-color);
+}
+
+.db-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(13, 51, 242, 0.15);
+  border-color: rgba(13, 51, 242, 0.5);
 }
 
 /* Masonry Grid */
@@ -38,19 +77,19 @@ body {
   column-gap: 1.5rem;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 576px) {
   .masonry-grid {
     column-count: 2;
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 992px) {
   .masonry-grid {
     column-count: 3;
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1200px) {
   .masonry-grid {
     column-count: 4;
   }
@@ -71,6 +110,97 @@ body {
   display: none;
 }
 
+/* Custom Input Styles for Dark Mode */
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+  background-color: #222949;
+  border-color: #2a324b;
+  color: #ffffff;
+}
+
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+  background-color: #1c223e;
+  border-color: var(--db-primary);
+  box-shadow: 0 0 0 0.25rem rgba(13, 51, 242, 0.25);
+}
+
+[data-bs-theme="dark"] .form-control::placeholder {
+  color: #909acb;
+}
+
+/* Custom Secondary Text */
+.text-secondary-custom {
+  color: var(--db-secondary-text) !important;
+}
+
+/* Pin Card Specific Styles */
+.pin-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.pin-card .overlay-buttons {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.pin-card:hover .overlay-buttons {
+  opacity: 1;
+}
+
+/* Language Badge Colors */
+.badge-javascript {
+  background-color: rgba(234, 179, 8, 0.15) !important;
+  color: #ca8a04 !important;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.badge-typescript {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: #3b82f6 !important;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.badge-html {
+  background-color: rgba(249, 115, 22, 0.15) !important;
+  color: #ea580c !important;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.badge-css {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: #2563eb !important;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.badge-react {
+  background-color: rgba(6, 182, 212, 0.15) !important;
+  color: #0891b2 !important;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+/* FAB Button */
+.fab-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background-color: var(--db-primary);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba(13, 51, 242, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1050;
+}
+
+.fab-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(13, 51, 242, 0.5);
+}
+
 /* Code Syntax Highlighting */
 .code-syntax-keyword { color: #c678dd; }
 .code-syntax-function { color: #61afef; }
@@ -80,3 +210,76 @@ body {
 .code-syntax-tag { color: #e06c75; }
 .code-syntax-attr { color: #d19a66; }
 .code-syntax-number { color: #d19a66; }
+
+/* Code Editor Styles */
+.code-editor {
+  background-color: #0d101c;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+/* Header Styles */
+.navbar-brand-icon {
+  color: var(--db-primary);
+}
+
+/* Avatar */
+.avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-lg {
+  width: 8rem;
+  height: 8rem;
+}
+
+/* Skeleton Loading */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+[data-bs-theme="dark"] .skeleton {
+  background: linear-gradient(90deg, #1e2337 25%, #2a324b 50%, #1e2337 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Custom Spinner */
+.spinner-primary {
+  color: var(--db-primary);
+}
+
+/* Board Card Grid Layout */
+.board-preview-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1px;
+  height: 100%;
+}
+
+.board-preview-main {
+  grid-row: span 2;
+}
+
+/* Pin Detail Layout */
+.pin-detail-sidebar {
+  background-color: #161b2e;
+  border-left: 1px solid #222949;
+}
+
+[data-bs-theme="dark"] .bg-dark-subtle {
+  background-color: #1e2337 !important;
+}
+
+[data-bs-theme="dark"] .border-dark-subtle {
+  border-color: #222949 !important;
+}

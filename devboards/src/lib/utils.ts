@@ -1,8 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+  return clsx(inputs);
 }
 
 export function formatDate(date: Date | string): string {
@@ -15,13 +14,25 @@ export function formatDate(date: Date | string): string {
 
 export function getLanguageColor(language: string): string {
   const colors: Record<string, string> = {
-    html: 'bg-orange-100 text-orange-800',
-    css: 'bg-blue-100 text-blue-800',
-    javascript: 'bg-yellow-100 text-yellow-800',
-    typescript: 'bg-blue-200 text-blue-900',
-    react: 'bg-cyan-100 text-cyan-800',
+    html: 'badge-html',
+    css: 'badge-css',
+    javascript: 'badge-javascript',
+    typescript: 'badge-typescript',
+    react: 'badge-react',
   };
-  return colors[language.toLowerCase()] || 'bg-gray-100 text-gray-800';
+  return colors[language.toLowerCase()] || 'bg-secondary';
+}
+
+export function getLanguageBadgeClass(language: string): string {
+  const classes: Record<string, string> = {
+    javascript: 'badge-javascript',
+    typescript: 'badge-typescript',
+    html: 'badge-html',
+    css: 'badge-css',
+    react: 'badge-react',
+    vue: 'bg-success-subtle text-success',
+  };
+  return classes[language.toLowerCase()] || 'bg-secondary-subtle text-secondary';
 }
 
 export function truncateText(text: string, maxLength: number): string {
@@ -31,14 +42,11 @@ export function truncateText(text: string, maxLength: number): string {
 
 export function generateRandomColor(): string {
   const colors = [
-    'bg-red-500',
-    'bg-blue-500',
-    'bg-green-500',
-    'bg-yellow-500',
-    'bg-purple-500',
-    'bg-pink-500',
-    'bg-indigo-500',
-    'bg-teal-500',
+    'bg-danger',
+    'bg-primary',
+    'bg-success',
+    'bg-warning',
+    'bg-info',
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 }

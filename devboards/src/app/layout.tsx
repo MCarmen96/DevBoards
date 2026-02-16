@@ -22,9 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body
-        className={`${inter.variable} antialiased bg-[#f5f6f8] dark:bg-[#101322] text-slate-900 dark:text-white font-sans min-h-screen flex flex-col overflow-x-hidden`}
-      >
+      <body className={`${inter.variable} d-flex flex-column min-vh-100`}>
         <AuthProvider>
           <ThemeProvider>
             <Header />

@@ -94,103 +94,99 @@ export function SaveToBoardModal({ pinId, isOpen, onClose }: SaveToBoardModalPro
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      
-      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-md w-full mx-4 max-h-[80vh] overflow-hidden">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            {showCreateForm ? 'Crear tablero' : 'Guardar en tablero'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
-          >
-            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+    <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+      <div className="modal-dialog modal-dialog-centered">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">
+              {showCreateForm ? 'Crear tablero' : 'Guardar en tablero'}
+            </h5>
+            <button
+              type="button"
+              className="btn-close"
+              onClick={onClose}
+              aria-label="Close"
+            ></button>
+          </div>
 
-        <div className="p-4 overflow-y-auto max-h-[60vh]">
-          {showCreateForm ? (
-            <CreateBoardForm
-              onSuccess={handleBoardCreated}
-              onCancel={() => setShowCreateForm(false)}
-            />
-          ) : (
-            <>
-              {loading ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="w-8 h-8 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <button
-                    onClick={() => setShowCreateForm(true)}
-                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                  >
-                    <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                      <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
+          <div className="modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+            {showCreateForm ? (
+              <CreateBoardForm
+                onSuccess={handleBoardCreated}
+                onCancel={() => setShowCreateForm(false)}
+              />
+            ) : (
+              <>
+                {loading ? (
+                  <div className="d-flex align-items-center justify-content-center py-5">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
                     </div>
-                    <span className="font-medium text-gray-900 dark:text-white">Crear tablero</span>
-                  </button>
+                  </div>
+                ) : (
+                  <div className="d-flex flex-column gap-2">
+                    <button
+                      onClick={() => setShowCreateForm(true)}
+                      className="btn btn-light d-flex align-items-center gap-3 p-3 text-start"
+                    >
+                      <div className="rounded d-flex align-items-center justify-content-center bg-secondary-subtle" style={{ width: '48px', height: '48px' }}>
+                        <i className="bi bi-plus-lg fs-5 text-secondary"></i>
+                      </div>
+                      <span className="fw-medium">Crear tablero</span>
+                    </button>
 
-                  {boards.length === 0 ? (
-                    <p className="text-center text-gray-500 dark:text-gray-400 py-4">
-                      No tienes tableros. ¡Crea uno!
-                    </p>
-                  ) : (
-                    boards.map((board) => (
-                      <button
-                        key={board.id}
-                        onClick={() => handleSaveToBoard(board.id)}
-                        disabled={saving === board.id}
-                        className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                      >
-                        <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
-                          {board.pins?.[0]?.pin?.imageUrl ? (
-                            <img
-                              src={board.pins[0].pin.imageUrl}
-                              alt=""
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                              </svg>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1 text-left">
-                          <p className="font-medium text-gray-900 dark:text-white">{board.name}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {board._count?.pins ?? board.pinCount ?? 0} pins
-                          </p>
-                        </div>
-                        <div className="flex-shrink-0">
-                          {saving === board.id ? (
-                            <div className="w-6 h-6 border-2 border-[#0d33f2] border-t-transparent rounded-full animate-spin" />
-                          ) : savedBoards.has(board.id) ? (
-                            <div className="w-8 h-8 bg-black dark:bg-white rounded-full flex items-center justify-center">
-                              <svg className="w-5 h-5 text-white dark:text-black" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
-                            </div>
-                          ) : (
-                            <div className="w-8 h-8 border-2 border-gray-300 dark:border-gray-600 rounded-full" />
-                          )}
-                        </div>
-                      </button>
-                    ))
-                  )}
-                </div>
-              )}
-            </>
-          )}
+                    {boards.length === 0 ? (
+                      <p className="text-center text-secondary py-4">
+                        No tienes tableros. ¡Crea uno!
+                      </p>
+                    ) : (
+                      boards.map((board) => (
+                        <button
+                          key={board.id}
+                          onClick={() => handleSaveToBoard(board.id)}
+                          disabled={saving === board.id}
+                          className="btn btn-light d-flex align-items-center gap-3 p-3 text-start"
+                        >
+                          <div className="rounded overflow-hidden flex-shrink-0 bg-secondary-subtle" style={{ width: '48px', height: '48px' }}>
+                            {board.pins?.[0]?.pin?.imageUrl ? (
+                              <img
+                                src={board.pins[0].pin.imageUrl}
+                                alt=""
+                                className="w-100 h-100 object-fit-cover"
+                              />
+                            ) : (
+                              <div className="w-100 h-100 d-flex align-items-center justify-content-center">
+                                <i className="bi bi-collection text-secondary"></i>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-grow-1">
+                            <p className="fw-medium mb-0">{board.name}</p>
+                            <small className="text-secondary">
+                              {board._count?.pins ?? board.pinCount ?? 0} pins
+                            </small>
+                          </div>
+                          <div className="flex-shrink-0">
+                            {saving === board.id ? (
+                              <div className="spinner-border spinner-border-sm text-primary" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                              </div>
+                            ) : savedBoards.has(board.id) ? (
+                              <div className="rounded-circle bg-dark d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px' }}>
+                                <i className="bi bi-check-lg text-white"></i>
+                              </div>
+                            ) : (
+                              <div className="rounded-circle border border-secondary" style={{ width: '32px', height: '32px' }}></div>
+                            )}
+                          </div>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

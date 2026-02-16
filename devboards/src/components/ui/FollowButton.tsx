@@ -23,7 +23,6 @@ export function FollowButton({
   const [count, setCount] = useState(initialCount);
   const [loading, setLoading] = useState(false);
 
-  // Verificar estado inicial
   useEffect(() => {
     if (session?.user?.id && session.user.id !== userId) {
       checkFollowStatus();
@@ -69,26 +68,27 @@ export function FollowButton({
     }
   };
 
-  // No mostrar el botón si es el propio usuario
   if (session?.user?.id === userId) {
     return null;
   }
 
   return (
-    <div className="flex items-center gap-2 flex-1">
+    <div className="d-flex align-items-center gap-2 flex-grow-1">
       <button
         onClick={handleFollow}
         disabled={loading}
-        className={`flex-1 h-10 rounded-lg font-bold text-sm transition-colors disabled:opacity-50 ${
+        className={`btn flex-grow-1 fw-bold ${
           following 
-            ? 'bg-gray-200 dark:bg-[#1e2336] text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-[#2a324b]' 
-            : 'bg-[#0d33f2] text-white hover:bg-[#0a29c9]'
+            ? 'btn-secondary' 
+            : 'btn-primary'
         }`}
       >
-        {loading ? '...' : following ? 'Siguiendo' : 'Seguir'}
+        {loading ? (
+          <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        ) : following ? 'Siguiendo' : 'Seguir'}
       </button>
       {showCount && (
-        <span className="text-sm text-[#909acb]">
+        <span className="text-secondary small">
           {count} seguidores
         </span>
       )}

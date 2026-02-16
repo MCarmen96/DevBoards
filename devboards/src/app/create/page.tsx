@@ -11,16 +11,16 @@ export default async function CreatePinPage() {
   }
 
   return (
-    <div className="py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Crear nuevo Pin</h1>
-          <p className="text-gray-500 mt-2">
+    <div className="py-4">
+      <div className="container" style={{ maxWidth: '896px' }}>
+        <div className="mb-4">
+          <h1 className="h3 fw-bold text-body">Crear nuevo Pin</h1>
+          <p className="text-secondary mt-2">
             Comparte tu código con la comunidad de desarrolladores
           </p>
         </div>
         
-        <div className="bg-white rounded-3xl shadow-xl">
+        <div className="bg-body rounded-4 shadow-lg">
           <CreatePinForm />
         </div>
       </div>
