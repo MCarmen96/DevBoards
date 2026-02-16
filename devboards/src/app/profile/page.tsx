@@ -80,17 +80,15 @@ export default async function ProfilePage() {
   const username = getUsername(user.email, user.name);
 
   return (
-    <main className="flex-grow-1 w-100 container py-4" style={{ maxWidth: '1280px' }}>
+    <main className="flex-grow-1 w-100 container py-3 py-md-4 px-3 px-md-4" style={{ maxWidth: '1280px' }}>
       {/* Profile Header Section */}
-      <section className="d-flex flex-column align-items-center justify-content-center mb-5">
-        <div className="d-flex flex-column align-items-center gap-3 w-100 text-center" style={{ maxWidth: '672px' }}>
+      <section className="d-flex flex-column align-items-center justify-content-center mb-4 mb-md-5">
+        <div className="d-flex flex-column align-items-center gap-3 w-100 text-center px-2" style={{ maxWidth: '672px' }}>
           {/* Avatar with edit overlay */}
           <div className="position-relative" role="button">
             <div 
-              className="rounded-circle bg-secondary d-flex align-items-center justify-content-center overflow-hidden border border-4 shadow"
+              className="rounded-circle bg-secondary d-flex align-items-center justify-content-center overflow-hidden border border-4 shadow avatar-lg"
               style={{ 
-                height: '128px', 
-                width: '128px', 
                 backgroundSize: 'cover', 
                 backgroundPosition: 'center',
                 ...(user.image ? { backgroundImage: `url("${user.image}")` } : {})
@@ -109,17 +107,17 @@ export default async function ProfilePage() {
 
           {/* Name and username */}
           <div>
-            <h1 className="h3 fw-bold text-body">{user.name}</h1>
+            <h1 className="h3 h2-md fw-bold text-body">{user.name}</h1>
             <p className="text-secondary small">@{username}</p>
           </div>
 
           {/* Bio */}
           {user.bio && (
-            <p className="text-secondary" style={{ maxWidth: '448px' }}>{user.bio}</p>
+            <p className="text-secondary small mb-0" style={{ maxWidth: '448px' }}>{user.bio}</p>
           )}
 
           {/* Stats */}
-          <div className="d-flex align-items-center gap-4 small fw-medium">
+          <div className="d-flex align-items-center justify-content-center gap-3 gap-md-4 small fw-medium flex-wrap profile-stats">
             <div className="d-flex gap-1 align-items-center" role="button">
               <span className="fw-bold text-body">{stats.pinCount}</span>
               <span className="text-secondary">Pins</span>
@@ -135,7 +133,7 @@ export default async function ProfilePage() {
           </div>
 
           {/* Action buttons */}
-          <div className="d-flex gap-2 w-100 mt-2" style={{ maxWidth: '320px' }}>
+          <div className="d-flex gap-2 w-100 mt-2 justify-content-center" style={{ maxWidth: '320px' }}>
             <EditProfileButton user={{ name: user.name, bio: user.bio }} />
             <ShareButton title={`${user.name} en DevBoards`} />
           </div>

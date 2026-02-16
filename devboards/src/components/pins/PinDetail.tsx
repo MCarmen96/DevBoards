@@ -58,7 +58,124 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
   const timeAgo = formatDistanceToNow(new Date(pin.createdAt));
 
   return (
-    <main className="flex-grow-1 d-flex flex-column flex-lg-row overflow-hidden">
+    <main className="flex-grow-1 d-flex flex-column overflow-hidden">
+      {/* Mobile/Tablet: Stacked layout */}
+      <div className="d-lg-none d-flex flex-column overflow-auto">
+        {/* Breadcrumbs & Heading */}
+        <div className="px-3 py-3 d-flex flex-column gap-3 border-bottom">
+          <nav aria-label="breadcrumb">
+            <ol className="breadcrumb mb-0 small">
+              <li className="breadcrumb-item"><Link href="/" className="text-decoration-none">Explorar</Link></li>
+              {pin.language && (
+                <li className="breadcrumb-item">{getLanguageLabel(pin.language)}</li>
+              )}
+              <li className="breadcrumb-item active text-truncate" aria-current="page" style={{ maxWidth: '150px' }}>{pin.title}</li>
+            </ol>
+          </nav>
+
+          <div className="d-flex flex-column gap-2">
+            <h1 className="h5 mb-0 fw-bold">{pin.title}</h1>
+            <div className="d-flex align-items-center gap-2 small text-secondary">
+              <span>by</span>
+              <Link href={`/profile/${pin.author.id}`} className="text-decoration-none fw-medium">
+                @{getUsername(pin.author.name)}
+              </Link>
+              <span className="mx-1">•</span>
+              <span>{timeAgo}</span>
+            </div>
+          </div>
+
+          {/* Action Buttons Mobile */}
+          <div className="d-flex align-items-center gap-2">
+            <LikeButton
+              pinId={pin.id}
+              initialLiked={isLiked ?? false}
+              initialCount={pin._count?.likes || 0}
+            />
+            <button 
+              onClick={() => setShowSaveModal(true)}
+              className="btn btn-primary btn-sm d-flex align-items-center gap-2"
+            >
+              <i className="bi bi-bookmark"></i>
+              <span>Guardar</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Preview Image Mobile */}
+        <div className="position-relative" style={{ minHeight: '250px', background: 'var(--db-card-bg)' }}>
+          <div className="position-absolute top-0 start-50 translate-middle-x mt-3 z-1">
+            <div className="btn-group bg-dark bg-opacity-75 rounded-3 p-1">
+              <button 
+                onClick={() => setActiveTab('preview')}
+                className={`btn btn-sm ${activeTab === 'preview' ? 'btn-secondary' : 'btn-outline-secondary border-0'}`}
+              >
+                <i className="bi bi-eye"></i>
+              </button>
+              <button 
+                onClick={() => setActiveTab('code')}
+                className={`btn btn-sm ${activeTab === 'code' ? 'btn-secondary' : 'btn-outline-secondary border-0'}`}
+              >
+                <i className="bi bi-code-slash"></i>
+              </button>
+            </div>
+          </div>
+          <div className="d-flex align-items-center justify-content-center p-3" style={{ minHeight: '250px' }}>
+            {activeTab === 'preview' ? (
+              <img 
+                src={pin.imageUrl} 
+                alt={pin.title}
+                className="mw-100 mh-100 object-fit-contain rounded shadow"
+                style={{ maxHeight: '300px' }}
+              />
+            ) : pin.codeSnippet ? (
+              <div className="w-100 rounded overflow-hidden border">
+                <div className="d-flex align-items-center justify-content-between px-3 py-2 bg-dark border-bottom">
+                  <span className="small text-secondary">{getLanguageLabel(pin.language)}</span>
+                  <button onClick={handleCopyCode} className="btn btn-link btn-sm text-secondary p-0">
+                    {copied ? 'Copiado!' : 'Copiar'}
+                  </button>
+                </div>
+                <pre className="p-3 small font-monospace text-light mb-0 overflow-auto bg-dark" style={{ maxHeight: '250px' }}>
+                  <code>{pin.codeSnippet}</code>
+                </pre>
+              </div>
+            ) : (
+              <div className="text-secondary text-center">
+                <i className="bi bi-code-slash fs-1 opacity-50 d-block mb-3"></i>
+                <p className="mb-0">No hay código disponible</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Description & Tags Mobile */}
+        {(pin.description || pin.tags) && (
+          <div className="p-3 border-top">
+            {pin.description && (
+              <div className="mb-3">
+                <h6 className="fw-semibold mb-2">Descripción</h6>
+                <p className="small text-secondary mb-0" style={{ whiteSpace: 'pre-wrap' }}>{pin.description}</p>
+              </div>
+            )}
+            {pin.tags && (
+              <div className="d-flex flex-wrap gap-2">
+                {pin.tags.split(',').map((tag, i) => (
+                  <span key={i} className="badge bg-secondary-subtle text-secondary">#{tag.trim()}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Comments Section Mobile */}
+        <div className="border-top" style={{ minHeight: '300px' }}>
+          <CommentSection pinId={pin.id} initialCount={pin._count?.comments || 0} />
+        </div>
+      </div>
+
+      {/* Desktop: Side by side layout */}
+      <div className="d-none d-lg-flex flex-row flex-grow-1 overflow-hidden">
       {/* Left: Preview & Header Info */}
       <div className="flex-grow-1 d-flex flex-column overflow-hidden">
         {/* Breadcrumbs & Heading */}
@@ -294,6 +411,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
           </div>
         </div>
       )}
+      </div>
 
       {/* Save to Board Modal */}
       {showSaveModal && (
