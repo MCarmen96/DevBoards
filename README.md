@@ -1,37 +1,104 @@
 # DevBoards
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+**Aplicación tipo Pinterest para desarrolladores web** - Colecciona y comparte código de UI, CSS, HTML, JavaScript y TypeScript mediante un sistema de pins y tableros temáticos.
 
-First, run the development server:
+## Características Principales
+
+- **Feed de Pins**: Visualización estilo Pinterest con scroll infinito
+- **Sistema de Temas**: 3 modos de interfaz (Usabilidad, No Usabilidad, Accesibilidad)
+- **Código Integrado**: Cada pin puede incluir snippets de código con resaltado de sintaxis
+- **Tableros Personalizados**: Organiza pins en colecciones temáticas
+- **Autenticación Completa**: Login/Registro con NextAuth.js
+- **Diseño Responsive**: Adaptado a móvil, tablet y desktop
+- **Diseño Stitch**: Interfaz moderna con sistema de diseño consistente
+- **Likes y Comentarios**: Interacción social con pins
+- **Seguir Usuarios**: Sistema de seguimiento y feed personalizado
+- **Búsqueda Avanzada**: Por palabras clave, etiquetas y lenguaje
+- **Notificaciones**: Sistema de notificaciones en tiempo real
+
+## Sistema de Temas
+
+La aplicación incluye 3 temas seleccionables para demostrar diferentes enfoques de UX:
+
+| Tema | Color | Descripción |
+|------|-------|-------------|
+| **Usabilidad** | Azul (#0d33f2) | Diseño equilibrado y fácil de usar |
+| **No Usabilidad** | Naranja (#f59e0b) | Ejemplos de anti-patrones UX |
+| **Accesibilidad** | Verde (#10b981) | Optimizado para accesibilidad WCAG |
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Base de Datos**: SQLite + Prisma ORM
+- **Autenticación**: NextAuth.js
+- **Estilos**: Bootstrap 5 + CSS personalizado
+- **Lenguaje**: TypeScript
+
+## Inicio Rápido
 
 ```bash
+# Instalar dependencias
+cd devboards
+npm install
+
+# Configurar base de datos
+npm run db:push
+npm run db:seed
+
+# Iniciar servidor de desarrollo
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Comandos Disponibles
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Servidor de desarrollo |
+| `npm run build` | Build de producción |
+| `npm run start` | Iniciar producción |
+| `npm run db:push` | Sincronizar esquema Prisma |
+| `npm run db:seed` | Poblar datos de prueba |
+| `npm run db:studio` | Abrir Prisma Studio |
+| `npm run db:reset` | Resetear y repoblar BD |
 
-## Learn More
+## Estructura del Proyecto
 
-To learn more about Next.js, take a look at the following resources:
+```
+devboards/
+├── prisma/
+│   ├── schema.prisma    # Esquema de base de datos
+│   └── seed.ts          # Datos de prueba
+├── src/
+│   ├── app/             # Rutas (App Router)
+│   │   ├── api/         # API endpoints
+│   │   ├── login/       # Página de login
+│   │   ├── register/    # Página de registro
+│   │   ├── pin/         # Detalle de pin
+│   │   ├── profile/     # Perfil de usuario
+│   │   └── ...
+│   ├── components/      # Componentes React
+│   │   ├── layout/      # Header, Footer
+│   │   ├── pins/        # PinCard, PinGrid
+│   │   └── ui/          # Botones, formularios
+│   ├── context/
+│   │   └── ThemeContext.tsx  # Sistema de temas
+│   └── lib/
+│       ├── prisma.ts    # Cliente Prisma
+│       └── auth.ts      # Configuración auth
+└── package.json
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Usuarios de Prueba
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Después de ejecutar `npm run db:seed`:
 
-## Deploy on Vercel
+| Email | Password | Rol |
+|-------|----------|-----|
+| creator@example.com | password123 | Creator |
+| explorer@example.com | password123 | Explorer |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Licencia
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
