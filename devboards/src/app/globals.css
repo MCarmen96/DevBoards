@@ -493,3 +493,32 @@ body {
     }
   }
 }
+
+/* Accessibility theme - intentional errors for educational purposes */
+/* These styles are only applied when data-app-theme="accesibilidad" */
+body[data-app-theme="accesibilidad"] *:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+body[data-app-theme="accesibilidad"] {
+  /* Block zoom - viewport will be set in meta tag via script */
+  touch-action: pan-x pan-y;
+  -ms-touch-action: pan-x pan-y;
+}
+
+/* Force fixed pixel sizes that don't scale */
+body[data-app-theme="accesibilidad"] .card-title {
+  font-size: 14px !important;
+}
+
+body[data-app-theme="accesibilidad"] .small,
+body[data-app-theme="accesibilidad"] small {
+  font-size: 11px !important;
+}
+
+body[data-app-theme="accesibilidad"] .btn {
+  font-size: 13px !important;
+  padding: 6px 12px !important;
+}
+

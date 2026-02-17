@@ -5,6 +5,7 @@ import { SaveButton } from './SaveButton';
 import { getLanguageBadgeClass } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 import { PinWithRelations } from '@/types';
+import { useAppTheme } from '@/context/ThemeContext';
 
 interface PinCardProps {
   pin: PinWithRelations;
@@ -14,6 +15,8 @@ interface PinCardProps {
 
 export function PinCard({ pin, showRemoveButton, onRemove }: PinCardProps) {
   const { data: session } = useSession();
+  const { theme } = useAppTheme();
+  const isAccessibility = theme === 'accesibilidad';
   
   const isSaved = session?.user
     ? pin.savedBy?.some((sp) => sp.userId === session.user.id)
@@ -25,7 +28,7 @@ export function PinCard({ pin, showRemoveButton, onRemove }: PinCardProps) {
         <div className="position-relative" style={{ aspectRatio: '4/3' }}>
           <img
             src={pin.imageUrl}
-            alt={pin.title}
+            alt={isAccessibility ? '' : pin.title}
             className="w-100 h-100 object-fit-cover"
             loading="lazy"
           />
@@ -46,7 +49,7 @@ export function PinCard({ pin, showRemoveButton, onRemove }: PinCardProps) {
             <i className="bi bi-x-lg"></i>
           </button>
         )}
-        <SaveButton pinId={pin.id} initialSaved={isSaved} />
+        <SaveButton pinId={pin.id} initialSaved={isSaved} buttonId={isAccessibility ? 'btn-guardar' : undefined} />
       </div>
 
       {/* Card Body */}
@@ -54,6 +57,26 @@ export function PinCard({ pin, showRemoveButton, onRemove }: PinCardProps) {
         <h6 className="card-title fw-semibold mb-2 text-truncate">
           {pin.title}
         </h6>
+        
+        {/* Descripción con bajo contraste en accesibilidad */}
+        {pin.description && (
+          <p 
+            className="small mb-2 text-truncate" 
+            style={isAccessibility ? { color: '#d3d3d3' } : undefined}
+          >
+            {pin.description}
+          </p>
+        )}
+        
+        {/* Botón sin contexto en accesibilidad */}
+        {isAccessibility && (
+          <Link 
+            href={`/pin/${pin.id}`} 
+            className="btn btn-link btn-sm p-0 text-decoration-none"
+          >
+            Leer más
+          </Link>
+        )}
 
         <div className="d-flex align-items-center justify-content-between">
           {/* Author Info */}

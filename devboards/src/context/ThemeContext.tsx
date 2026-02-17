@@ -40,6 +40,25 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (!mounted) return;
+    
+    // Añadir atributo data-app-theme al body para estilos CSS condicionales
+    document.body.setAttribute('data-app-theme', theme);
+    
+    // Para tema accesibilidad, bloquear zoom modificando viewport
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (theme === 'accesibilidad') {
+      if (viewport) {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+      }
+    } else {
+      if (viewport) {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+      }
+    }
+  }, [theme, mounted]);
+
   const setTheme = (newTheme: AppTheme) => {
     setThemeState(newTheme);
     localStorage.setItem(THEME_STORAGE_KEY, newTheme);

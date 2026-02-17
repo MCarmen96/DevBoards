@@ -27,6 +27,7 @@ export function CreatePinForm() {
   const router = useRouter();
   const { theme } = useAppTheme();
   const isNoUsability = theme === 'no-usabilidad';
+  const isAccessibility = theme === 'accesibilidad';
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -200,6 +201,7 @@ export function CreatePinForm() {
               error={!isNoUsability && touched.imageUrl ? validationErrors.imageUrl : undefined}
               isValid={!isNoUsability && isFieldValid('imageUrl')}
               required={!isNoUsability}
+              hideLabel={isAccessibility}
             />
           </div>
         </div>
@@ -216,6 +218,7 @@ export function CreatePinForm() {
               error={!isNoUsability && touched.title ? validationErrors.title : undefined}
               isValid={!isNoUsability && isFieldValid('title')}
               required={!isNoUsability}
+              hideLabel={isAccessibility}
             />
 
             <Textarea
@@ -228,15 +231,18 @@ export function CreatePinForm() {
               isValid={!isNoUsability && touched.description && formData.description.length > 0}
               rows={3}
               required={!isNoUsability}
+              hideLabel={isAccessibility}
             />
 
             <div>
-              <label className="form-label small fw-medium d-flex align-items-center gap-1">
-                Lenguaje
-                {!isNoUsability && touched.language && formData.language && (
-                  <i className="bi bi-check-circle-fill text-success small"></i>
-                )}
-              </label>
+              {!isAccessibility && (
+                <label className="form-label small fw-medium d-flex align-items-center gap-1">
+                  Lenguaje
+                  {!isNoUsability && touched.language && formData.language && (
+                    <i className="bi bi-check-circle-fill text-success small"></i>
+                  )}
+                </label>
+              )}
               <select
                 value={formData.language}
                 onChange={(e) => {
@@ -260,12 +266,14 @@ export function CreatePinForm() {
             </div>
 
             <div>
-              <label className="form-label small fw-medium d-flex align-items-center gap-1">
-                Código (snippet)
-                {!isNoUsability && touched.codeSnippet && formData.codeSnippet.length > 0 && (
-                  <i className="bi bi-check-circle-fill text-success small"></i>
-                )}
-              </label>
+              {!isAccessibility && (
+                <label className="form-label small fw-medium d-flex align-items-center gap-1">
+                  Código (snippet)
+                  {!isNoUsability && touched.codeSnippet && formData.codeSnippet.length > 0 && (
+                    <i className="bi bi-check-circle-fill text-success small"></i>
+                  )}
+                </label>
+              )}
               <textarea
                 value={formData.codeSnippet}
                 onChange={(e) => handleChange('codeSnippet', e.target.value)}
@@ -293,6 +301,7 @@ export function CreatePinForm() {
               onBlur={() => handleBlur('tags')}
               isValid={!isNoUsability && touched.tags && formData.tags.length > 0}
               helpText="Opcional - ayuda a otros a encontrar tu pin"
+              hideLabel={isAccessibility}
             />
 
             {error && !isNoUsability && (

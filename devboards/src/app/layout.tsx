@@ -5,6 +5,7 @@ import { AuthProvider } from "@/components/providers/AuthProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ThemeProvider as AppThemeProvider } from "@/context/ThemeContext";
 import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -22,13 +23,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html suppressHydrationWarning>
       <body className={`${inter.variable} d-flex flex-column min-vh-100`}>
         <AuthProvider>
           <ThemeProvider>
             <AppThemeProvider>
               <Header />
               {children}
+              <Footer />
             </AppThemeProvider>
           </ThemeProvider>
         </AuthProvider>

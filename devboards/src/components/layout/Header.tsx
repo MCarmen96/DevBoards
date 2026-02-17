@@ -182,6 +182,11 @@ export function Header() {
                   <i className="bi bi-info-circle me-2 d-lg-none"></i>Sobre Nosotros
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link href="/mapa-sitio" className="nav-link fw-medium text-secondary" onClick={closeMobileMenu}>
+                  <i className="bi bi-map me-2 d-lg-none"></i>Mapa del Sitio
+                </Link>
+              </li>
               
               {/* Divider Mobile */}
               <li className="nav-item d-lg-none"><hr className="dropdown-divider my-2" /></li>

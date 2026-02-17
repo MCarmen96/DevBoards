@@ -6,13 +6,14 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
   isValid?: boolean;
   helpText?: string;
+  hideLabel?: boolean;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, isValid, helpText, id, required, ...props }, ref) => {
+  ({ className, label, error, isValid, helpText, hideLabel, id, required, ...props }, ref) => {
     return (
       <div className="w-100">
-        {label && (
+        {label && !hideLabel && (
           <label
             htmlFor={id}
             className="form-label d-flex align-items-center gap-1"
