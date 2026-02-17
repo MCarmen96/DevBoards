@@ -172,6 +172,16 @@ export function Header() {
                   </Link>
                 </li>
               )}
+              <li className="nav-item">
+                <Link href="/analisis" className="nav-link fw-medium text-secondary" onClick={closeMobileMenu}>
+                  <i className="bi bi-bar-chart-line me-2 d-lg-none"></i>Análisis
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/sobre-nosotros" className="nav-link fw-medium text-secondary" onClick={closeMobileMenu}>
+                  <i className="bi bi-info-circle me-2 d-lg-none"></i>Sobre Nosotros
+                </Link>
+              </li>
               
               {/* Divider Mobile */}
               <li className="nav-item d-lg-none"><hr className="dropdown-divider my-2" /></li>
