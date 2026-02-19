@@ -7,6 +7,7 @@ import { NotificationBell } from '@/components/ui/NotificationBell';
 import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { useAppTheme } from '@/context/ThemeContext';
+import { usePathname } from 'next/navigation';
 
 export function Header() {
   const { data: session, status } = useSession();
@@ -15,6 +16,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { theme: appTheme, themeLabel, themeColor } = useAppTheme();
+  const pathname = usePathname();
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -159,31 +161,31 @@ export function Header() {
             </div>
 
             {/* Navigation Links */}
-            <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-lg-3">
+            <ul className={`navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-lg-3 ${appTheme === 'usabilidad' ? 'usability-nav' : ''}`}>
               <li className="nav-item">
-                <Link href="/" className="nav-link fw-medium" onClick={closeMobileMenu}>
+                <Link href="/" className={`nav-link fw-medium ${pathname === '/' ? 'text-primary active-nav-link' : 'text-secondary'}`} onClick={closeMobileMenu}>
                   <i className="bi bi-compass me-2 d-lg-none"></i>Explorar
                 </Link>
               </li>
               {session && (
                 <li className="nav-item">
-                  <Link href="/feed" className="nav-link fw-medium text-secondary" onClick={closeMobileMenu}>
+                  <Link href="/feed" className={`nav-link fw-medium ${pathname === '/feed' ? 'text-primary active-nav-link' : 'text-secondary'}`} onClick={closeMobileMenu}>
                     <i className="bi bi-people me-2 d-lg-none"></i>Siguiendo
                   </Link>
                 </li>
               )}
               <li className="nav-item">
-                <Link href="/analisis" className="nav-link fw-medium text-secondary" onClick={closeMobileMenu}>
+                <Link href="/analisis" className={`nav-link fw-medium ${pathname === '/analisis' ? 'text-primary active-nav-link' : 'text-secondary'}`} onClick={closeMobileMenu}>
                   <i className="bi bi-bar-chart-line me-2 d-lg-none"></i>Análisis
                 </Link>
               </li>
               <li className="nav-item">
-                <Link href="/sobre-nosotros" className="nav-link fw-medium text-secondary" onClick={closeMobileMenu}>
+                <Link href="/sobre-nosotros" className={`nav-link fw-medium ${pathname === '/sobre-nosotros' ? 'text-primary active-nav-link' : 'text-secondary'}`} onClick={closeMobileMenu}>
                   <i className="bi bi-info-circle me-2 d-lg-none"></i>Sobre Nosotros
                 </Link>
               </li>
               <li className="nav-item">
-                <Link href="/mapa-sitio" className="nav-link fw-medium text-secondary" onClick={closeMobileMenu}>
+                <Link href="/mapa-sitio" className={`nav-link fw-medium ${pathname === '/mapa-sitio' ? 'text-primary active-nav-link' : 'text-secondary'}`} onClick={closeMobileMenu}>
                   <i className="bi bi-map me-2 d-lg-none"></i>Mapa del Sitio
                 </Link>
               </li>
@@ -244,8 +246,7 @@ export function Header() {
               {/* Theme Indicator Badge */}
               {session && (
                 <div 
-                  className="d-flex align-items-center gap-1 px-2 py-1 rounded-pill"
-                  style={{ backgroundColor: `${themeColor}20`, border: `1px solid ${themeColor}40` }}
+                  className="d-flex align-items-center gap-1 px-2 py-1"
                   title={`Tema actual: ${themeLabel}`}
                 >
                   <span className="rounded-circle" style={{ width: '8px', height: '8px', backgroundColor: themeColor }} />

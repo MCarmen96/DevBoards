@@ -1,17 +1,17 @@
 'use client';
 
-import { useAppTheme } from '@/context/ThemeContext';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 
 export default function AnalisisPage() {
-  const { theme, themeLabel, themeColor } = useAppTheme();
 
   return (
     <main className="flex-grow-1 overflow-auto">
-      <div className="container py-5" style={{ maxWidth: '1200px' }}>
+      <div className="container py-4" style={{ maxWidth: '1200px' }}>
+        <Breadcrumb />
         {/* Header */}
         <div className="text-center mb-5">
           <h1 className="display-4 fw-bold mb-3">
-            <i className="bi bi-bar-chart-line me-3" style={{ color: themeColor }}></i>
+            <i className="bi bi-bar-chart-line me-3 text-primary"></i>
             Análisis
           </h1>
           <p className="lead text-secondary">
@@ -23,10 +23,10 @@ export default function AnalisisPage() {
         <div className="row g-4">
           {/* Video 1 */}
           <div className="col-12">
-            <div className="card shadow-sm border-0">
+            <div className="card border">
               <div className="card-body p-4">
                 <h5 className="card-title fw-bold mb-3">
-                  <i className="bi bi-play-circle me-2" style={{ color: themeColor }}></i>
+                  <i className="bi bi-play-circle me-2 text-primary"></i>
                   Demo del Proyecto
                 </h5>
                 <div className="ratio ratio-16x9 rounded overflow-hidden bg-dark">
@@ -49,10 +49,10 @@ export default function AnalisisPage() {
 
           {/* Video 2 - Placeholder para futuro */}
           <div className="col-12 col-lg-6">
-            <div className="card shadow-sm border-0">
+            <div className="card border">
               <div className="card-body p-4">
                 <h5 className="card-title fw-bold mb-3">
-                  <i className="bi bi-play-circle me-2" style={{ color: themeColor }}></i>
+                  <i className="bi bi-play-circle me-2 text-primary"></i>
                   Análisis de Usabilidad
                 </h5>
                 <div className="ratio ratio-16x9 rounded overflow-hidden bg-dark">
@@ -74,10 +74,10 @@ export default function AnalisisPage() {
 
           {/* Video 3 - Placeholder para futuro */}
           <div className="col-12 col-lg-6">
-            <div className="card shadow-sm border-0">
+            <div className="card border">
               <div className="card-body p-4">
                 <h5 className="card-title fw-bold mb-3">
-                  <i className="bi bi-play-circle me-2" style={{ color: themeColor }}></i>
+                  <i className="bi bi-play-circle me-2 text-primary"></i>
                   Anti-patrones UX
                 </h5>
                 <div className="ratio ratio-16x9 rounded overflow-hidden bg-dark">
@@ -99,8 +99,8 @@ export default function AnalisisPage() {
         </div>
 
         {/* Info Section */}
-        <div className="alert alert-info mt-5 d-flex align-items-start gap-3 border-0 shadow-sm">
-          <i className="bi bi-info-circle-fill fs-4" style={{ color: themeColor }}></i>
+        <div className="alert alert-info mt-5 d-flex align-items-start gap-3 border">
+          <i className="bi bi-info-circle-fill fs-4 text-primary"></i>
           <div>
             <h6 className="fw-bold mb-2">Nota sobre los vídeos</h6>
             <p className="mb-0 small">

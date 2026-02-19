@@ -1,18 +1,17 @@
 'use client';
 
-import { useAppTheme } from '@/context/ThemeContext';
-import Link from 'next/link';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 
 export default function SobreNosotrosPage() {
-  const { theme, themeLabel, themeColor } = useAppTheme();
 
   return (
     <main className="flex-grow-1 overflow-auto">
-      <div className="container py-5" style={{ maxWidth: '900px' }}>
+      <div className="container py-4" style={{ maxWidth: '900px' }}>
+        <Breadcrumb />
         {/* Header */}
         <div className="text-center mb-5">
           <h1 className="display-4 fw-bold mb-3">
-            <i className="bi bi-info-circle me-3" style={{ color: themeColor }}></i>
+            <i className="bi bi-info-circle me-3 text-primary"></i>
             Sobre Nosotros
           </h1>
           <p className="lead text-secondary">
@@ -20,11 +19,106 @@ export default function SobreNosotrosPage() {
           </p>
         </div>
 
+        {/* Presentación Personal */}
+        <section className="mb-5">
+          <div className="card border">
+            <div className="card-body p-4 p-md-5">
+              <div className="d-flex flex-column gap-4">
+                <div className="text-center">
+                  <img
+                    src="/cv/foto-perfil.png"
+                    alt="Foto de Mª Carmen García Navarro"
+                    className="rounded-circle border shadow"
+                    style={{ width: '180px', height: '180px', objectFit: 'cover' }}
+                  />
+                  <h3 className="h4 fw-bold mt-3 mb-1">Mª Carmen García Navarro</h3>
+                  <p className="text-secondary mb-0">Técnico Superior en Desarrollo de Aplicaciones Web (en curso)</p>
+                </div>
+
+                <div className="text-center mx-auto" style={{ maxWidth: '700px' }}>
+                  <h5 className="fw-semibold mb-3">Sobre mí</h5>
+                  <p className="text-secondary mb-0">
+                    Soy Mª Carmen García Navarro, estudiante de Desarrollo de Aplicaciones Web con un perfil
+                    creativo y técnico, orientado al diseño y la construcción de productos digitales. Me gusta
+                    combinar desarrollo, usabilidad y estética visual para crear experiencias claras y útiles,
+                    aplicando lo aprendido en proyectos reales como DevBoards.
+                  </p>
+                </div>
+
+                <div className="text-center mx-auto" style={{ maxWidth: '700px' }}>
+                  <h5 className="fw-semibold mb-3">Diseño</h5>
+                  <div className="d-flex flex-wrap justify-content-center gap-2">
+                    {[
+                      'Substance Painter',
+                      'ZBrush',
+                      'Blender',
+                      'Maya',
+                      'Unreal Engine 5',
+                      'Substance Designer',
+                      'Unity'
+                    ].map((software) => (
+                      <span key={software} className="badge bg-secondary-subtle text-secondary px-3 py-2">{software}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="text-center mx-auto" style={{ maxWidth: '700px' }}>
+                  <h5 className="fw-semibold mb-3">Desarrollo</h5>
+                  <div className="d-flex flex-wrap justify-content-center gap-2">
+                    {['Laravel', 'Java', 'JavaScript', 'TypeScript', 'Python', 'Angular'].map((tech) => (
+                      <span key={tech} className="badge bg-secondary-subtle text-secondary px-3 py-2">{tech}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="text-center mx-auto" style={{ maxWidth: '700px' }}>
+                  <h5 className="fw-semibold mb-3">Premio</h5>
+                  <p className="text-secondary mb-0">
+                    Premio al mejor videojuego en Málaga Game Jam 2022 con el proyecto “Cleaning for Mamma”,
+                    destacando en jugabilidad/mecánicas, diseño/gráficos y sonido.
+                  </p>
+                </div>
+
+                <div className="mt-2 mb-0 text-center">
+                  <h6 className="fw-bold mb-3">Contacto</h6>
+                  <div className="d-flex flex-column gap-2">
+                    <a
+                      href="https://www.linkedin.com/in/maricarmengarcianavarro19/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-decoration-none"
+                    >
+                      <i className="bi bi-linkedin me-2"></i>
+                      linkedin.com/in/maricarmengarcianavarro19
+                    </a>
+                    <a
+                      href="https://github.com/MCarmen96"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-decoration-none"
+                    >
+                      <i className="bi bi-github me-2"></i>
+                      github.com/MCarmen96
+                    </a>
+                    <a
+                      href="mailto:carmengarcianavarro19@gmail.com"
+                      className="text-decoration-none"
+                    >
+                      <i className="bi bi-envelope me-2"></i>
+                      carmengarcianavarro19@gmail.com
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Project Description */}
         <section className="mb-5">
-          <div className="card shadow-sm border-0">
+          <div className="card border">
             <div className="card-body p-4 p-md-5">
-              <h2 className="h3 fw-bold mb-4" style={{ color: themeColor }}>
+              <h2 className="h3 fw-bold mb-4 text-primary">
                 <i className="bi bi-code-square me-2"></i>
                 Acerca del Proyecto
               </h2>
@@ -41,7 +135,7 @@ export default function SobreNosotrosPage() {
               <div className="mb-4">
                 <h5 className="fw-semibold mb-3">Contexto Académico</h5>
                 <div className="alert alert-light border d-flex align-items-start gap-3">
-                  <i className="bi bi-book fs-4" style={{ color: themeColor }}></i>
+                  <i className="bi bi-book fs-4 text-primary"></i>
                   <div>
                     <p className="mb-2">
                       <strong>Este proyecto es una práctica del módulo de Diseño de Interfaces</strong> 
@@ -62,7 +156,7 @@ export default function SobreNosotrosPage() {
                 </p>
                 <div className="row g-3">
                   <div className="col-12 col-md-4">
-                    <div className="p-3 rounded border" style={{ borderLeft: '4px solid #0d33f2' }}>
+                    <div className="p-3 rounded border" style={{ borderLeft: '4px solid #0d9488' }}>
                       <h6 className="fw-bold text-primary mb-2">
                         <i className="bi bi-check-circle me-1"></i>
                         Usabilidad
@@ -73,8 +167,8 @@ export default function SobreNosotrosPage() {
                     </div>
                   </div>
                   <div className="col-12 col-md-4">
-                    <div className="p-3 rounded border" style={{ borderLeft: '4px solid #f59e0b' }}>
-                      <h6 className="fw-bold mb-2" style={{ color: '#f59e0b' }}>
+                    <div className="p-3 rounded border" style={{ borderLeft: '4px solid #f43f5e' }}>
+                      <h6 className="fw-bold mb-2" style={{ color: '#f43f5e' }}>
                         <i className="bi bi-x-circle me-1"></i>
                         No Usabilidad
                       </h6>
@@ -84,8 +178,8 @@ export default function SobreNosotrosPage() {
                     </div>
                   </div>
                   <div className="col-12 col-md-4">
-                    <div className="p-3 rounded border" style={{ borderLeft: '4px solid #10b981' }}>
-                      <h6 className="fw-bold mb-2" style={{ color: '#10b981' }}>
+                    <div className="p-3 rounded border" style={{ borderLeft: '4px solid #8b5cf6' }}>
+                      <h6 className="fw-bold mb-2" style={{ color: '#8b5cf6' }}>
                         <i className="bi bi-universal-access me-1"></i>
                         Accesibilidad
                       </h6>
@@ -105,84 +199,6 @@ export default function SobreNosotrosPage() {
                       {tech}
                     </span>
                   ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CV Section */}
-        <section className="mb-5">
-          <div className="card shadow-sm border-0">
-            <div className="card-body p-4 p-md-5">
-              <h2 className="h3 fw-bold mb-4" style={{ color: themeColor }}>
-                <i className="bi bi-file-earmark-person me-2"></i>
-                Curriculum Vitae
-              </h2>
-
-              <div className="d-flex flex-column gap-3">
-                <p className="text-secondary">
-                  Descarga el currículum del autor del proyecto en formato PDF.
-                </p>
-
-                {/* CV Embed */}
-                <div className="border rounded overflow-hidden bg-light">
-                  <object
-                    data="/cv/curriculum.pdf"
-                    type="application/pdf"
-                    className="w-100"
-                    style={{ height: '600px' }}
-                  >
-                    {/* Fallback si el navegador no puede mostrar el PDF */}
-                    <div className="p-5 text-center">
-                      <i className="bi bi-file-earmark-pdf fs-1 text-danger mb-3 d-block"></i>
-                      <p className="text-secondary mb-3">
-                        Tu navegador no puede mostrar el PDF directamente.
-                      </p>
-                      <a 
-                        href="/cv/curriculum.pdf" 
-                        download="Curriculum_DevBoards.pdf"
-                        className="btn btn-primary"
-                      >
-                        <i className="bi bi-download me-2"></i>
-                        Descargar CV (PDF)
-                      </a>
-                    </div>
-                  </object>
-                </div>
-
-                {/* Download Button */}
-                <div className="d-flex gap-3 justify-content-center">
-                  <a 
-                    href="/cv/curriculum.pdf" 
-                    download="Curriculum_DevBoards.pdf"
-                    className="btn btn-primary d-flex align-items-center gap-2"
-                  >
-                    <i className="bi bi-download"></i>
-                    Descargar CV
-                  </a>
-                  <a 
-                    href="/cv/curriculum.pdf" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="btn btn-outline-secondary d-flex align-items-center gap-2"
-                  >
-                    <i className="bi bi-box-arrow-up-right"></i>
-                    Abrir en nueva pestaña
-                  </a>
-                </div>
-
-                <div className="alert alert-info border-0 shadow-sm mt-3">
-                  <div className="d-flex align-items-start gap-3">
-                    <i className="bi bi-info-circle-fill fs-5" style={{ color: themeColor }}></i>
-                    <div>
-                      <h6 className="fw-bold mb-2">Nota sobre el CV</h6>
-                      <p className="mb-0 small">
-                        Para mostrar tu CV, coloca el archivo PDF en la carpeta <code>public/cv/</code> con el nombre 
-                        <code>curriculum.pdf</code>. El archivo se mostrará automáticamente en esta sección.
-                      </p>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

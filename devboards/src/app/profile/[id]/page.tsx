@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { PinGrid } from '@/components/pins/PinGrid';
 import { FollowButton } from '@/components/ui/FollowButton';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { PinWithRelations } from '@/types';
 
 interface ProfilePageProps {
@@ -88,6 +89,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
 
   return (
     <main className="flex-grow-1 w-100 container py-4" style={{ maxWidth: '1280px' }}>
+      <Breadcrumb items={[{ label: 'Perfil', href: '/profile' }, { label: user.name || username }]} />
       {/* Profile Header Section */}
       <section className="d-flex flex-column align-items-center justify-content-center mb-5">
         <div className="d-flex flex-column align-items-center gap-3 w-100 text-center" style={{ maxWidth: '672px' }}>

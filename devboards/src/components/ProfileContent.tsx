@@ -49,8 +49,8 @@ export function ProfileContent({ user, stats, boards, pins }: ProfileContentProp
       <section 
         className={`mb-4 mb-md-5 ${isNoUsability ? 'p-4 rounded-3' : 'd-flex flex-column align-items-center justify-content-center'}`}
         style={isNoUsability ? {
-          background: 'linear-gradient(135deg, #f59e0b15 0%, #f59e0b25 100%)',
-          border: '2px dashed #f59e0b',
+          background: 'linear-gradient(135deg, #f43f5e15 0%, #f43f5e25 100%)',
+          border: '2px dashed #f43f5e',
         } : undefined}
       >
         <div 
@@ -60,7 +60,7 @@ export function ProfileContent({ user, stats, boards, pins }: ProfileContentProp
           {/* Avatar with edit overlay */}
           <div className="position-relative" role="button">
             <div 
-              className={`${isNoUsability ? 'rounded-4 border-3 border-warning' : 'rounded-circle border-4'} bg-secondary d-flex align-items-center justify-content-center overflow-hidden border shadow avatar-lg`}
+              className={`${isNoUsability ? 'rounded-4 border-3 border-danger' : 'rounded-circle border-4'} bg-secondary d-flex align-items-center justify-content-center overflow-hidden border shadow avatar-lg`}
               style={{ 
                 backgroundSize: 'cover', 
                 backgroundPosition: 'center',
@@ -85,12 +85,12 @@ export function ProfileContent({ user, stats, boards, pins }: ProfileContentProp
           <div className={isNoUsability ? 'flex-grow-1' : ''}>
             <h1 
               className={`${isNoUsability ? 'h4 mb-1' : 'h3 h2-md'} fw-bold`}
-              style={isNoUsability ? { color: '#f59e0b', fontFamily: 'monospace', letterSpacing: '0.5px' } : undefined}
+              style={isNoUsability ? { color: '#f43f5e', fontFamily: 'monospace', letterSpacing: '0.5px' } : undefined}
             >
               {user.name}
             </h1>
             <p 
-              className={`${isNoUsability ? 'mb-2' : 'mb-0'} ${isNoUsability ? 'text-warning' : 'text-secondary'} small`}
+              className={`${isNoUsability ? 'mb-2' : 'mb-0'} ${isNoUsability ? 'text-danger' : 'text-secondary'} small`}
               style={isNoUsability ? { fontStyle: 'italic' } : undefined}
             >
               @{username}

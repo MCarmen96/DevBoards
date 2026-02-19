@@ -164,9 +164,9 @@ export function SearchBar() {
 
   return (
     <div ref={searchRef} className="position-relative w-100">
-      <div className="input-group">
-        <span className="input-group-text bg-transparent border-end-0">
-          <i className="bi bi-search text-secondary"></i>
+      <div className="input-group search-bar-group">
+        <span className="input-group-text search-bar-addon border-0">
+          <i className="bi bi-search"></i>
         </span>
         <input
           type="text"
@@ -178,11 +178,11 @@ export function SearchBar() {
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
           placeholder="Buscar snippets, frameworks, autores..."
-          className="form-control border-start-0 ps-0"
+          className="form-control search-bar-input border-0 ps-1"
         />
         {/* Spinner de carga oculto en no-usabilidad (anti-patrón: sin feedback) */}
         {isLoading && !isNoUsability && (
-          <span className="input-group-text bg-transparent border-start-0">
+          <span className="input-group-text search-bar-addon border-0">
             <span className="spinner-border spinner-border-sm text-primary" role="status"></span>
           </span>
         )}

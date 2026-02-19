@@ -1,10 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useAppTheme } from '@/context/ThemeContext';
 
 export function Footer() {
-  const { themeColor } = useAppTheme();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -31,7 +29,7 @@ export function Footer() {
 
           {/* Navigation Column */}
           <div className="col-6 col-md-2">
-            <h6 className="fw-bold mb-3 small text-uppercase" style={{ color: themeColor }}>Navegación</h6>
+            <h6 className="fw-bold mb-3 small text-uppercase text-primary">Navegación</h6>
             <ul className="list-unstyled small">
               <li className="mb-2">
                 <Link href="/" className="text-decoration-none text-secondary">
@@ -58,7 +56,7 @@ export function Footer() {
 
           {/* User Column */}
           <div className="col-6 col-md-2">
-            <h6 className="fw-bold mb-3 small text-uppercase" style={{ color: themeColor }}>Usuario</h6>
+            <h6 className="fw-bold mb-3 small text-uppercase text-primary">Usuario</h6>
             <ul className="list-unstyled small">
               <li className="mb-2">
                 <Link href="/login" className="text-decoration-none text-secondary">
@@ -85,7 +83,7 @@ export function Footer() {
 
           {/* Info Column */}
           <div className="col-12 col-md-4">
-            <h6 className="fw-bold mb-3 small text-uppercase" style={{ color: themeColor }}>Proyecto Académico</h6>
+            <h6 className="fw-bold mb-3 small text-uppercase text-primary">Proyecto Académico</h6>
             <p className="small text-secondary mb-3">
               <i className="bi bi-book me-2"></i>
               Módulo: Diseño de Interfaces<br />

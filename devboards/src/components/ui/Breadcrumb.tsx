@@ -24,14 +24,19 @@ const routeLabels: Record<string, string> = {
   '/create': 'Crear Pin',
   '/pin': 'Pin',
   '/search': 'Búsqueda',
+  '/analisis': 'Análisis',
+  '/sobre-nosotros': 'Sobre Nosotros',
+  '/mapa-sitio': 'Mapa del Sitio',
+  '/register': 'Registro',
+  '/login': 'Iniciar Sesión',
 };
 
 export function Breadcrumb({ items, currentPage }: BreadcrumbProps) {
   const { theme } = useAppTheme();
   const pathname = usePathname();
 
-  // Solo mostrar en tema Usabilidad
-  if (theme !== 'usabilidad') {
+  // No mostrar en temas de accesibilidad y no-usabilidad
+  if (theme === 'accesibilidad' || theme === 'no-usabilidad') {
     return null;
   }
 
@@ -39,11 +44,10 @@ export function Breadcrumb({ items, currentPage }: BreadcrumbProps) {
   if (items && items.length > 0) {
     return (
       <nav aria-label="Ubicación actual" className="mb-3">
-        <ol className="breadcrumb mb-0 small bg-body-tertiary rounded-2 px-3 py-2">
+        <ol className="breadcrumb mb-0 small">
           <li className="breadcrumb-item">
-            <Link href="/" className="text-decoration-none d-flex align-items-center gap-1">
-              <i className="bi bi-house-door"></i>
-              <span>Inicio</span>
+            <Link href="/" className="text-decoration-none">
+              Explorar
             </Link>
           </li>
           {items.map((item, index) => (
@@ -57,7 +61,7 @@ export function Breadcrumb({ items, currentPage }: BreadcrumbProps) {
                   {item.label}
                 </Link>
               ) : (
-                <span className="text-primary fw-medium">{item.label}</span>
+                item.label
               )}
             </li>
           ))}
@@ -109,11 +113,10 @@ export function Breadcrumb({ items, currentPage }: BreadcrumbProps) {
 
   return (
     <nav aria-label="Ubicación actual" className="mb-3">
-      <ol className="breadcrumb mb-0 small bg-body-tertiary rounded-2 px-3 py-2 d-inline-flex">
+      <ol className="breadcrumb mb-0 small">
         <li className="breadcrumb-item">
-          <Link href="/" className="text-decoration-none d-flex align-items-center gap-1">
-            <i className="bi bi-house-door"></i>
-            <span className="d-none d-sm-inline">Inicio</span>
+          <Link href="/" className="text-decoration-none">
+            Explorar
           </Link>
         </li>
         {breadcrumbItems.map((item, index) => (
@@ -127,7 +130,7 @@ export function Breadcrumb({ items, currentPage }: BreadcrumbProps) {
                 {item.label}
               </Link>
             ) : (
-              <span className="text-primary fw-medium">{item.label}</span>
+              item.label
             )}
           </li>
         ))}

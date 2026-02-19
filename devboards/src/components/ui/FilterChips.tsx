@@ -33,7 +33,7 @@ export function FilterChips({ onFilterChange }: FilterChipsProps) {
           className={`btn btn-sm d-flex align-items-center gap-2 flex-shrink-0 ${
             activeFilter === filter.id
               ? 'btn-primary'
-              : 'btn-outline-secondary'
+              : 'btn-outline-dark'
           }`}
         >
           {filter.icon && <i className={`bi ${filter.icon}`}></i>}

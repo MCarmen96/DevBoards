@@ -22,9 +22,9 @@ const themeLabels: Record<AppTheme, string> = {
 };
 
 const themeColors: Record<AppTheme, string> = {
-  'usabilidad': '#0d33f2',
-  'no-usabilidad': '#f59e0b',
-  'accesibilidad': '#10b981',
+  'usabilidad': '#0d9488',
+  'no-usabilidad': '#f43f5e',
+  'accesibilidad': '#8b5cf6',
 };
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -45,18 +45,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     
     // Añadir atributo data-app-theme al body para estilos CSS condicionales
     document.body.setAttribute('data-app-theme', theme);
-    
-    // Para tema accesibilidad, bloquear zoom modificando viewport
-    const viewport = document.querySelector('meta[name="viewport"]');
-    if (theme === 'accesibilidad') {
-      if (viewport) {
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-      }
-    } else {
-      if (viewport) {
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
-      }
-    }
   }, [theme, mounted]);
 
   const setTheme = (newTheme: AppTheme) => {

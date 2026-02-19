@@ -20,12 +20,12 @@ export default function RegisterPage() {
   });
 
   const themeOptions: { value: AppTheme; label: string; color: string }[] = [
-    { value: 'usabilidad', label: 'Usabilidad', color: '#0d33f2' },
-    { value: 'no-usabilidad', label: 'No Usabilidad', color: '#f59e0b' },
-    { value: 'accesibilidad', label: 'Accesibilidad', color: '#10b981' },
+    { value: 'usabilidad', label: 'Usabilidad', color: '#0d9488' },
+    { value: 'no-usabilidad', label: 'No Usabilidad', color: '#f43f5e' },
+    { value: 'accesibilidad', label: 'Accesibilidad', color: '#8b5cf6' },
   ];
 
-  const currentThemeColor = themeOptions.find(t => t.value === theme)?.color || '#0d33f2';
+  const currentThemeColor = themeOptions.find(t => t.value === theme)?.color || '#0d9488';
 
   // Función para convertir errores técnicos a mensajes amigables
   const getFriendlyErrorMessage = (error: string): string => {
@@ -296,7 +296,7 @@ export default function RegisterPage() {
               ¿Ya tienes cuenta?{' '}
               <Link 
                 href="/login" 
-                className="fw-medium text-decoration-none"
+                className={`fw-medium ${theme === 'usabilidad' ? 'text-decoration-underline' : 'text-decoration-none'}`}
                 style={{ color: currentThemeColor }}
               >
                 Inicia sesión

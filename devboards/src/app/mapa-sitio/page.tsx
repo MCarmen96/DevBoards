@@ -3,244 +3,301 @@
 import { useAppTheme } from '@/context/ThemeContext';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 
 export default function MapaSitioPage() {
   const { theme, themeLabel, themeColor } = useAppTheme();
   const { data: session } = useSession();
-
-  const sections = [
-    {
-      title: 'Navegación Principal',
-      icon: 'bi-compass',
-      pages: [
-        { name: 'Explorar', href: '/', icon: 'bi-house-door', description: 'Página principal con todos los pins' },
-        { name: 'Siguiendo', href: '/feed', icon: 'bi-people', description: 'Pins de usuarios que sigues', auth: true },
-        { name: 'Análisis', href: '/analisis', icon: 'bi-bar-chart-line', description: 'Videos de análisis del proyecto' },
-        { name: 'Sobre Nosotros', href: '/sobre-nosotros', icon: 'bi-info-circle', description: 'Información del proyecto y CV' },
-        { name: 'Mapa del Sitio', href: '/mapa-sitio', icon: 'bi-map', description: 'Esta página' },
-      ]
-    },
-    {
-      title: 'Contenido y Creación',
-      icon: 'bi-plus-square',
-      pages: [
-        { name: 'Crear Pin', href: '/create', icon: 'bi-plus-circle', description: 'Crear un nuevo pin', auth: true },
-        { name: 'Detalle de Pin', href: '/pin/[id]', icon: 'bi-eye', description: 'Ver detalles de un pin', dynamic: true },
-      ]
-    },
-    {
-      title: 'Perfil y Configuración',
-      icon: 'bi-person-circle',
-      pages: [
-        { name: 'Mi Perfil', href: '/profile', icon: 'bi-person', description: 'Tu perfil de usuario', auth: true },
-        { name: 'Perfil de Usuario', href: '/profile/[id]', icon: 'bi-person-badge', description: 'Ver perfil de otro usuario', dynamic: true },
-        { name: 'Mis Tableros', href: '/boards', icon: 'bi-collection', description: 'Tus tableros personalizados', auth: true },
-        { name: 'Pins Guardados', href: '/saved', icon: 'bi-bookmark', description: 'Pins que has guardado', auth: true },
-      ]
-    },
-    {
-      title: 'Búsqueda y Filtros',
-      icon: 'bi-search',
-      pages: [
-        { name: 'Búsqueda', href: '/?q=[query]', icon: 'bi-search', description: 'Buscar pins por palabras clave', dynamic: true },
-        { name: 'Por Lenguaje', href: '/?language=[lang]', icon: 'bi-code-slash', description: 'Filtrar por lenguaje de programación', dynamic: true },
-        { name: 'Por Etiquetas', href: '/?tags=[tag]', icon: 'bi-tags', description: 'Filtrar por etiquetas', dynamic: true },
-      ]
-    },
-    {
-      title: 'Autenticación',
-      icon: 'bi-shield-lock',
-      pages: [
-        { name: 'Iniciar Sesión', href: '/login', icon: 'bi-box-arrow-in-right', description: 'Acceder a tu cuenta', public: true },
-        { name: 'Registrarse', href: '/register', icon: 'bi-person-plus', description: 'Crear una cuenta nueva', public: true },
-      ]
-    },
-  ];
+  const isLoggedIn = !!session;
 
   return (
     <main className="flex-grow-1 overflow-auto">
-      <div className="container py-5" style={{ maxWidth: '1200px' }}>
+      <div className="container py-4" style={{ maxWidth: '900px' }}>
+        <Breadcrumb />
         {/* Header */}
-        <div className="text-center mb-5">
-          <h1 className="display-4 fw-bold mb-3">
-            <i className="bi bi-map me-3" style={{ color: themeColor }}></i>
-            Mapa del Sitio
-          </h1>
-          <p className="lead text-secondary">
-            Explora todas las secciones y páginas de DevBoards
+        <div className="mb-4">
+          <h1 className="h2 fw-bold mb-2">Mapa del Sitio</h1>
+          <p className="text-secondary mb-0">
+            Estructura completa de navegación de DevBoards
+            {isLoggedIn
+              ? <span className="ms-2 badge bg-success-subtle text-success">Sesión iniciada</span>
+              : <span className="ms-2 badge bg-secondary-subtle text-secondary">Sin sesión</span>
+            }
           </p>
         </div>
 
-        {/* Theme Info Badge */}
-        <div className="d-flex justify-content-center mb-4">
-          <div 
-            className="d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill"
-            style={{ backgroundColor: `${themeColor}20`, border: `2px solid ${themeColor}` }}
-          >
-            <span className="rounded-circle" style={{ width: '12px', height: '12px', backgroundColor: themeColor }} />
-            <span className="fw-bold" style={{ color: themeColor }}>
-              Tema Actual: {themeLabel}
-            </span>
-          </div>
-        </div>
+        <hr className="my-4" />
 
-        {/* Sections */}
-        <div className="row g-4">
-          {sections.map((section, idx) => (
-            <div key={idx} className="col-12 col-lg-6">
-              <div className="card shadow-sm border-0 h-100">
-                <div 
-                  className="card-header border-0 py-3"
-                  style={{ backgroundColor: `${themeColor}15` }}
-                >
-                  <h4 className="h5 mb-0 fw-bold d-flex align-items-center gap-2">
-                    <i className={`${section.icon} fs-5`} style={{ color: themeColor }}></i>
-                    {section.title}
-                  </h4>
-                </div>
-                <div className="card-body p-0">
-                  <ul className="list-group list-group-flush">
-                    {section.pages.map((page, pageIdx) => {
-                      const isDisabled = (page.auth && !session) || (page.public && session);
-                      const isDynamic = page.dynamic;
-                      
-                      return (
-                        <li key={pageIdx} className="list-group-item border-0 py-3 px-4">
-                          <div className="d-flex align-items-start gap-3">
-                            <div 
-                              className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                              style={{ 
-                                width: '40px', 
-                                height: '40px', 
-                                backgroundColor: isDisabled ? '#e9ecef' : `${themeColor}20`,
-                                color: isDisabled ? '#6c757d' : themeColor
-                              }}
-                            >
-                              <i className={page.icon}></i>
-                            </div>
-                            <div className="flex-grow-1">
-                              <div className="d-flex align-items-center gap-2 mb-1">
-                                {isDynamic ? (
-                                  <span className={`fw-semibold ${isDisabled ? 'text-muted' : ''}`}>
-                                    {page.name}
-                                  </span>
-                                ) : (
-                                  <Link 
-                                    href={page.href} 
-                                    className={`text-decoration-none fw-semibold ${isDisabled ? 'text-muted pe-none' : ''}`}
-                                    style={!isDisabled ? { color: themeColor } : undefined}
-                                  >
-                                    {page.name}
-                                  </Link>
-                                )}
-                                {isDynamic && (
-                                  <span className="badge bg-secondary-subtle text-secondary small">
-                                    Dinámico
-                                  </span>
-                                )}
-                                {page.auth && !session && (
-                                  <span className="badge bg-warning-subtle text-warning small">
-                                    <i className="bi bi-lock-fill me-1"></i>
-                                    Requiere Login
-                                  </span>
-                                )}
-                                {page.public && session && (
-                                  <span className="badge bg-info-subtle text-info small">
-                                    Solo sin sesión
-                                  </span>
-                                )}
-                              </div>
-                              <p className="small text-secondary mb-0">
-                                {page.description}
-                              </p>
-                              {!isDynamic && (
-                                <code className="small text-muted d-block mt-1" style={{ fontSize: '0.7rem' }}>
-                                  {page.href}
-                                </code>
-                              )}
-                            </div>
-                          </div>
-                        </li>
-                      );
-                    })}
+        {/* Mapa en formato lista jerárquica */}
+        <div className="p-4 rounded border">
+          <nav aria-label="Mapa del sitio">
+            <ul className="list-unstyled mb-0">
+
+              {/* ── ZONA PÚBLICA ─────────────────────────────────── */}
+              <li className="mb-4">
+                <span className="fw-bold text-uppercase small text-secondary d-block mb-2" style={{ letterSpacing: '.05em' }}>
+                  Zona pública
+                </span>
+                <ul className="list-unstyled ms-3">
+
+                  {/* Inicio */}
+                  <li className="mb-3">
+                    <Link href="/" className="text-decoration-none fw-semibold d-flex align-items-center gap-2 text-primary">
+                      <i className="bi bi-house-door"></i> Inicio — Explorar Pins
+                    </Link>
+                    <ul className="list-unstyled ms-4 mt-1">
+                      <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Filtrar por lenguaje (HTML, CSS, JS, TS, React…)</li>
+                      <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Buscar por palabra clave o etiqueta</li>
+                      <li className="mb-2">
+                        <span className="small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Abrir pin</span>
+                        {/* Detalle de Pin — anidado aquí porque se accede desde el listado */}
+                        <ul className="list-unstyled ms-4 mt-1">
+                          <li className="mb-1">
+                            <span className="small fw-semibold text-body"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin <code className="fw-normal">/pin/[id]</code></span>
+                            <ul className="list-unstyled ms-4 mt-1">
+                              <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver imagen y código</li>
+                              <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver comentarios</li>
+                              {isLoggedIn && <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Dar like / Guardar en tablero</li>}
+                              {isLoggedIn && <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Escribir comentario</li>}
+                              <li className="mb-1">
+                                <span className="small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver autor</span>
+                                {/* Perfil — anidado aquí porque se accede desde el detalle */}
+                                <ul className="list-unstyled ms-4 mt-1">
+                                  <li className="mb-1">
+                                    <span className="small fw-semibold text-body"><i className="bi bi-person-badge me-1 text-secondary"></i>Perfil de usuario <code className="fw-normal">/profile/[id]</code></span>
+                                    <ul className="list-unstyled ms-4 mt-1">
+                                      <li className="small text-muted mb-1"><i className="bi bi-arrow-return-right me-1"></i>Ver pins del usuario</li>
+                                      <li className="small text-muted mb-1"><i className="bi bi-arrow-return-right me-1"></i>Ver estadísticas</li>
+                                      {isLoggedIn && <li className="small text-muted mb-1"><i className="bi bi-arrow-return-right me-1"></i>Seguir / Dejar de seguir</li>}
+                                    </ul>
+                                  </li>
+                                </ul>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+
+                  {/* Análisis */}
+                  <li className="mb-2">
+                    <Link href="/analisis" className="text-decoration-none fw-semibold d-flex align-items-center gap-2 text-primary">
+                      <i className="bi bi-bar-chart-line"></i> Análisis
+                    </Link>
+                    <ul className="list-unstyled ms-4 mt-1">
+                      <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver vídeos de demostración del proyecto</li>
+                    </ul>
+                  </li>
+
+                  {/* Sobre Nosotros */}
+                  <li className="mb-2">
+                    <Link href="/sobre-nosotros" className="text-decoration-none fw-semibold d-flex align-items-center gap-2 text-primary">
+                      <i className="bi bi-info-circle"></i> Sobre Nosotros
+                    </Link>
+                    <ul className="list-unstyled ms-4 mt-1">
+                      <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Información del proyecto</li>
+                      <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver y descargar CV del autor</li>
+                    </ul>
+                  </li>
+
+                  {/* Mapa del Sitio */}
+                  <li className="mb-2">
+                    <Link href="/mapa-sitio" className="text-decoration-none fw-semibold d-flex align-items-center gap-2 text-primary">
+                      <i className="bi bi-map"></i> Mapa del Sitio
+                      <span className="badge bg-secondary-subtle text-secondary ms-1 small fw-normal">Esta página</span>
+                    </Link>
+                  </li>
+
+                </ul>
+              </li>
+
+              {/* ── ACCESO (sin sesión) ──────────────────────────── */}
+              {!isLoggedIn && (
+                <li className="mb-4">
+                  <span className="fw-bold text-uppercase small text-secondary d-block mb-2" style={{ letterSpacing: '.05em' }}>
+                    Acceso
+                  </span>
+                  <ul className="list-unstyled ms-3">
+                    <li className="mb-2">
+                      <Link href="/login" className="text-decoration-none d-flex align-items-center gap-2 text-body">
+                        <i className="bi bi-box-arrow-in-right text-secondary"></i> Iniciar Sesión
+                      </Link>
+                      <ul className="list-unstyled ms-4 mt-1">
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Entrar con email y contraseña</li>
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Enlace a Registrarse</li>
+                      </ul>
+                    </li>
+                    <li className="mb-2">
+                      <Link href="/register" className="text-decoration-none d-flex align-items-center gap-2 text-body">
+                        <i className="bi bi-person-plus text-secondary"></i> Registrarse
+                      </Link>
+                      <ul className="list-unstyled ms-4 mt-1">
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Crear cuenta nueva</li>
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Seleccionar tema de interfaz</li>
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Enlace a Iniciar Sesión</li>
+                      </ul>
+                    </li>
                   </ul>
-                </div>
-              </div>
-            </div>
-          ))}
+                </li>
+              )}
+
+              {/* ── ZONA PRIVADA (con sesión) ──────────────────── */}
+              {isLoggedIn && (
+                <li className="mb-4">
+                  <span className="fw-bold text-uppercase small text-secondary d-block mb-2" style={{ letterSpacing: '.05em' }}>
+                    Mi cuenta
+                  </span>
+                  <ul className="list-unstyled ms-3">
+                    <li className="mb-2">
+                      <Link href="/profile" className="text-decoration-none fw-semibold d-flex align-items-center gap-2 text-primary">
+                        <i className="bi bi-person-circle"></i> Mi Perfil
+                      </Link>
+                      <ul className="list-unstyled ms-4 mt-1">
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver estadísticas (seguidores, siguiendo, pins)</li>
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Editar bio</li>
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver mis tableros → <em>Mis Tableros</em></li>
+                        <li className="mb-1">
+                          <span className="small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver mis pins publicados</span>
+                          <ul className="list-unstyled ms-4 mt-1">
+                            <li className="small fw-semibold text-body mb-1"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin <code className="fw-normal">/pin/[id]</code></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li className="mb-2">
+                      <Link href="/boards" className="text-decoration-none fw-semibold d-flex align-items-center gap-2 text-primary">
+                        <i className="bi bi-collection"></i> Mis Tableros
+                      </Link>
+                      <ul className="list-unstyled ms-4 mt-1">
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Crear nuevo tablero</li>
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Eliminar tablero</li>
+                        <li className="mb-2">
+                          <span className="small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Abrir tablero</span>
+                          <ul className="list-unstyled ms-4 mt-1">
+                            <li className="mb-1">
+                              <span className="small fw-semibold text-body"><i className="bi bi-collection me-1 text-secondary"></i>Tablero <code className="fw-normal">/boards/[id]</code></span>
+                              <ul className="list-unstyled ms-4 mt-1">
+                                <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver pins del tablero</li>
+                                <li className="mb-1">
+                                  <span className="small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Abrir pin</span>
+                                  <ul className="list-unstyled ms-4 mt-1">
+                                    <li className="small fw-semibold text-body"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin <code className="fw-normal">/pin/[id]</code></li>
+                                  </ul>
+                                </li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li className="mb-2">
+                      <Link href="/saved" className="text-decoration-none fw-semibold d-flex align-items-center gap-2 text-primary">
+                        <i className="bi bi-bookmark"></i> Pins Guardados
+                      </Link>
+                      <ul className="list-unstyled ms-4 mt-1">
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver biblioteca personal de pins guardados</li>
+                        <li className="mb-1">
+                          <span className="small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Abrir pin</span>
+                          <ul className="list-unstyled ms-4 mt-1">
+                            <li className="small fw-semibold text-body"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin <code className="fw-normal">/pin/[id]</code></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li className="mb-2">
+                      <Link href="/feed" className="text-decoration-none fw-semibold d-flex align-items-center gap-2 text-primary">
+                        <i className="bi bi-people"></i> Siguiendo
+                      </Link>
+                      <ul className="list-unstyled ms-4 mt-1">
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Feed de pins de usuarios que sigues</li>
+                        <li className="mb-1">
+                          <span className="small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Abrir pin</span>
+                          <ul className="list-unstyled ms-4 mt-1">
+                            <li className="small fw-semibold text-body"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin <code className="fw-normal">/pin/[id]</code></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li className="mb-2">
+                      <Link href="/create" className="text-decoration-none fw-semibold d-flex align-items-center gap-2 text-primary">
+                        <i className="bi bi-plus-circle"></i> Crear Pin
+                      </Link>
+                      <ul className="list-unstyled ms-4 mt-1">
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Subir imagen</li>
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Añadir título, descripción, código y etiquetas</li>
+                        <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Seleccionar lenguaje de programación</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              )}
+
+              {/* ── TEMAS ──────────────────────────────────────── */}
+              <li className="mb-2">
+                <span className="fw-bold text-uppercase small text-secondary d-block mb-2" style={{ letterSpacing: '.05em' }}>
+                  Temas de interfaz
+                </span>
+                <ul className="list-unstyled ms-3">
+                  <li className="mb-2 d-flex align-items-start gap-2">
+                    <span className="rounded-circle mt-1" style={{ width: '10px', height: '10px', backgroundColor: '#0d9488', display: 'inline-block', flexShrink: 0 }}></span>
+                    <div>
+                      <strong className="text-primary">Usabilidad</strong>
+                      <small className="text-muted d-block">Buenas prácticas de UX — se elige en login/registro</small>
+                    </div>
+                  </li>
+                  <li className="mb-2 d-flex align-items-start gap-2">
+                    <span className="rounded-circle mt-1" style={{ width: '10px', height: '10px', backgroundColor: '#f43f5e', display: 'inline-block', flexShrink: 0 }}></span>
+                    <div>
+                      <strong style={{ color: '#f43f5e' }}>No Usabilidad</strong>
+                      <small className="text-muted d-block">Anti-patrones de UX con fines educativos</small>
+                    </div>
+                  </li>
+                  <li className="mb-2 d-flex align-items-start gap-2">
+                    <span className="rounded-circle mt-1" style={{ width: '10px', height: '10px', backgroundColor: '#8b5cf6', display: 'inline-block', flexShrink: 0 }}></span>
+                    <div>
+                      <strong style={{ color: '#8b5cf6' }}>Accesibilidad</strong>
+                      <small className="text-muted d-block">Errores de accesibilidad demostrativos</small>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+
+            </ul>
+          </nav>
+
+          {/* Footer info */}
+          <hr className="my-4" />
+          <div className="small text-secondary">
+            <p className="mb-2">
+              <i className="bi bi-info-circle me-2"></i>
+              <strong>Proyecto Académico:</strong> Módulo de Diseño de Interfaces — DAW
+            </p>
+            <p className="mb-0">
+              <i className="bi bi-github me-2"></i>
+              Código disponible en:
+              <a href="https://github.com/MCarmen96/DevBoards" className="ms-1" target="_blank" rel="noopener noreferrer">
+                GitHub
+              </a>
+            </p>
+          </div>
         </div>
 
-        {/* Quick Stats */}
-        <div className="row g-3 mt-4">
-          <div className="col-6 col-md-3">
-            <div className="card border-0 shadow-sm text-center p-3" style={{ backgroundColor: `${themeColor}10` }}>
-              <div className="h2 fw-bold mb-1" style={{ color: themeColor }}>
-                {sections.reduce((acc, section) => acc + section.pages.length, 0)}
-              </div>
-              <div className="small text-secondary">Páginas Totales</div>
-            </div>
-          </div>
-          <div className="col-6 col-md-3">
-            <div className="card border-0 shadow-sm text-center p-3" style={{ backgroundColor: `${themeColor}10` }}>
-              <div className="h2 fw-bold mb-1" style={{ color: themeColor }}>
-                {sections.reduce((acc, section) => acc + section.pages.filter(p => p.auth).length, 0)}
-              </div>
-              <div className="small text-secondary">Requieren Login</div>
-            </div>
-          </div>
-          <div className="col-6 col-md-3">
-            <div className="card border-0 shadow-sm text-center p-3" style={{ backgroundColor: `${themeColor}10` }}>
-              <div className="h2 fw-bold mb-1" style={{ color: themeColor }}>
-                {sections.reduce((acc, section) => acc + section.pages.filter(p => p.dynamic).length, 0)}
-              </div>
-              <div className="small text-secondary">Dinámicas</div>
-            </div>
-          </div>
-          <div className="col-6 col-md-3">
-            <div className="card border-0 shadow-sm text-center p-3" style={{ backgroundColor: `${themeColor}10` }}>
-              <div className="h2 fw-bold mb-1" style={{ color: themeColor }}>
-                3
-              </div>
-              <div className="small text-secondary">Temas Disponibles</div>
-            </div>
+        {/* Tema actual */}
+        <div className="mt-4 text-center">
+          <div
+            className="d-inline-flex align-items-center gap-2 px-3 py-2"
+          >
+            <span className="rounded-circle" style={{ width: '10px', height: '10px', backgroundColor: themeColor }} />
+            <small className="fw-medium" style={{ color: themeColor }}>
+              Visualizando en tema: {themeLabel}
+            </small>
           </div>
         </div>
-
-        {/* Additional Info */}
-        <div className="alert alert-light border shadow-sm mt-5">
-          <div className="d-flex align-items-start gap-3">
-            <i className="bi bi-lightbulb fs-4" style={{ color: themeColor }}></i>
-            <div>
-              <h6 className="fw-bold mb-2">
-                <i className="bi bi-info-circle me-2"></i>
-                Información Útil
-              </h6>
-              <ul className="mb-0 small">
-                <li>Las páginas marcadas como <span className="badge bg-warning-subtle text-warning small">Requiere Login</span> necesitan autenticación</li>
-                <li>Las páginas <span className="badge bg-secondary-subtle text-secondary small">Dinámicas</span> requieren parámetros adicionales en la URL</li>
-                <li>Puedes cambiar el tema desde el login/registro o desde tu perfil</li>
-                <li>Los tres temas están disponibles: Usabilidad, No Usabilidad y Accesibilidad</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* CTA */}
-        {!session && (
-          <div className="text-center mt-5">
-            <p className="text-secondary mb-3">¿Nuevo en DevBoards?</p>
-            <div className="d-flex gap-3 justify-content-center">
-              <Link href="/register" className="btn btn-primary">
-                <i className="bi bi-person-plus me-2"></i>
-                Crear Cuenta
-              </Link>
-              <Link href="/login" className="btn btn-outline-secondary">
-                <i className="bi bi-box-arrow-in-right me-2"></i>
-                Iniciar Sesión
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
     </main>
   );

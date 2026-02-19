@@ -67,16 +67,6 @@ export function PinCard({ pin, showRemoveButton, onRemove }: PinCardProps) {
             {pin.description}
           </p>
         )}
-        
-        {/* Botón sin contexto en accesibilidad */}
-        {isAccessibility && (
-          <Link 
-            href={`/pin/${pin.id}`} 
-            className="btn btn-link btn-sm p-0 text-decoration-none"
-          >
-            Leer más
-          </Link>
-        )}
 
         <div className="d-flex align-items-center justify-content-between">
           {/* Author Info */}

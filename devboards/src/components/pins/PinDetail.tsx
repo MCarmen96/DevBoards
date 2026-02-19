@@ -39,10 +39,74 @@ function getLanguageLabel(language: string | null): string {
   return labels[language?.toLowerCase() || ''] || language?.toUpperCase() || 'Code';
 }
 
+type CodeTokenType = 'plain' | 'comment' | 'string' | 'keyword' | 'number' | 'tag' | 'attr' | 'identifier' | 'operator';
+
+const KEYWORDS = new Set([
+  'const', 'let', 'var', 'function', 'return', 'if', 'else', 'for', 'while', 'switch', 'case', 'break',
+  'continue', 'class', 'new', 'try', 'catch', 'finally', 'throw', 'import', 'from', 'export', 'default',
+  'async', 'await', 'true', 'false', 'null', 'undefined', 'interface', 'type', 'extends', 'implements'
+]);
+
+function classifyToken(token: string): CodeTokenType {
+  if (/^(\/\/.*|\/\*.*\*\/)$/.test(token)) return 'comment';
+  if (/^(["'`]).*\1$/.test(token)) return 'string';
+  if (/^\d+(\.\d+)?$/.test(token)) return 'number';
+  if (/^<\/?[a-zA-Z][\w-]*>?$/.test(token)) return 'tag';
+  if (/^[a-zA-Z_:][\w:-]*=$/.test(token)) return 'attr';
+  if (/^(=>|===|!==|==|!=|<=|>=|\+|-|\*|\/|%|=|\.|,|;|:|\(|\)|\[|\]|\{|\})$/.test(token)) return 'operator';
+  if (KEYWORDS.has(token)) return 'keyword';
+  if (/^[a-zA-Z_][\w]*$/.test(token)) return 'identifier';
+  return 'plain';
+}
+
+function tokenizeLine(line: string): Array<{ type: CodeTokenType; text: string }> {
+  const regex = /(\/\/.*$|\/\*.*\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|<\/?[a-zA-Z][\w-]*>?|[a-zA-Z_:][\w:-]*=|=>|===|!==|==|!=|<=|>=|[+\-*/%=.,;:()[\]{}]|\b\d+(?:\.\d+)?\b|\b[a-zA-Z_][\w]*\b)/g;
+  const tokens: Array<{ type: CodeTokenType; text: string }> = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null = regex.exec(line);
+
+  while (match) {
+    if (match.index > lastIndex) {
+      tokens.push({ type: 'plain', text: line.slice(lastIndex, match.index) });
+    }
+
+    const value = match[0];
+    tokens.push({ type: classifyToken(value), text: value });
+    lastIndex = match.index + value.length;
+    match = regex.exec(line);
+  }
+
+  if (lastIndex < line.length) {
+    tokens.push({ type: 'plain', text: line.slice(lastIndex) });
+  }
+
+  return tokens;
+}
+
+function renderHighlightedCode(code: string) {
+  const lines = code.split('\n');
+
+  return lines.map((line, lineIndex) => {
+    const tokens = tokenizeLine(line);
+
+    return (
+      <span key={lineIndex} className="pin-code-line">
+        {tokens.length === 0 ? ' ' : tokens.map((token, tokenIndex) => (
+          <span key={`${lineIndex}-${tokenIndex}`} className={`pin-token-${token.type}`}>
+            {token.text}
+          </span>
+        ))}
+        {lineIndex < lines.length - 1 && '\n'}
+      </span>
+    );
+  });
+}
+
 export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
   const { data: session } = useSession();
   const { theme } = useAppTheme();
   const isUsability = theme === 'usabilidad';
+  const showBreadcrumbs = theme !== 'accesibilidad' && theme !== 'no-usabilidad';
   const [activeTab, setActiveTab] = useState<'code' | 'preview'>('preview');
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -70,15 +134,17 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
           {/* Back button and breadcrumb */}
           <div className="d-flex align-items-center gap-3">
             <BackButton className="btn-sm" label="" />
-            <nav aria-label="breadcrumb" className="flex-grow-1">
-              <ol className="breadcrumb mb-0 small">
-                <li className="breadcrumb-item"><Link href="/" className="text-decoration-none">Explorar</Link></li>
-                {pin.language && (
-                  <li className="breadcrumb-item">{getLanguageLabel(pin.language)}</li>
-                )}
-                <li className="breadcrumb-item active text-truncate" aria-current="page" style={{ maxWidth: '150px' }}>{pin.title}</li>
-              </ol>
-            </nav>
+            {showBreadcrumbs && (
+              <nav aria-label="breadcrumb" className="flex-grow-1">
+                <ol className="breadcrumb mb-0 small">
+                  <li className="breadcrumb-item"><Link href="/" className="text-decoration-none">Explorar</Link></li>
+                  {pin.language && (
+                    <li className="breadcrumb-item">{getLanguageLabel(pin.language)}</li>
+                  )}
+                  <li className="breadcrumb-item active text-truncate" aria-current="page" style={{ maxWidth: '150px' }}>{pin.title}</li>
+                </ol>
+              </nav>
+            )}
           </div>
 
           <div className="d-flex flex-column gap-2">
@@ -113,16 +179,16 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
         {/* Preview Image Mobile */}
         <div className="position-relative" style={{ minHeight: isUsability ? '180px' : '250px', background: 'var(--db-card-bg)' }}>
           <div className="position-absolute top-0 start-50 translate-middle-x mt-3 z-1">
-            <div className="btn-group bg-dark bg-opacity-75 rounded-3 p-1">
+            <div className="btn-group pin-detail-toolbar rounded-3 p-1">
               <button 
                 onClick={() => setActiveTab('preview')}
-                className={`btn btn-sm ${activeTab === 'preview' ? 'btn-secondary' : 'btn-outline-secondary border-0'}`}
+                className={`btn btn-sm pin-toolbar-btn ${activeTab === 'preview' ? 'pin-toolbar-btn-active' : ''}`}
               >
                 <i className="bi bi-eye"></i>
               </button>
               <button 
                 onClick={() => setActiveTab('code')}
-                className={`btn btn-sm ${activeTab === 'code' ? 'btn-secondary' : 'btn-outline-secondary border-0'}`}
+                className={`btn btn-sm pin-toolbar-btn ${activeTab === 'code' ? 'pin-toolbar-btn-active' : ''}`}
               >
                 <i className="bi bi-code-slash"></i>
               </button>
@@ -144,8 +210,8 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
                     {copied ? 'Copiado!' : 'Copiar'}
                   </button>
                 </div>
-                <pre className={`font-monospace text-light mb-0 overflow-auto bg-dark ${isUsability ? 'p-2' : 'p-3'}`} style={{ maxHeight: isUsability ? '180px' : '250px', fontSize: isUsability ? '0.7rem' : undefined }}>
-                  <code>{pin.codeSnippet}</code>
+                <pre className={`font-monospace pin-code-surface mb-0 overflow-auto ${isUsability ? 'p-2' : 'p-3'}`} style={{ maxHeight: isUsability ? '180px' : '250px', fontSize: isUsability ? '0.7rem' : undefined }}>
+                  <code className="pin-code-text">{renderHighlightedCode(pin.codeSnippet)}</code>
                 </pre>
               </div>
             ) : (
@@ -191,15 +257,17 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
           {/* Back button and breadcrumbs */}
           <div className="d-flex align-items-center gap-3">
             <BackButton className="btn-sm" />
-            <nav aria-label="breadcrumb" className="flex-grow-1">
-              <ol className="breadcrumb mb-0 small">
-                <li className="breadcrumb-item"><Link href="/" className="text-decoration-none">Explorar</Link></li>
-                {pin.language && (
-                  <li className="breadcrumb-item">{getLanguageLabel(pin.language)}</li>
-                )}
-                <li className="breadcrumb-item active text-truncate" aria-current="page">{pin.title}</li>
-              </ol>
-            </nav>
+            {showBreadcrumbs && (
+              <nav aria-label="breadcrumb" className="flex-grow-1">
+                <ol className="breadcrumb mb-0 small">
+                  <li className="breadcrumb-item"><Link href="/" className="text-decoration-none">Explorar</Link></li>
+                  {pin.language && (
+                    <li className="breadcrumb-item">{getLanguageLabel(pin.language)}</li>
+                  )}
+                  <li className="breadcrumb-item active text-truncate" aria-current="page">{pin.title}</li>
+                </ol>
+              </nav>
+            )}
           </div>
 
           {/* Title and Actions */}
@@ -238,17 +306,17 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
         <div className="flex-grow-1 position-relative d-flex flex-column overflow-hidden" style={{ minHeight: '300px', background: 'var(--db-card-bg)' }}>
           {/* Toolbar overlay */}
           <div className="position-absolute top-0 start-50 translate-middle-x mt-3 z-1">
-            <div className="btn-group bg-dark bg-opacity-75 rounded-3 p-1">
+            <div className="btn-group pin-detail-toolbar rounded-3 p-1">
               <button 
                 onClick={() => setActiveTab('preview')}
-                className={`btn btn-sm ${activeTab === 'preview' ? 'btn-secondary' : 'btn-outline-secondary border-0'}`}
+                className={`btn btn-sm pin-toolbar-btn ${activeTab === 'preview' ? 'pin-toolbar-btn-active' : ''}`}
                 title="Preview"
               >
                 <i className="bi bi-eye"></i>
               </button>
               <button 
                 onClick={() => setActiveTab('code')}
-                className={`btn btn-sm ${activeTab === 'code' ? 'btn-secondary' : 'btn-outline-secondary border-0'}`}
+                className={`btn btn-sm pin-toolbar-btn ${activeTab === 'code' ? 'pin-toolbar-btn-active' : ''}`}
                 title="Code"
               >
                 <i className="bi bi-code-slash"></i>
@@ -257,7 +325,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
                 href={pin.imageUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="btn btn-sm btn-outline-secondary border-0"
+                className="btn btn-sm pin-toolbar-btn"
                 title="Open in new tab"
               >
                 <i className="bi bi-box-arrow-up-right"></i>
@@ -276,16 +344,16 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
             ) : pin.codeSnippet ? (
               <div className="w-100 rounded overflow-hidden border" style={{ maxWidth: '900px' }}>
                 <div className="d-flex align-items-center justify-content-between px-3 py-2 bg-dark border-bottom">
-                  <span className="small text-secondary">{getLanguageLabel(pin.language)}</span>
+                  <span className="small pin-language-label">{getLanguageLabel(pin.language)}</span>
                   <button 
                     onClick={handleCopyCode}
-                    className="btn btn-link btn-sm text-secondary text-decoration-none p-0"
+                    className="btn btn-link btn-sm pin-copy-link text-decoration-none p-0"
                   >
                     {copied ? 'Copiado!' : 'Copiar'}
                   </button>
                 </div>
-                <pre className="p-3 small font-monospace text-light mb-0 overflow-auto bg-dark" style={{ maxHeight: isUsability ? '40vh' : '60vh' }}>
-                  <code>{pin.codeSnippet}</code>
+                <pre className="p-3 small font-monospace pin-code-surface mb-0 overflow-auto" style={{ maxHeight: isUsability ? '40vh' : '60vh' }}>
+                  <code className="pin-code-text">{renderHighlightedCode(pin.codeSnippet)}</code>
                 </pre>
               </div>
             ) : (
@@ -343,13 +411,13 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
           <div className="flex-grow-1 d-flex flex-column overflow-hidden" style={{ minHeight: isUsability ? '200px' : '300px' }}>
             {/* Editor Header */}
             <div className="d-flex align-items-center bg-dark border-bottom">
-              <div className={`px-4 small fw-bold border-bottom border-primary border-2 ${isUsability ? 'py-1' : 'py-2'}`} style={{ borderWidth: '2px' }}>
+              <div className={`px-4 small fw-bold border-bottom border-primary border-2 pin-language-label ${isUsability ? 'py-1' : 'py-2'}`} style={{ borderWidth: '2px' }}>
                 {getLanguageLabel(pin.language)}
               </div>
               <div className="flex-grow-1"></div>
               <button 
                 onClick={handleCopyCode}
-                className="btn btn-link text-secondary p-2 me-2"
+                className="btn btn-link pin-copy-link p-2 me-2"
                 title="Copy Code"
               >
                 <i className="bi bi-clipboard"></i>
@@ -357,7 +425,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
             </div>
 
             {/* Code Content */}
-            <div className="flex-grow-1 overflow-auto bg-dark font-monospace position-relative" style={{ fontSize: isUsability ? '0.7rem' : '0.875rem', padding: isUsability ? '0.5rem' : '0.75rem' }}>
+            <div className="flex-grow-1 overflow-auto pin-code-surface font-monospace position-relative" style={{ fontSize: isUsability ? '0.7rem' : '0.875rem', padding: isUsability ? '0.5rem' : '0.75rem' }}>
               <button 
                 onClick={handleCopyCode}
                 className="btn btn-primary btn-sm position-absolute top-0 end-0 m-3 opacity-0"
@@ -367,13 +435,13 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
                 {copied ? 'Copiado!' : 'Copiar'}
               </button>
               <div className="d-flex">
-                <div className="d-flex flex-column text-secondary user-select-none pe-3 text-end" style={{ minWidth: '2rem' }}>
+                <div className="d-flex flex-column pin-code-lines user-select-none pe-3 text-end" style={{ minWidth: '2rem' }}>
                   {pin.codeSnippet.split('\n').map((_, i) => (
                     <span key={i}>{i + 1}</span>
                   ))}
                 </div>
-                <pre className="text-light mb-0" style={{ whiteSpace: 'pre', overflowX: 'auto' }}>
-                  <code>{pin.codeSnippet}</code>
+                <pre className="pin-code-text mb-0" style={{ whiteSpace: 'pre', overflowX: 'auto' }}>
+                  <code>{renderHighlightedCode(pin.codeSnippet)}</code>
                 </pre>
               </div>
             </div>
