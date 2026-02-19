@@ -177,7 +177,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
         </div>
 
         {/* Preview Image Mobile */}
-        <div className="position-relative" style={{ minHeight: isUsability ? '180px' : '250px', background: 'var(--db-card-bg)' }}>
+        <div className="position-relative overflow-hidden" style={{ background: 'var(--db-card-bg)' }}>
           <div className="position-absolute top-0 start-50 translate-middle-x mt-3 z-1">
             <div className="btn-group pin-detail-toolbar rounded-3 p-1">
               <button 
@@ -194,13 +194,13 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
               </button>
             </div>
           </div>
-          <div className={`d-flex align-items-center justify-content-center ${isUsability ? 'p-2' : 'p-3'}`} style={{ minHeight: isUsability ? '180px' : '250px' }}>
+          <div className={`d-flex align-items-center justify-content-center ${isUsability ? 'p-2' : 'p-3'}`} style={{ minHeight: isUsability ? '180px' : '200px' }}>
             {activeTab === 'preview' ? (
               <img 
                 src={pin.imageUrl} 
                 alt={pin.title}
-                className="mw-100 mh-100 object-fit-contain rounded shadow"
-                style={{ maxHeight: isUsability ? '200px' : '300px' }}
+                className="mw-100 object-fit-contain rounded shadow"
+                style={{ maxHeight: isUsability ? '250px' : '40vh' }}
               />
             ) : pin.codeSnippet ? (
               <div className="w-100 rounded overflow-hidden border">
@@ -210,7 +210,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
                     {copied ? 'Copiado!' : 'Copiar'}
                   </button>
                 </div>
-                <pre className={`font-monospace pin-code-surface mb-0 overflow-auto ${isUsability ? 'p-2' : 'p-3'}`} style={{ maxHeight: isUsability ? '180px' : '250px', fontSize: isUsability ? '0.7rem' : undefined }}>
+                <pre className={`font-monospace pin-code-surface mb-0 overflow-auto ${isUsability ? 'p-2' : 'p-3'}`} style={{ maxHeight: isUsability ? '40vh' : '50vh', fontSize: isUsability ? '0.85rem' : '0.9rem' }}>
                   <code className="pin-code-text">{renderHighlightedCode(pin.codeSnippet)}</code>
                 </pre>
               </div>
@@ -352,7 +352,7 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
                     {copied ? 'Copiado!' : 'Copiar'}
                   </button>
                 </div>
-                <pre className="p-3 small font-monospace pin-code-surface mb-0 overflow-auto" style={{ maxHeight: isUsability ? '40vh' : '60vh' }}>
+                <pre className="p-3 font-monospace pin-code-surface mb-0 overflow-auto" style={{ maxHeight: isUsability ? '40vh' : '60vh', fontSize: '0.95rem' }}>
                   <code className="pin-code-text">{renderHighlightedCode(pin.codeSnippet)}</code>
                 </pre>
               </div>

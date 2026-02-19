@@ -18,13 +18,14 @@ export default function Loading() {
   return (
     <main className="flex-grow-1 container-fluid py-4 px-3 px-lg-4 px-xxl-5">
       {/* Filter chips skeleton */}
-      <div className="d-flex gap-2 mb-4 overflow-auto pb-2">
+      <div className="row g-2 mb-4">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div 
-            key={i} 
-            className="skeleton rounded-pill"
-            style={{ width: '80px', height: '36px' }}
-          />
+          <div key={i} className="col-auto">
+            <div 
+              className="skeleton rounded-pill"
+              style={{ width: '80px', height: '36px' }}
+            />
+          </div>
         ))}
       </div>
 
