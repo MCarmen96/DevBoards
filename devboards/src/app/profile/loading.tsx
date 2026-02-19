@@ -8,14 +8,14 @@ export default function Loading() {
 
   if (theme === 'no-usabilidad') {
     return (
-      <main className="flex-grow-1 w-100 container py-3 py-md-4 px-3 px-md-4" style={{ maxWidth: '1280px', minHeight: '60vh' }}>
+      <main className="flex-grow-1 w-100 container-xxl py-3 py-md-4 px-3 px-md-4 px-xxl-5" style={{ minHeight: '60vh' }}>
         {/* Intencionalmente vacío */}
       </main>
     );
   }
 
   return (
-    <main className="flex-grow-1 w-100 container py-3 py-md-4 px-3 px-md-4" style={{ maxWidth: '1280px' }}>
+    <main className="flex-grow-1 w-100 container-xxl py-3 py-md-4 px-3 px-md-4 px-xxl-5">
       {/* Breadcrumb skeleton */}
       <div className="skeleton rounded mb-4" style={{ width: '160px', height: '24px' }} />
       

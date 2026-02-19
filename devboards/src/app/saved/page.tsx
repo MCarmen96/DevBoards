@@ -37,7 +37,7 @@ export default async function SavedPinsPage() {
 
   return (
     <div className="py-4">
-      <div className="container" style={{ maxWidth: '1280px' }}>
+      <div className="container-fluid px-3 px-lg-4 px-xxl-5">
         <PageHeader 
           title="Pins Guardados" 
           description="Tu biblioteca personal de referencias de código"

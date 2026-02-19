@@ -104,7 +104,7 @@ export default function BoardPage({ params }: BoardPageProps) {
 
   if (error) {
     return (
-      <div className="container py-5 text-center" style={{ maxWidth: '1280px' }}>
+      <div className="container-xxl py-5 text-center">
         <h1 className="h4 fw-bold text-body mb-4">{error}</h1>
         <Link href="/boards">
           <Button variant="secondary">Volver a mis tableros</Button>
@@ -119,7 +119,7 @@ export default function BoardPage({ params }: BoardPageProps) {
   const pins = board.pins.map((bp) => bp.pin);
 
   return (
-    <div className="container py-4" style={{ maxWidth: '1280px' }}>
+    <div className="container-xxl py-4 px-3 px-lg-4 px-xxl-5">
       {/* Header */}
       <div className="mb-4">
         <div className="d-flex align-items-start justify-content-between">

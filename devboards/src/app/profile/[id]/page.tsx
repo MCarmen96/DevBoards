@@ -88,7 +88,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
   const username = getUsername(user.email, user.name);
 
   return (
-    <main className="flex-grow-1 w-100 container py-4" style={{ maxWidth: '1280px' }}>
+    <main className="flex-grow-1 w-100 container-xxl py-4 px-3 px-lg-4 px-xxl-5">
       <Breadcrumb items={[{ label: 'Perfil', href: '/profile' }, { label: user.name || username }]} />
       {/* Profile Header Section */}
       <section className="d-flex flex-column align-items-center justify-content-center mb-5">

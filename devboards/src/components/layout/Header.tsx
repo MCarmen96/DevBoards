@@ -43,7 +43,7 @@ export function Header() {
   return (
     <header className="sticky-top border-bottom bg-body">
       <nav className="navbar navbar-expand-lg py-2">
-        <div className="container-fluid px-3 px-lg-4" style={{ maxWidth: '1440px', margin: '0 auto' }}>
+        <div className="container-fluid px-3 px-lg-4 px-xxl-5">
           {/* Logo */}
           <Link href="/" className="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
             <div className="text-primary" style={{ width: '32px', height: '32px' }}>

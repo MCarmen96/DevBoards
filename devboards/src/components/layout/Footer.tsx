@@ -7,7 +7,7 @@ export function Footer() {
 
   return (
     <footer className="border-top mt-auto">
-      <div className="container py-4" style={{ maxWidth: '1440px' }}>
+      <div className="container-fluid py-4 px-3 px-lg-4 px-xxl-5">
         <div className="row g-4">
           {/* Brand Column */}
           <div className="col-12 col-md-4">

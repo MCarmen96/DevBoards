@@ -62,7 +62,7 @@ export default function BoardsPage() {
   }
 
   return (
-    <div className="container py-4" style={{ maxWidth: '1280px' }}>
+    <div className="container-xxl py-4 px-3 px-lg-4 px-xxl-5">
       <PageHeader 
         title="Mis Tableros" 
         description="Organiza tus pins en colecciones temáticas"

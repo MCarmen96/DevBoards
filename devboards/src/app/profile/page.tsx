@@ -86,7 +86,7 @@ export default async function ProfilePage() {
   ]);
 
   return (
-    <main className="flex-grow-1 w-100 container py-3 py-md-4 px-3 px-md-4" style={{ maxWidth: '1280px' }}>
+    <main className="flex-grow-1 w-100 container-xxl py-3 py-md-4 px-3 px-md-4 px-xxl-5">
       {/* Breadcrumb - Solo visible en tema Usabilidad */}
       <Breadcrumb currentPage="Mi Perfil" />
       

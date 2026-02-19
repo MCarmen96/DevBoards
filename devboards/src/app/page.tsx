@@ -28,7 +28,7 @@ export default async function HomePage() {
   const pins = await getRandomPins();
 
   return (
-    <main className="flex-grow-1 container-fluid py-4" style={{ maxWidth: '1440px' }}>
+    <main className="flex-grow-1 container-fluid py-4 px-3 px-lg-4 px-xxl-5">
       <HomeContent pins={pins} />
     </main>
   );

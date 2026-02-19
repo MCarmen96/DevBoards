@@ -47,7 +47,7 @@ export default async function FeedPage() {
   const pins = await getFollowingPins(session.user.id);
 
   return (
-    <main className="flex-grow-1 w-100 container py-4" style={{ maxWidth: '1440px' }}>
+    <main className="flex-grow-1 w-100 container-fluid py-4 px-3 px-lg-4 px-xxl-5">
       <PageHeader 
         title="Siguiendo" 
         description="Pins de los usuarios que sigues"
