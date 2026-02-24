@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+  <defs>
+    <linearGradient id="rcBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#rcBg)"/>
+  <text x="40" y="44" font-family="system-ui" font-size="18" font-weight="700" fill="white">React Counter</text>
+  <text x="40" y="64" font-family="system-ui" font-size="12" fill="rgba(255,255,255,0.4)">TypeScript · React Hooks</text>
+  <!-- Preview tile -->
+  <rect x="40" y="82" width="260" height="240" rx="16" fill="#1e293b" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <text x="170" y="152" font-family="system-ui" font-size="13" fill="rgba(255,255,255,0.5)" text-anchor="middle">Contador</text>
+  <text x="170" y="200" font-family="system-ui" font-size="64" font-weight="900" fill="white" text-anchor="middle">42</text>
+  <!-- Decrement -->
+  <rect x="68" y="225" width="52" height="52" rx="50%" fill="#334155"/>
+  <text x="94" y="258" font-family="system-ui" font-size="28" font-weight="700" fill="rgba(255,255,255,0.8)" text-anchor="middle">−</text>
+  <!-- Increment -->
+  <rect x="178" y="225" width="52" height="52" rx="50%" fill="#4f46e5"/>
+  <text x="204" y="258" font-family="system-ui" font-size="28" font-weight="700" fill="white" text-anchor="middle">+</text>
+  <!-- Reset link -->
+  <text x="170" y="305" font-family="system-ui" font-size="12" fill="#818cf8" text-anchor="middle">↺ Resetear</text>
+  <!-- Progress bar -->
+  <rect x="68" y="315" width="204" height="6" rx="3" fill="#334155"/>
+  <rect x="68" y="315" width="127" height="6" rx="3" fill="#4f46e5"/>
+  <!-- Code panel -->
+  <rect x="320" y="82" width="470" height="490" rx="12" fill="#111827" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <rect x="320" y="82" width="470" height="30" rx="12" fill="#1e293b"/>
+  <rect x="320" y="97" width="470" height="15" fill="#1e293b"/>
+  <text x="338" y="102" font-family="monospace" font-size="11" fill="rgba(255,255,255,0.5)">Counter.tsx</text>
+  <text x="338" y="128" font-family="monospace" font-size="12" fill="#60a5fa">import</text>
+  <text x="372" y="128" font-family="monospace" font-size="12" fill="white"> { useState } </text>
+  <text x="452" y="128" font-family="monospace" font-size="12" fill="#60a5fa">from</text>
+  <text x="477" y="128" font-family="monospace" font-size="12" fill="#f59e0b"> 'react'</text>
+  <text x="338" y="148" font-family="monospace" font-size="12" fill="#60a5fa">interface</text>
+  <text x="395" y="148" font-family="monospace" font-size="12" fill="#34d399"> CounterProps</text>
+  <text x="471" y="148" font-family="monospace" font-size="12" fill="white"> {</text>
+  <text x="338" y="166" font-family="monospace" font-size="12" fill="white">  initial</text>
+  <text x="390" y="166" font-family="monospace" font-size="12" fill="#60a5fa">?: number</text>
+  <text x="448" y="166" font-family="monospace" font-size="12" fill="white">; step</text>
+  <text x="490" y="166" font-family="monospace" font-size="12" fill="#60a5fa">?: number</text>
+  <text x="338" y="184" font-family="monospace" font-size="12" fill="white">}</text>
+  <text x="338" y="204" font-family="monospace" font-size="12" fill="#60a5fa">export function</text>
+  <text x="438" y="204" font-family="monospace" font-size="12" fill="#fbbf24"> Counter</text>
+  <text x="338" y="222" font-family="monospace" font-size="12" fill="white">  ({ initial = 0, step = 1 }:</text>
+  <text x="338" y="240" font-family="monospace" font-size="12" fill="#34d399">   CounterProps</text>
+  <text x="408" y="240" font-family="monospace" font-size="12" fill="white">) {</text>
+  <text x="338" y="260" font-family="monospace" font-size="12" fill="#60a5fa">  const</text>
+  <text x="370" y="260" font-family="monospace" font-size="12" fill="white"> [count, setCount] =</text>
+  <text x="338" y="278" font-family="monospace" font-size="12" fill="#fbbf24">    useState</text>
+  <text x="390" y="278" font-family="monospace" font-size="12" fill="#34d399">&lt;number&gt;</text>
+  <text x="440" y="278" font-family="monospace" font-size="12" fill="white">(initial);</text>
+  <text x="338" y="298" font-family="monospace" font-size="12" fill="#60a5fa">  return</text>
+  <text x="375" y="298" font-family="monospace" font-size="12" fill="white"> (</text>
+  <text x="338" y="316" font-family="monospace" font-size="12" fill="#f97316">    &lt;div</text>
+  <text x="370" y="316" font-family="monospace" font-size="12" fill="#a78bfa"> className</text>
+  <text x="438" y="316" font-family="monospace" font-size="12" fill="#f59e0b">="counter"</text>
+  <text x="495" y="316" font-family="monospace" font-size="12" fill="#f97316">&gt;</text>
+  <text x="338" y="334" font-family="monospace" font-size="12" fill="#f97316">      &lt;span</text>
+  <text x="388" y="334" font-family="monospace" font-size="12" fill="#a78bfa"> className</text>
+  <text x="456" y="334" font-family="monospace" font-size="12" fill="#f59e0b">="value"</text>
+  <text x="502" y="334" font-family="monospace" font-size="12" fill="#f97316">&gt;</text>
+  <text x="338" y="352" font-family="monospace" font-size="12" fill="white">        {count}</text>
+  <text x="338" y="370" font-family="monospace" font-size="12" fill="#f97316">      &lt;/span&gt;</text>
+  <text x="338" y="388" font-family="monospace" font-size="12" fill="#f97316">      &lt;button</text>
+  <text x="338" y="406" font-family="monospace" font-size="12" fill="#6366f1">        onClick</text>
+  <text x="398" y="406" font-family="monospace" font-size="12" fill="white">={() =&gt; setCount(c =&gt; c - step)}</text>
+  <text x="338" y="424" font-family="monospace" font-size="12" fill="#f97316">      &gt;−&lt;/button&gt;</text>
+  <text x="338" y="442" font-family="monospace" font-size="12" fill="#f97316">      &lt;button</text>
+  <text x="338" y="460" font-family="monospace" font-size="12" fill="#6366f1">        onClick</text>
+  <text x="398" y="460" font-family="monospace" font-size="12" fill="white">={() =&gt; setCount(c =&gt; c + step)}</text>
+  <text x="338" y="478" font-family="monospace" font-size="12" fill="#f97316">      &gt;+&lt;/button&gt;</text>
+  <text x="338" y="496" font-family="monospace" font-size="12" fill="#f97316">    &lt;/div&gt;</text>
+  <text x="338" y="514" font-family="monospace" font-size="12" fill="white">  );</text>
+  <text x="338" y="532" font-family="monospace" font-size="12" fill="white">}</text>
+  <!-- Badges -->
+  <rect x="40" y="345" width="90" height="24" rx="12" fill="rgba(97,218,251,0.15)" stroke="rgba(97,218,251,0.3)" stroke-width="1"/>
+  <text x="85" y="361" font-family="system-ui" font-size="11" font-weight="600" fill="#61dafb" text-anchor="middle">React 19</text>
+  <rect x="138" y="345" width="100" height="24" rx="12" fill="rgba(49,120,198,0.15)" stroke="rgba(49,120,198,0.3)" stroke-width="1"/>
+  <text x="188" y="361" font-family="system-ui" font-size="11" font-weight="600" fill="#3178c6" text-anchor="middle">TypeScript</text>
+  <rect x="246" y="345" width="78" height="24" rx="12" fill="rgba(52,211,153,0.15)" stroke="rgba(52,211,153,0.3)" stroke-width="1"/>
+  <text x="286" y="361" font-family="system-ui" font-size="11" font-weight="600" fill="#34d399" text-anchor="middle">Hooks</text>
+</svg>

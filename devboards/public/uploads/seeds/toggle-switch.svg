@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+<defs>
+  <linearGradient id="on1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#667eea"/><stop offset="100%" stop-color="#764ba2"/></linearGradient>
+  <linearGradient id="on2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/></linearGradient>
+  <filter id="glo"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="sh2"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,0.15)"/></filter>
+</defs>
+<rect width="800" height="600" fill="#f0f4f8"/>
+<text x="400" y="46" font-family="system-ui" font-size="22" font-weight="800" fill="#1e293b" text-anchor="middle">CSS Toggle Switches</text>
+<text x="400" y="106" font-family="system-ui" font-size="13" fill="#94a3b8" text-anchor="middle">size and state variants</text>
+<rect x="116" y="124" width="50" height="26" rx="13" fill="#cbd5e1"/>
+<circle cx="129" cy="137" r="11" fill="white" filter="url(#sh2)"/>
+<text x="141" y="170" font-family="system-ui" font-size="12" fill="#94a3b8" text-anchor="middle">Off</text>
+<rect x="218" y="120" width="60" height="32" rx="16" fill="url(#on1)" filter="url(#glo)"/>
+<circle cx="262" cy="136" r="13" fill="white" filter="url(#sh2)"/>
+<text x="248" y="170" font-family="system-ui" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">On</text>
+<rect x="336" y="116" width="72" height="40" rx="20" fill="url(#on2)" filter="url(#glo)"/>
+<circle cx="388" cy="136" r="17" fill="white" filter="url(#sh2)"/>
+<text x="372" y="170" font-family="system-ui" font-size="12" fill="#059669" text-anchor="middle" font-weight="600">Active</text>
+<rect x="476" y="120" width="60" height="32" rx="16" fill="#f87171" opacity="0.8"/>
+<circle cx="516" cy="136" r="13" fill="white" filter="url(#sh2)"/>
+<text x="506" y="170" font-family="system-ui" font-size="12" fill="#dc2626" text-anchor="middle">Error</text>
+<rect x="596" y="120" width="82" height="44" rx="22" fill="#e2e8f0"/>
+<circle cx="619" cy="142" r="19" fill="white" filter="url(#sh2)"/>
+<text x="637" y="170" font-family="system-ui" font-size="12" fill="#94a3b8" text-anchor="middle">xl Off</text>
+<line x1="48" y1="200" x2="752" y2="200" stroke="#e2e8f0" stroke-width="1"/>
+<rect x="48" y="218" width="704" height="110" rx="16" fill="#0f172a"/>
+<text x="80" y="252" font-family="system-ui" font-size="13" fill="rgba(255,255,255,0.4)">Dark UI</text>
+<rect x="140" y="258" width="54" height="28" rx="14" fill="rgba(255,255,255,0.1)"/>
+<circle cx="154" cy="272" r="12" fill="rgba(255,255,255,0.55)" filter="url(#sh2)"/>
+<rect x="240" y="254" width="66" height="36" rx="18" fill="url(#on1)" filter="url(#glo)"/>
+<circle cx="288" cy="272" r="15" fill="white" filter="url(#sh2)"/>
+<rect x="356" y="254" width="66" height="36" rx="18" fill="url(#on2)" filter="url(#glo)"/>
+<circle cx="404" cy="272" r="15" fill="white" filter="url(#sh2)"/>
+<rect x="472" y="254" width="66" height="36" rx="18" fill="rgba(239,68,68,0.75)"/>
+<circle cx="520" cy="272" r="15" fill="white" filter="url(#sh2)"/>
+<rect x="584" y="258" width="60" height="28" rx="14" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+<circle cx="598" cy="272" r="12" fill="rgba(255,255,255,0.5)" filter="url(#sh2)"/>
+<rect x="48" y="346" width="704" height="150" rx="14" fill="rgba(15,23,42,0.07)" stroke="#e2e8f0" stroke-width="1"/>
+<text x="72" y="376" font-family="monospace" font-size="13" fill="#7c3aed">.toggle input:checked + .track {</text>
+<text x="88" y="398" font-family="monospace" font-size="13" fill="#475569">  background: var(--color-primary);</text>
+<text x="72" y="420" font-family="monospace" font-size="13" fill="#7c3aed">}</text>
+<text x="72" y="448" font-family="monospace" font-size="13" fill="#7c3aed">.toggle input:checked + .track .thumb {</text>
+<text x="88" y="470" font-family="monospace" font-size="13" fill="#475569">  transform: translateX(calc(100% + 6px));</text>
+<text x="72" y="492" font-family="monospace" font-size="13" fill="#7c3aed">}</text>
+</svg>

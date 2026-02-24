@@ -38,6 +38,9 @@ export function SearchBar() {
 
   // Cargar sugerencias iniciales
   useEffect(() => {
+    // Si es no-usabilidad, nunca buscamos sugerencias iniciales
+    if (isNoUsability) return;
+
     const loadInitialSuggestions = async () => {
       try {
         const res = await fetch('/api/search/suggestions');
@@ -48,10 +51,16 @@ export function SearchBar() {
       }
     };
     loadInitialSuggestions();
-  }, []);
+  }, [isNoUsability]);
 
   // Buscar sugerencias mientras escribe
   useEffect(() => {
+    // Si es no-usabilidad, nunca buscamos sugerencias dinámicas (ni las iniciales)
+    if (isNoUsability) {
+      setSuggestions([]);
+      return;
+    }
+
     const fetchSuggestions = async () => {
       if (query.length < 1) {
         // Mostrar sugerencias populares
@@ -77,7 +86,7 @@ export function SearchBar() {
 
     const debounce = setTimeout(fetchSuggestions, 150);
     return () => clearTimeout(debounce);
-  }, [query]);
+  }, [query, isNoUsability]);
 
   // Buscar pins cuando hay 2+ caracteres
   useEffect(() => {
@@ -136,16 +145,22 @@ export function SearchBar() {
     }
   };
 
+  const handleSearch = (searchQuery: string) => {
+    if (!searchQuery.trim()) return;
+    setIsOpen(false);
+    setShowSuggestions(false);
+    
+    // El usuario quiere que la búsqueda funcione incluso en no-usabilidad
+    router.push(`/?q=${encodeURIComponent(searchQuery.trim())}`);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       setEnterPressed(true);
       setShowSuggestions(false);
       
-      // En modo no-usabilidad, cerrar todo al presionar Enter (anti-patrón)
-      if (isNoUsability) {
-        setIsOpen(false);
-        setResults([]);
-      }
+      // Permitimos que ejecute la búsqueda
+      handleSearch(query);
     }
   };
 
@@ -241,15 +256,16 @@ export function SearchBar() {
       )}
 
       {/* Resultados de búsqueda */}
-      {/* En modo no-usabilidad, si se presionó Enter, no mostrar resultados (anti-patrón) */}
-      {isOpen && results.length > 0 && !(isNoUsability && enterPressed) && (
+      {isOpen && results.length > 0 && (
         <div className="position-absolute top-100 mt-2 w-100 bg-body rounded-3 shadow-lg border overflow-auto" style={{ maxHeight: '24rem', zIndex: 1050 }}>
-          <div className="px-3 py-2 bg-body-tertiary border-bottom">
-            <small className="text-secondary fw-medium">
-              <i className="bi bi-pin-angle me-1"></i>
-              {results.length} resultado{results.length !== 1 ? 's' : ''}
-            </small>
-          </div>
+          {!isNoUsability && (
+            <div className="px-3 py-2 bg-body-tertiary border-bottom">
+              <small className="text-secondary fw-medium">
+                <i className="bi bi-pin-angle me-1"></i>
+                {results.length} resultado{results.length !== 1 ? 's' : ''}
+              </small>
+            </div>
+          )}
           {results.map((pin) => (
             <button
               key={pin.id}

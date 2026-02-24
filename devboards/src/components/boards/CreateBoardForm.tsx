@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { useAppTheme } from '@/context/ThemeContext';
 
 interface CreateBoardFormProps {
-  onSuccess?: () => void;
+  onSuccess?: (boardId: string, boardName: string) => void;
   onCancel?: () => void;
 }
 
@@ -93,11 +93,12 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
         throw new Error(data.error || 'Error al crear tablero');
       }
 
+      const created = await response.json();
       setName('');
       setDescription('');
       setIsPrivate(false);
       setTouched({ name: false, description: false });
-      onSuccess?.();
+      onSuccess?.(created.id, created.name);
     } catch (err) {
       // En modo no-usabilidad, falla silenciosamente
       if (!isNoUsability) {
@@ -173,18 +174,32 @@ export function CreateBoardForm({ onSuccess, onCancel }: CreateBoardFormProps) {
         )}
       </div>
 
-      <div className="form-check">
-        <input
-          type="checkbox"
-          id="isPrivate"
-          checked={isPrivate}
-          onChange={(e) => setIsPrivate(e.target.checked)}
-          className="form-check-input"
-        />
-        <label htmlFor="isPrivate" className="form-check-label small">
-          <i className={`bi ${isPrivate ? 'bi-lock-fill' : 'bi-unlock'} me-1`}></i>
-          Tablero privado (solo tú podrás verlo)
-        </label>
+      <div className="mb-3">
+        <label className="form-label small fw-medium">Visibilidad</label>
+        <div className="row g-2">
+          <div className="col-6">
+            <div 
+              className={`p-3 border rounded-3 text-center transition-all ${!isPrivate ? 'border-primary bg-primary-subtle' : 'bg-body-tertiary opacity-75'}`}
+              style={{ cursor: 'pointer', transition: 'all 0.2s ease' }}
+              onClick={() => setIsPrivate(false)}
+            >
+              <i className={`bi bi-unlock-fill d-block mb-1 ${!isPrivate ? 'text-primary' : 'text-secondary'}`} style={{ fontSize: '1.2rem' }}></i>
+              <span className={`small fw-bold d-block ${!isPrivate ? 'text-primary' : 'text-secondary'}`}>Público</span>
+              <span className="text-secondary" style={{ fontSize: '0.7rem' }}>Cualquiera puede verlo</span>
+            </div>
+          </div>
+          <div className="col-6">
+            <div 
+              className={`p-3 border rounded-3 text-center transition-all ${isPrivate ? 'border-primary bg-primary-subtle' : 'bg-body-tertiary opacity-75'}`}
+              style={{ cursor: 'pointer', transition: 'all 0.2s ease' }}
+              onClick={() => setIsPrivate(true)}
+            >
+              <i className={`bi bi-lock-fill d-block mb-1 ${isPrivate ? 'text-primary' : 'text-secondary'}`} style={{ fontSize: '1.2rem' }}></i>
+              <span className={`small fw-bold d-block ${isPrivate ? 'text-primary' : 'text-secondary'}`}>Privado</span>
+              <span className="text-secondary" style={{ fontSize: '0.7rem' }}>Solo tú lo verás</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="d-flex gap-2 pt-2">

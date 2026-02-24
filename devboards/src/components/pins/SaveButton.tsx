@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useAppTheme } from '@/context/ThemeContext';
+import { SaveToBoardModal } from '@/components/boards/SaveToBoardModal';
 
 interface SaveButtonProps {
   pinId: string;
@@ -16,11 +17,11 @@ export function SaveButton({ pinId, initialSaved = false, onSaveChange, buttonId
   const { data: session } = useSession();
   const router = useRouter();
   const { theme } = useAppTheme();
-  const isAccessibility = theme === 'accesibilidad';
   const [saved, setSaved] = useState(initialSaved);
+  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSave = async (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -29,37 +30,66 @@ export function SaveButton({ pinId, initialSaved = false, onSaveChange, buttonId
       return;
     }
 
-    setLoading(true);
-
-    try {
-      const method = saved ? 'DELETE' : 'POST';
-      const response = await fetch(`/api/pins/${pinId}/save`, { method });
-
-      if (response.ok) {
-        setSaved(!saved);
-        onSaveChange?.(!saved);
+    // En los temas usabilidad y accesibilidad, si ya está guardado,
+    // clicando el botón se desguarda directamente.
+    // Pero en el tema no usabilidad, mantenemos el comportamiento anterior (abrir modal).
+    if (saved && (theme === 'usabilidad' || theme === 'accesibilidad')) {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/pins/${pinId}/save`, {
+          method: 'DELETE',
+        });
+        
+        if (res.ok) {
+          setSaved(false);
+          onSaveChange?.(false);
+        }
+      } catch (error) {
+        console.error('Error desguardando pin:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error al guardar pin:', error);
-    } finally {
-      setLoading(false);
+      return;
     }
+
+    setShowModal(true);
+  };
+
+  const handleSaved = () => {
+    setSaved(true);
+    onSaveChange?.(true);
+    
+    // También guardamos el pin en la colección general (SavedPin) para que el estado persista
+    fetch(`/api/pins/${pinId}/save`, {
+      method: 'POST',
+    }).catch(err => console.error('Error sincronizando savedPin:', err));
   };
 
   return (
-    <button
-      id={buttonId}
-      onClick={handleSave}
-      disabled={loading}
-      className={`btn btn-sm ${saved ? 'btn-primary' : 'btn-dark'}`}
-      title={saved ? 'Guardado' : 'Guardar'}
-      tabIndex={isAccessibility ? -1 : undefined}
-    >
-      {loading ? (
-        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      ) : (
-        <i className={`bi ${saved ? 'bi-bookmark-fill' : 'bi-bookmark'}`}></i>
+    <>
+      <button
+        id={buttonId}
+        onClick={handleClick}
+        disabled={loading}
+        className={`btn btn-sm ${saved ? 'btn-primary' : 'btn-dark'}`}
+        title={saved ? (theme === 'usabilidad' || theme === 'accesibilidad' ? 'Quitar de guardados' : 'Gestionar en tableros') : 'Guardar en tablero'}
+        tabIndex={theme === 'accesibilidad' ? -1 : undefined}
+      >
+        {loading ? (
+          <span className="spinner-border spinner-border-sm"></span>
+        ) : (
+          <i className={`bi ${saved ? 'bi-bookmark-fill' : 'bi-bookmark'}`}></i>
+        )}
+      </button>
+
+      {showModal && (
+        <SaveToBoardModal
+          pinId={pinId}
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onSaved={handleSaved}
+        />
       )}
-    </button>
+    </>
   );
 }

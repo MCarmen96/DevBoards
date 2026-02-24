@@ -8,9 +8,10 @@ interface SaveToBoardModalProps {
   pinId: string;
   isOpen: boolean;
   onClose: () => void;
+  onSaved?: () => void;
 }
 
-export function SaveToBoardModal({ pinId, isOpen, onClose }: SaveToBoardModalProps) {
+export function SaveToBoardModal({ pinId, isOpen, onClose, onSaved }: SaveToBoardModalProps) {
   const [boards, setBoards] = useState<BoardPreview[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
@@ -77,6 +78,7 @@ export function SaveToBoardModal({ pinId, isOpen, onClose }: SaveToBoardModalPro
         
         if (response.ok) {
           setSavedBoards((prev) => new Set([...prev, boardId]));
+          onSaved?.();
         }
       }
     } catch (error) {
@@ -127,7 +129,7 @@ export function SaveToBoardModal({ pinId, isOpen, onClose }: SaveToBoardModalPro
                   <div className="d-flex flex-column gap-2">
                     <button
                       onClick={() => setShowCreateForm(true)}
-                      className="btn btn-light d-flex align-items-center gap-3 p-3 text-start"
+                      className="btn btn-outline-secondary d-flex align-items-center gap-3 p-3 text-start w-100 border-0 bg-body-tertiary text-body rounded-3"
                     >
                       <div className="rounded d-flex align-items-center justify-content-center bg-secondary-subtle" style={{ width: '48px', height: '48px' }}>
                         <i className="bi bi-plus-lg fs-5 text-secondary"></i>
@@ -145,7 +147,7 @@ export function SaveToBoardModal({ pinId, isOpen, onClose }: SaveToBoardModalPro
                           key={board.id}
                           onClick={() => handleSaveToBoard(board.id)}
                           disabled={saving === board.id}
-                          className="btn btn-light d-flex align-items-center gap-3 p-3 text-start"
+                          className="btn d-flex align-items-center gap-3 p-3 text-start w-100 border-0 bg-body-tertiary text-body rounded-3"
                         >
                           <div className="rounded overflow-hidden flex-shrink-0 bg-secondary-subtle" style={{ width: '48px', height: '48px' }}>
                             {board.pins?.[0]?.pin?.imageUrl ? (
@@ -172,7 +174,7 @@ export function SaveToBoardModal({ pinId, isOpen, onClose }: SaveToBoardModalPro
                                 <span className="visually-hidden">Loading...</span>
                               </div>
                             ) : savedBoards.has(board.id) ? (
-                              <div className="rounded-circle bg-dark d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px' }}>
+                              <div className="rounded-circle bg-primary d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px' }}>
                                 <i className="bi bi-check-lg text-white"></i>
                               </div>
                             ) : (
@@ -187,6 +189,25 @@ export function SaveToBoardModal({ pinId, isOpen, onClose }: SaveToBoardModalPro
               </>
             )}
           </div>
+
+          {!showCreateForm && (
+            <div className="modal-footer border-top pt-3">
+              <button
+                type="button"
+                className="btn btn-primary w-100 fw-semibold"
+                onClick={onClose}
+              >
+                {savedBoards.size > 0 ? (
+                  <>
+                    <i className="bi bi-check2 me-2"></i>
+                    Listo
+                  </>
+                ) : (
+                  'Cerrar'
+                )}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

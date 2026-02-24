@@ -69,6 +69,7 @@ export function FilterChips({ onFilterChange }: FilterChipsProps) {
         {filters.map((filter) => (
           <button
             key={filter.id}
+            id={filter.id}
             onClick={() => handleFilterClick(filter.id)}
             className={`btn btn-sm d-flex align-items-center gap-2 flex-shrink-0 ${
               activeFilter === filter.id

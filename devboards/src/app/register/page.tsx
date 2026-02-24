@@ -16,7 +16,6 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'explorer',
   });
 
   const themeOptions: { value: AppTheme; label: string; color: string }[] = [
@@ -73,7 +72,6 @@ export default function RegisterPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          role: formData.role,
         }),
       });
 
@@ -221,46 +219,6 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Role Selection */}
-            <div>
-              <label className="form-label small fw-medium">
-                ¿Cómo quieres usar DevBoards?
-              </label>
-              <div className="row g-2">
-                <div className="col-6">
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, role: 'explorer' })}
-                    className={`w-100 p-3 rounded-3 border text-start`}
-                    style={{ 
-                      borderWidth: formData.role === 'explorer' ? '2px' : '1px',
-                      borderColor: formData.role === 'explorer' ? currentThemeColor : undefined,
-                      backgroundColor: formData.role === 'explorer' ? `${currentThemeColor}15` : undefined
-                    }}
-                  >
-                    <span className="d-block fs-4 mb-1">👨‍💻</span>
-                    <span className="fw-bold d-block">Explorer</span>
-                    <small className="text-secondary">Descubrir y guardar</small>
-                  </button>
-                </div>
-                <div className="col-6">
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, role: 'creator' })}
-                    className={`w-100 p-3 rounded-3 border text-start`}
-                    style={{ 
-                      borderWidth: formData.role === 'creator' ? '2px' : '1px',
-                      borderColor: formData.role === 'creator' ? currentThemeColor : undefined,
-                      backgroundColor: formData.role === 'creator' ? `${currentThemeColor}15` : undefined
-                    }}
-                  >
-                    <span className="d-block fs-4 mb-1">✍️</span>
-                    <span className="fw-bold d-block">Creator</span>
-                    <small className="text-secondary">Crear y compartir</small>
-                  </button>
-                </div>
-              </div>
-            </div>
 
             {error && (
               <div className="alert alert-danger py-2 small mb-0 d-flex align-items-center gap-2" style={{ wordBreak: 'break-word' }}>

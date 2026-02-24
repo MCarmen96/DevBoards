@@ -30,53 +30,65 @@ export function ProfileBoardsSection({ boards }: ProfileBoardsSectionProps) {
   return (
     <>
       {/* Filter / Tabs Bar */}
-      <section className="mb-4 d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
-        <div className="d-flex align-items-center gap-2 overflow-auto w-100 pb-2 pb-sm-0">
-          <button 
-            onClick={() => setActiveFilter('all')}
-            className={`btn d-flex align-items-center gap-2 px-3 py-2 fw-bold small text-nowrap shadow-sm ${
-              activeFilter === 'all' ? 'btn-dark' : 'btn-outline-secondary'
-            }`}
-          >
-            Todos
-            <span className="badge bg-secondary-subtle text-secondary ms-1">{boards.length}</span>
-          </button>
-          <button 
-            onClick={() => setActiveFilter('public')}
-            className={`btn d-flex align-items-center gap-2 px-3 py-2 fw-medium small text-nowrap ${
-              activeFilter === 'public' ? 'btn-dark' : 'btn-outline-secondary'
-            }`}
-          >
-            <i className="bi bi-unlock"></i>
-            Públicos
-            <span className="badge bg-secondary-subtle text-secondary ms-1">{publicCount}</span>
-          </button>
-          <button 
-            onClick={() => setActiveFilter('private')}
-            className={`btn d-flex align-items-center gap-2 px-3 py-2 fw-medium small text-nowrap ${
-              activeFilter === 'private' ? 'btn-dark' : 'btn-outline-secondary'
-            }`}
-          >
-            <i className="bi bi-lock"></i>
-            Privados
-            <span className="badge bg-secondary-subtle text-secondary ms-1">{privateCount}</span>
-          </button>
-        </div>
-        <div className="d-flex align-items-center gap-2 align-self-end align-self-sm-auto">
-          <button
-            onClick={() => setActiveView('list')}
-            className={`btn btn-link p-1 ${activeView === 'list' ? 'text-primary' : 'text-secondary'}`}
-            title="Vista lista"
-          >
-            <i className="bi bi-list-ul fs-5"></i>
-          </button>
-          <button
-            onClick={() => setActiveView('grid')}
-            className={`btn btn-link p-1 ${activeView === 'grid' ? 'text-primary' : 'text-secondary'}`}
-            title="Vista cuadrícula"
-          >
-            <i className="bi bi-grid-3x3 fs-5"></i>
-          </button>
+      <section className="mb-4">
+        <div className="row g-2 align-items-center">
+          <div className="col-12 col-sm">
+            <div className="row g-2">
+              <div className="col-auto">
+                <button 
+                  onClick={() => setActiveFilter('all')}
+                  className={`btn d-flex align-items-center gap-2 px-3 py-2 fw-bold small shadow-sm ${
+                    activeFilter === 'all' ? 'btn-dark' : 'btn-outline-secondary'
+                  }`}
+                >
+                  Todos
+                  <span className="badge bg-secondary-subtle text-secondary ms-1">{boards.length}</span>
+                </button>
+              </div>
+              <div className="col-auto">
+                <button 
+                  onClick={() => setActiveFilter('public')}
+                  className={`btn d-flex align-items-center gap-2 px-3 py-2 fw-medium small ${
+                    activeFilter === 'public' ? 'btn-dark' : 'btn-outline-secondary'
+                  }`}
+                >
+                  <i className="bi bi-unlock"></i>
+                  Públicos
+                  <span className="badge bg-secondary-subtle text-secondary ms-1">{publicCount}</span>
+                </button>
+              </div>
+              <div className="col-auto">
+                <button 
+                  onClick={() => setActiveFilter('private')}
+                  className={`btn d-flex align-items-center gap-2 px-3 py-2 fw-medium small ${
+                    activeFilter === 'private' ? 'btn-dark' : 'btn-outline-secondary'
+                  }`}
+                >
+                  <i className="bi bi-lock"></i>
+                  Privados
+                  <span className="badge bg-secondary-subtle text-secondary ms-1">{privateCount}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="col-auto">
+            <div className="d-flex align-items-center gap-2">
+              <button
+                onClick={() => setActiveView('list')}
+                className={`btn btn-link p-1 ${activeView === 'list' ? 'text-primary' : 'text-secondary'}`}
+                title="Vista lista"
+              >
+                <i className="bi bi-list-ul fs-5"></i>
+              </button>
+              <button
+                onClick={() => setActiveView('grid')}
+                className={`btn btn-link p-1 ${activeView === 'grid' ? 'text-primary' : 'text-secondary'}`}
+                title="Vista cuadrícula"
+              >
+                <i className="bi bi-grid-3x3 fs-5"></i>
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 

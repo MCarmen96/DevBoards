@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+  <rect width="800" height="600" fill="#0f172a"/>
+  <text x="40" y="44" font-family="system-ui" font-size="18" font-weight="700" fill="white">Accordion Component</text>
+  <text x="40" y="64" font-family="system-ui" font-size="12" fill="rgba(255,255,255,0.4)">HTML + CSS + JavaScript</text>
+  <!-- Panel 1 open -->
+  <rect x="40" y="82" width="460" height="54" rx="10" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="68" y="115" font-family="system-ui" font-size="14" font-weight="600" fill="white">¿Qué es CSS Grid?</text>
+  <text x="470" y="115" font-family="system-ui" font-size="18" fill="#60a5fa" text-anchor="middle">▲</text>
+  <rect x="40" y="136" width="460" height="72" rx="0,0,10,10" fill="#0f2440"/>
+  <rect x="40" y="196" width="460" height="12" rx="0,0,10,10" fill="#0f2440"/>
+  <rect x="58" y="148" width="350" height="9" rx="4" fill="rgba(255,255,255,0.2)"/>
+  <rect x="58" y="165" width="300" height="9" rx="4" fill="rgba(255,255,255,0.15)"/>
+  <rect x="58" y="182" width="200" height="9" rx="4" fill="rgba(255,255,255,0.1)"/>
+  <!-- Panel 2 closed -->
+  <rect x="40" y="216" width="460" height="54" rx="10" fill="#1e293b" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <text x="68" y="249" font-family="system-ui" font-size="14" fill="rgba(255,255,255,0.75)">¿Cuándo usar Flexbox?</text>
+  <text x="470" y="249" font-family="system-ui" font-size="18" fill="rgba(255,255,255,0.35)" text-anchor="middle">▼</text>
+  <!-- Panel 3 closed -->
+  <rect x="40" y="280" width="460" height="54" rx="10" fill="#1e293b" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <text x="68" y="313" font-family="system-ui" font-size="14" fill="rgba(255,255,255,0.75)">¿Qué son las CSS Variables?</text>
+  <text x="470" y="313" font-family="system-ui" font-size="18" fill="rgba(255,255,255,0.35)" text-anchor="middle">▼</text>
+  <!-- Code -->
+  <rect x="520" y="82" width="260" height="260" rx="12" fill="#111827" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <rect x="520" y="82" width="260" height="30" rx="12" fill="#1e293b"/>
+  <rect x="520" y="97" width="260" height="15" fill="#1e293b"/>
+  <text x="535" y="102" font-family="monospace" font-size="11" fill="rgba(255,255,255,0.5)">accordion.js</text>
+  <text x="535" y="130" font-family="monospace" font-size="11" fill="#60a5fa">const</text>
+  <text x="571" y="130" font-family="monospace" font-size="11" fill="white"> toggles = document</text>
+  <text x="535" y="148" font-family="monospace" font-size="11" fill="rgba(255,255,255,0.5)">  .querySelectorAll('.acc-btn');</text>
+  <text x="535" y="168" font-family="monospace" font-size="11" fill="#60a5fa">toggles.forEach</text>
+  <text x="535" y="184" font-family="monospace" font-size="11" fill="rgba(255,255,255,0.5)">  (btn =&gt; {</text>
+  <text x="535" y="200" font-family="monospace" font-size="11" fill="#60a5fa">  btn.</text>
+  <text x="556" y="200" font-family="monospace" font-size="11" fill="white">addEventListener(</text>
+  <text x="535" y="216" font-family="monospace" font-size="11" fill="#f59e0b">    'click'</text>
+  <text x="535" y="232" font-family="monospace" font-size="11" fill="rgba(255,255,255,0.5)">    , () =&gt; {</text>
+  <text x="535" y="250" font-family="monospace" font-size="11" fill="white">      btn.classList</text>
+  <text x="535" y="266" font-family="monospace" font-size="11" fill="#34d399">        .toggle('open');</text>
+  <text x="535" y="282" font-family="monospace" font-size="11" fill="rgba(255,255,255,0.5)">    });</text>
+  <text x="535" y="298" font-family="monospace" font-size="11" fill="rgba(255,255,255,0.5)">  });</text>
+  <!-- CSS snippet -->
+  <rect x="40" y="355" width="744" height="100" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+  <text x="60" y="380" font-family="monospace" font-size="12" fill="#a78bfa">.acc-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }</text>
+  <text x="60" y="400" font-family="monospace" font-size="12" fill="#a78bfa">.acc-btn.open + .acc-content { max-height: 400px; }</text>
+  <text x="60" y="420" font-family="monospace" font-size="12" fill="#60a5fa">.acc-btn { width: 100%; background: #1e293b; border: none; }</text>
+  <text x="60" y="440" font-family="monospace" font-size="12" fill="#34d399">/* panel body padding */</text>
+  <text x="60" y="460" font-family="monospace" font-size="12" fill="rgba(255,255,255,0.5)">.acc-content &gt; div { padding: 1rem 1.25rem; }</text>
+  <!-- HTML snippet -->
+  <rect x="40" y="468" width="744" height="100" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+  <text x="60" y="492" font-family="monospace" font-size="12" fill="#f97316">&lt;div class="accordion"&gt;</text>
+  <text x="60" y="510" font-family="monospace" font-size="12" fill="rgba(255,255,255,0.5)">  &lt;button class="acc-btn"&gt;¿Qué es CSS Grid?&lt;/button&gt;</text>
+  <text x="60" y="528" font-family="monospace" font-size="12" fill="rgba(255,255,255,0.5)">  &lt;div class="acc-content"&gt;&lt;p&gt;...&lt;/p&gt;&lt;/div&gt;</text>
+  <text x="60" y="546" font-family="monospace" font-size="12" fill="#f97316">&lt;/div&gt;</text>
+</svg>

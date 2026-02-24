@@ -24,26 +24,36 @@ export function ProfilePinsSection({ pins }: ProfilePinsSectionProps) {
   return (
     <>
       {/* Header con filtros */}
-      <section className="mb-4 d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
-        <div className="d-flex align-items-center gap-2">
-          <h2 className="h5 fw-bold mb-0">Mis Pins</h2>
-          <span className="badge bg-secondary-subtle text-secondary">{pins.length}</span>
-        </div>
-        <div className="d-flex align-items-center gap-2">
-          <button
-            onClick={() => setSortBy('recent')}
-            className={`btn btn-sm ${sortBy === 'recent' ? 'btn-dark' : 'btn-outline-secondary'}`}
-          >
-            <i className="bi bi-clock me-1"></i>
-            Recientes
-          </button>
-          <button
-            onClick={() => setSortBy('popular')}
-            className={`btn btn-sm ${sortBy === 'popular' ? 'btn-dark' : 'btn-outline-secondary'}`}
-          >
-            <i className="bi bi-heart me-1"></i>
-            Populares
-          </button>
+      <section className="mb-4">
+        <div className="row g-2 align-items-center">
+          <div className="col-12 col-sm-auto">
+            <div className="d-flex align-items-center gap-2">
+              <h2 className="h5 fw-bold mb-0">Mis Pins</h2>
+              <span className="badge bg-secondary-subtle text-secondary">{pins.length}</span>
+            </div>
+          </div>
+          <div className="col-12 col-sm-auto">
+            <div className="row g-2">
+              <div className="col-auto">
+                <button
+                  onClick={() => setSortBy('recent')}
+                  className={`btn btn-sm ${sortBy === 'recent' ? 'btn-primary' : 'btn-outline-secondary'}`}
+                >
+                  <i className="bi bi-clock me-1"></i>
+                  Recientes
+                </button>
+              </div>
+              <div className="col-auto">
+                <button
+                  onClick={() => setSortBy('popular')}
+                  className={`btn btn-sm ${sortBy === 'popular' ? 'btn-primary' : 'btn-outline-secondary'}`}
+                >
+                  <i className="bi bi-heart me-1"></i>
+                  Populares
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

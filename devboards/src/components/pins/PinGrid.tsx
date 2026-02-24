@@ -2,15 +2,19 @@
 
 import { PinCard } from './PinCard';
 import { PinWithRelations, PinWithAuthor } from '@/types';
+import { useAppTheme } from '@/context/ThemeContext';
 
 interface PinGridProps {
   pins: (PinWithRelations | PinWithAuthor)[];
   loading?: boolean;
   showRemoveButton?: boolean;
   onRemove?: (pinId: string) => void;
+  addToBoardId?: string;
+  addToBoardName?: string;
 }
 
-export function PinGrid({ pins, loading, showRemoveButton, onRemove }: PinGridProps) {
+export function PinGrid({ pins, loading, showRemoveButton, onRemove, addToBoardId, addToBoardName }: PinGridProps) {
+  const { theme } = useAppTheme();
   // Pre-calculated heights for skeleton items
   const skeletonCount = 12;
 
@@ -29,6 +33,11 @@ export function PinGrid({ pins, loading, showRemoveButton, onRemove }: PinGridPr
   }
 
   if (pins.length === 0) {
+    // Anti-pattern: Silently show nothing in no-usabilidad theme
+    if (theme === 'no-usabilidad') {
+      return <div className="py-5" style={{ minHeight: '400px' }}></div>;
+    }
+
     return (
       <div className="d-flex flex-column align-items-center justify-content-center py-5">
         <div className="rounded-circle bg-secondary-subtle d-flex align-items-center justify-content-center mb-4" style={{ width: '6rem', height: '6rem' }}>
@@ -48,6 +57,8 @@ export function PinGrid({ pins, loading, showRemoveButton, onRemove }: PinGridPr
           pin={pin as PinWithRelations}
           showRemoveButton={showRemoveButton}
           onRemove={onRemove}
+          addToBoardId={addToBoardId}
+          addToBoardName={addToBoardName}
         />
       ))}
     </div>

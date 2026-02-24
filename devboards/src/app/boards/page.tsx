@@ -8,10 +8,12 @@ import { CreateBoardForm } from '@/components/boards/CreateBoardForm';
 import { Button } from '@/components/ui/Button';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { BoardPreview } from '@/types';
+import { useAppTheme } from '@/context/ThemeContext';
 
 export default function BoardsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { theme } = useAppTheme();
   const [boards, setBoards] = useState<BoardPreview[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -42,9 +44,13 @@ export default function BoardsPage() {
     }
   };
 
-  const handleBoardCreated = () => {
+  const handleBoardCreated = (boardId: string, boardName: string) => {
     setShowCreateModal(false);
-    fetchBoards();
+    if (theme === 'usabilidad') {
+      router.push(`/?addToBoard=${boardId}&boardName=${encodeURIComponent(boardName)}`);
+    } else {
+      fetchBoards();
+    }
   };
 
   if (status === 'loading' || loading) {

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+<defs>
+  <filter id="neon"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="neonBig"><feGaussianBlur stdDeviation="14" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="800" height="600" fill="#06060a"/>
+<circle cx="400" cy="300" r="220" fill="#0ff" opacity="0.025" filter="url(#neonBig)"/>
+<text x="400" y="60" font-family="monospace" font-size="13" fill="rgba(0,255,255,0.25)" text-anchor="middle">/* CSS Neon Glow Effect */</text>
+<rect x="185" y="120" width="430" height="88" rx="10" fill="none" stroke="#0ff" stroke-width="8" opacity="0.08"/>
+<rect x="185" y="120" width="430" height="88" rx="10" fill="none" stroke="#0ff" stroke-width="2" filter="url(#neon)"/>
+<text x="400" y="176" font-family="'Courier New',monospace" font-size="34" font-weight="900" text-anchor="middle" fill="#0ff" filter="url(#neon)" letter-spacing="9">LAUNCH APP</text>
+<rect x="185" y="235" width="430" height="88" rx="10" fill="none" stroke="#f0f" stroke-width="8" opacity="0.08"/>
+<rect x="185" y="235" width="430" height="88" rx="10" fill="none" stroke="#f0f" stroke-width="2" filter="url(#neon)"/>
+<text x="400" y="290" font-family="'Courier New',monospace" font-size="34" font-weight="900" text-anchor="middle" fill="#f0f" filter="url(#neon)" letter-spacing="7">CONNECT</text>
+<rect x="185" y="350" width="430" height="88" rx="10" fill="rgba(255,240,0,0.04)" stroke="#ff0" stroke-width="2" filter="url(#neon)"/>
+<text x="400" y="404" font-family="'Courier New',monospace" font-size="34" font-weight="900" text-anchor="middle" fill="#ff0" filter="url(#neon)" letter-spacing="5">EXPLORE</text>
+<rect x="100" y="468" width="600" height="96" rx="12" fill="rgba(255,255,255,0.03)" stroke="rgba(0,255,255,0.12)" stroke-width="1"/>
+<text x="120" y="492" font-family="monospace" font-size="12" fill="rgba(0,255,255,0.6)">.neon-btn {</text>
+<text x="136" y="511" font-family="monospace" font-size="12" fill="rgba(255,255,255,0.4)">border: 2px solid #0ff;</text>
+<text x="136" y="530" font-family="monospace" font-size="12" fill="rgba(255,255,255,0.4)">box-shadow: 0 0 10px #0ff, 0 0 30px #0ff, 0 0 60px #0ff;</text>
+<text x="120" y="549" font-family="monospace" font-size="12" fill="rgba(0,255,255,0.6)">}</text>
+</svg>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { PinWithRelations } from '@/types';
 import { LikeButton } from './LikeButton';
@@ -102,24 +103,119 @@ function renderHighlightedCode(code: string) {
   });
 }
 
+// Multi-language code support
+type CodeBlock = { lang: string; code: string };
+
+function parseCodeSnippets(
+  codeSnippet: string | null | undefined,
+  language: string | null | undefined
+): CodeBlock[] {
+  if (!codeSnippet) return [];
+  const trimmed = codeSnippet.trim();
+  if (trimmed.startsWith('[')) {
+    try {
+      return JSON.parse(trimmed) as CodeBlock[];
+    } catch { /* fall through */ }
+  }
+  return [{ lang: language || 'code', code: codeSnippet }];
+}
+
 export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === 'authenticated';
+  const router = useRouter();
   const { theme } = useAppTheme();
   const isUsability = theme === 'usabilidad';
   const showBreadcrumbs = theme !== 'accesibilidad' && theme !== 'no-usabilidad';
   const [activeTab, setActiveTab] = useState<'code' | 'preview'>('preview');
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copiedBlock, setCopiedBlock] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const [isSaved, setIsSaved] = useState(() => 
+    session?.user ? pin.savedBy?.some((sp) => sp.userId === session.user.id) : false
+  );
+  const [saveLoading, setSaveLoading] = useState(false);
+
+  const isAuthor = session?.user?.id === pin.author.id;
+  const codeBlocks = parseCodeSnippets(pin.codeSnippet, pin.language);
+  const [activeCodeTab, setActiveCodeTab] = useState<string>(() => codeBlocks[0]?.lang || '');
+  const activeBlock = codeBlocks.find(b => b.lang === activeCodeTab) ?? codeBlocks[0];
 
   const isLiked = session?.user
     ? pin.likes?.some((like) => like.userId === session.user.id)
     : false;
 
+  const handleSaveClick = async () => {
+    if (!session) {
+      router.push('/login');
+      return;
+    }
+
+    // En los temas usabilidad y accesibilidad, si ya está guardado,
+    // clicando el botón se desguarda directamente.
+    if (isSaved && (theme === 'usabilidad' || theme === 'accesibilidad')) {
+      setSaveLoading(true);
+      try {
+        const res = await fetch(`/api/pins/${pin.id}/save`, {
+          method: 'DELETE',
+        });
+        
+        if (res.ok) {
+          setIsSaved(false);
+        }
+      } catch (error) {
+        console.error('Error desguardando pin:', error);
+      } finally {
+        setSaveLoading(false);
+      }
+      return;
+    }
+
+    setShowSaveModal(true);
+  };
+
+  const handleSaved = () => {
+    setIsSaved(true);
+    // También guardamos el pin en la colección general (SavedPin) para que el estado persista
+    fetch(`/api/pins/${pin.id}/save`, {
+      method: 'POST',
+    }).catch(err => console.error('Error sincronizando savedPin:', err));
+  };
+
   const handleCopyCode = () => {
-    if (pin.codeSnippet) {
-      navigator.clipboard.writeText(pin.codeSnippet);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+    if (codeBlocks.length === 0) return;
+    const allCode = codeBlocks.length === 1
+      ? codeBlocks[0].code
+      : codeBlocks.map(b => `/* ${getLanguageLabel(b.lang)} */\n${b.code}`).join('\n\n');
+    navigator.clipboard.writeText(allCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyBlock = (lang: string, code: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedBlock(lang);
+    setTimeout(() => setCopiedBlock(null), 2000);
+  };
+
+  const handleDeletePin = async () => {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/pins/${pin.id}`, { method: 'DELETE' });
+      if (res.ok) {
+        router.push('/');
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Error al eliminar el pin');
+      }
+    } catch {
+      alert('Error al eliminar el pin');
+    } finally {
+      setDeleting(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -159,21 +255,37 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
             </div>
           </div>
 
-          {/* Action Buttons Mobile */}
-          <div className="d-flex align-items-center gap-2">
-            <LikeButton
-              pinId={pin.id}
-              initialLiked={isLiked ?? false}
-              initialCount={pin._count?.likes || 0}
-            />
-            <button 
-              onClick={() => setShowSaveModal(true)}
-              className="btn btn-primary btn-sm d-flex align-items-center gap-2"
-            >
-              <i className="bi bi-bookmark"></i>
-              <span>Guardar</span>
-            </button>
-          </div>
+          {/* Action Buttons Mobile - Solo visible si hay sesión */}
+          {session?.user && (
+            <div className="d-flex align-items-center gap-2">
+              <LikeButton
+                pinId={pin.id}
+                initialLiked={isLiked ?? false}
+                initialCount={pin._count?.likes || 0}
+              />
+              <button 
+                onClick={handleSaveClick}
+                disabled={saveLoading}
+                className={`btn btn-sm d-flex align-items-center gap-2 ${isSaved ? 'btn-success' : 'btn-primary'}`}
+              >
+                {saveLoading ? (
+                  <span className="spinner-border spinner-border-sm"></span>
+                ) : (
+                  <i className={`bi ${isSaved ? 'bi-bookmark-fill' : 'bi-bookmark'}`}></i>
+                )}
+                <span>{isSaved ? 'Guardado' : 'Guardar'}</span>
+              </button>
+              {isAuthor && (
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="btn btn-outline-danger btn-sm d-flex align-items-center gap-2"
+                  title="Eliminar pin"
+                >
+                  <i className="bi bi-trash"></i>
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Preview Image Mobile */}
@@ -186,33 +298,61 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
               >
                 <i className="bi bi-eye"></i>
               </button>
-              <button 
-                onClick={() => setActiveTab('code')}
-                className={`btn btn-sm pin-toolbar-btn ${activeTab === 'code' ? 'pin-toolbar-btn-active' : ''}`}
-              >
-                <i className="bi bi-code-slash"></i>
-              </button>
+              {isAuthenticated && codeBlocks.length > 0 && (
+                <button 
+                  onClick={() => setActiveTab('code')}
+                  className={`btn btn-sm pin-toolbar-btn ${activeTab === 'code' ? 'pin-toolbar-btn-active' : ''}`}
+                >
+                  <i className="bi bi-code-slash"></i>
+                </button>
+              )}
             </div>
           </div>
           <div className={`d-flex align-items-center justify-content-center ${isUsability ? 'p-2' : 'p-3'}`} style={{ minHeight: isUsability ? '180px' : '200px' }}>
-            {activeTab === 'preview' ? (
+            {!isAuthenticated || activeTab === 'preview' ? (
               <img 
                 src={pin.imageUrl} 
                 alt={pin.title}
                 className="mw-100 object-fit-contain rounded shadow"
                 style={{ maxHeight: isUsability ? '250px' : '40vh' }}
               />
-            ) : pin.codeSnippet ? (
-              <div className="w-100 rounded overflow-hidden border">
-                <div className={`d-flex align-items-center justify-content-between bg-dark border-bottom ${isUsability ? 'px-2 py-1' : 'px-3 py-2'}`}>
-                  <span className="small text-secondary">{getLanguageLabel(pin.language)}</span>
-                  <button onClick={handleCopyCode} className="btn btn-link btn-sm text-secondary p-0">
-                    {copied ? 'Copiado!' : 'Copiar'}
-                  </button>
+            ) : codeBlocks.length > 0 && !isAuthenticated ? (
+              <div className="w-100 rounded border d-flex flex-column align-items-center justify-content-center p-4 text-center" style={{ minHeight: '12rem' }}>
+                <i className="bi bi-lock-fill fs-1 text-secondary opacity-50 mb-3"></i>
+                <p className="fw-semibold mb-1">Código restringido</p>
+                <p className="text-secondary small mb-3">Inicia sesión para ver el código de este pin.</p>
+                <Link href="/login" className="btn btn-primary btn-sm px-4">Iniciar sesión</Link>
+              </div>
+            ) : codeBlocks.length > 0 ? (
+              <div className="w-100 rounded overflow-hidden border" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+                {/* Tab bar mobile */}
+                <div className="d-flex align-items-center pin-code-surface border-bottom">
+                  {codeBlocks.map((block) => (
+                    <button
+                      key={block.lang}
+                      onClick={() => setActiveCodeTab(block.lang)}
+                      className={`btn btn-sm px-3 py-2 rounded-0 border-0 fw-semibold small pin-code-tab ${activeCodeTab === block.lang ? 'pin-code-tab-active' : 'pin-code-tab-inactive'}`}
+                    >
+                      <span className={`pin-lang-dot pin-lang-dot-${block.lang}`}></span>
+                      {getLanguageLabel(block.lang)}
+                    </button>
+                  ))}
+                  <div className="ms-auto pe-2">
+                    <button onClick={() => activeBlock && handleCopyBlock(activeBlock.lang, activeBlock.code)} className="btn btn-link btn-sm pin-copy-link p-1">
+                      <i className={`bi ${copiedBlock === activeCodeTab ? 'bi-check2' : 'bi-clipboard'}`}></i>
+                    </button>
+                  </div>
                 </div>
-                <pre className={`font-monospace pin-code-surface mb-0 overflow-auto ${isUsability ? 'p-2' : 'p-3'}`} style={{ maxHeight: isUsability ? '40vh' : '50vh', fontSize: isUsability ? '0.85rem' : '0.9rem' }}>
-                  <code className="pin-code-text">{renderHighlightedCode(pin.codeSnippet)}</code>
-                </pre>
+                {activeBlock && (
+                  <div className="d-flex pin-code-surface" style={{ fontSize: '0.85rem', padding: '0.75rem' }}>
+                    <div className="d-flex flex-column pin-code-lines user-select-none pe-3 text-end" style={{ minWidth: '2rem' }}>
+                      {activeBlock.code.split('\n').map((_, i) => <span key={i}>{i + 1}</span>)}
+                    </div>
+                    <pre className="pin-code-text mb-0" style={{ whiteSpace: 'pre', overflowX: 'auto', flex: 1 }}>
+                      <code>{renderHighlightedCode(activeBlock.code)}</code>
+                    </pre>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-secondary text-center">
@@ -222,6 +362,15 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
             )}
           </div>
         </div>
+
+        {/* Anti-pattern: Push details down in no-usabilidad theme */}
+        {theme === 'no-usabilidad' && (
+          <div style={{ height: '800px', backgroundColor: 'transparent' }} className="d-flex align-items-center justify-content-center text-muted small">
+            <i className="bi bi-chevron-double-down me-2"></i>
+            Scroll para ver detalles
+            <i className="bi bi-chevron-double-down ms-2"></i>
+          </div>
+        )}
 
         {/* Description & Tags Mobile */}
         {(pin.description || pin.tags) && (
@@ -284,21 +433,38 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="d-flex align-items-center gap-2">
-              <LikeButton
-                pinId={pin.id}
-                initialLiked={isLiked ?? false}
-                initialCount={pin._count?.likes || 0}
-              />
-              <button 
-                onClick={() => setShowSaveModal(true)}
-                className={`btn btn-primary d-flex align-items-center gap-2 ${isUsability ? 'btn-sm' : ''}`}
-              >
-                <i className="bi bi-bookmark"></i>
-                <span>Guardar</span>
-              </button>
-            </div>
+            {/* Action Buttons - Solo visible si hay sesión */}
+            {session?.user && (
+              <div className="d-flex align-items-center gap-2">
+                <LikeButton
+                  pinId={pin.id}
+                  initialLiked={isLiked ?? false}
+                  initialCount={pin._count?.likes || 0}
+                />
+                <button 
+                  onClick={handleSaveClick}
+                  disabled={saveLoading}
+                  className={`btn d-flex align-items-center gap-2 ${isUsability ? 'btn-sm' : ''} ${isSaved ? 'btn-success' : 'btn-primary'}`}
+                >
+                  {saveLoading ? (
+                    <span className="spinner-border spinner-border-sm"></span>
+                  ) : (
+                    <i className={`bi ${isSaved ? 'bi-bookmark-fill' : 'bi-bookmark'}`}></i>
+                  )}
+                  <span>{isSaved ? 'Guardado' : 'Guardar'}</span>
+                </button>
+                {isAuthor && (
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className={`btn btn-outline-danger d-flex align-items-center gap-2 ${isUsability ? 'btn-sm' : ''}`}
+                    title="Eliminar pin"
+                  >
+                    <i className="bi bi-trash"></i>
+                    <span className="d-none d-xl-inline">Eliminar</span>
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -314,13 +480,15 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
               >
                 <i className="bi bi-eye"></i>
               </button>
-              <button 
-                onClick={() => setActiveTab('code')}
-                className={`btn btn-sm pin-toolbar-btn ${activeTab === 'code' ? 'pin-toolbar-btn-active' : ''}`}
-                title="Code"
-              >
-                <i className="bi bi-code-slash"></i>
-              </button>
+              {isAuthenticated && codeBlocks.length > 0 && (
+                <button 
+                  onClick={() => setActiveTab('code')}
+                  className={`btn btn-sm pin-toolbar-btn ${activeTab === 'code' ? 'pin-toolbar-btn-active' : ''}`}
+                  title="Code"
+                >
+                  <i className="bi bi-code-slash"></i>
+                </button>
+              )}
               <a 
                 href={pin.imageUrl} 
                 target="_blank" 
@@ -335,26 +503,51 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
 
           {/* Preview Content */}
           <div className={`flex-grow-1 d-flex align-items-center justify-content-center ${isUsability ? 'p-3' : 'p-4'}`}>
-            {activeTab === 'preview' ? (
+            {!isAuthenticated || activeTab === 'preview' ? (
               <img 
                 src={pin.imageUrl} 
                 alt={pin.title}
                 className="mw-100 mh-100 object-fit-contain rounded shadow"
               />
-            ) : pin.codeSnippet ? (
-              <div className="w-100 rounded overflow-hidden border" style={{ maxWidth: '900px' }}>
-                <div className="d-flex align-items-center justify-content-between px-3 py-2 bg-dark border-bottom">
-                  <span className="small pin-language-label">{getLanguageLabel(pin.language)}</span>
-                  <button 
-                    onClick={handleCopyCode}
-                    className="btn btn-link btn-sm pin-copy-link text-decoration-none p-0"
-                  >
-                    {copied ? 'Copiado!' : 'Copiar'}
-                  </button>
+            ) : codeBlocks.length > 0 && !isAuthenticated ? (
+              <div className="w-100 rounded border d-flex flex-column align-items-center justify-content-center p-4 text-center" style={{ minHeight: '14rem', maxWidth: '960px' }}>
+                <i className="bi bi-lock-fill fs-1 text-secondary opacity-50 mb-3"></i>
+                <p className="fw-semibold mb-1">Código restringido</p>
+                <p className="text-secondary small mb-3">Inicia sesión para ver el código de este pin.</p>
+                <Link href="/login" className="btn btn-primary btn-sm px-4">Iniciar sesión</Link>
+              </div>
+            ) : codeBlocks.length > 0 ? (
+              <div className="w-100 rounded overflow-hidden border" style={{ maxWidth: '960px', maxHeight: '75vh' }}>
+                {/* Tab bar desktop preview */}
+                <div className="d-flex align-items-center pin-code-surface border-bottom">
+                  {codeBlocks.map((block) => (
+                    <button
+                      key={block.lang}
+                      onClick={() => setActiveCodeTab(block.lang)}
+                      className={`btn btn-sm px-4 py-2 rounded-0 border-0 fw-semibold small pin-code-tab ${activeCodeTab === block.lang ? 'pin-code-tab-active' : 'pin-code-tab-inactive'}`}
+                    >
+                      <span className={`pin-lang-dot pin-lang-dot-${block.lang}`}></span>
+                      {getLanguageLabel(block.lang)}
+                    </button>
+                  ))}
+                  <div className="ms-auto pe-2">
+                    <button onClick={() => activeBlock && handleCopyBlock(activeBlock.lang, activeBlock.code)} className="btn btn-link btn-sm pin-copy-link p-1">
+                      <i className={`bi ${copiedBlock === activeCodeTab ? 'bi-check2' : 'bi-clipboard'}`}></i>
+                    </button>
+                  </div>
                 </div>
-                <pre className="p-3 font-monospace pin-code-surface mb-0 overflow-auto" style={{ maxHeight: isUsability ? '40vh' : '60vh', fontSize: '0.95rem' }}>
-                  <code className="pin-code-text">{renderHighlightedCode(pin.codeSnippet)}</code>
-                </pre>
+                {activeBlock && (
+                  <div className="overflow-auto pin-code-surface" style={{ maxHeight: '60vh' }}>
+                    <div className="d-flex" style={{ fontSize: '0.92rem', padding: '1rem' }}>
+                      <div className="d-flex flex-column pin-code-lines user-select-none pe-3 text-end" style={{ minWidth: '2.5rem' }}>
+                        {activeBlock.code.split('\n').map((_, i) => <span key={i}>{i + 1}</span>)}
+                      </div>
+                      <pre className="pin-code-text mb-0" style={{ whiteSpace: 'pre', overflowX: 'auto', flex: 1 }}>
+                        <code>{renderHighlightedCode(activeBlock.code)}</code>
+                      </pre>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-secondary text-center">
@@ -378,73 +571,106 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
             </div>
           )}
         </div>
-      </div>
 
-      {/* Right: Code Editor & Sidebar Info */}
-      <div className="d-flex flex-column border-start overflow-hidden" style={{ width: '100%', maxWidth: isUsability ? '420px' : '500px' }}>
-        {/* Description & Tags Section */}
+        {/* Anti-pattern: Push description down in no-usabilidad theme */}
+        {theme === 'no-usabilidad' && (
+          <div style={{ height: '600px', backgroundColor: 'transparent' }} className="d-flex align-items-center justify-content-center text-muted small p-4 border-top">
+            <i className="bi bi-chevron-double-down me-2"></i>
+            Scroll para leer la descripción
+            <i className="bi bi-chevron-double-down ms-2"></i>
+          </div>
+        )}
+
+        {/* Description & Tags - below visualization, aligned with Comments */}
         {(pin.description || pin.tags) && (
-          <div className={`border-bottom overflow-auto ${isUsability ? 'p-2' : 'p-4'}`} style={isUsability ? { maxHeight: '20vh' } : undefined}>
+          <div
+            className={`border-top flex-shrink-0 overflow-auto ${isUsability ? 'p-2' : 'p-4'}`}
+            style={{
+              maxHeight: isUsability ? '170px' : '210px',
+              minHeight: isUsability ? '80px' : '100px',
+            }}
+          >
             {pin.description && (
               <div className={isUsability ? 'mb-2' : 'mb-3'}>
                 <h6 className={`fw-semibold ${isUsability ? 'mb-1 small' : 'mb-2'}`}>Descripción</h6>
-                <p className={`text-secondary mb-0 ${isUsability ? 'small' : 'small'}`} style={{ whiteSpace: 'pre-wrap' }}>{pin.description}</p>
+                <p className={`text-secondary mb-0 ${isUsability ? 'small' : 'small'}`} style={{ whiteSpace: 'pre-wrap', fontSize: isUsability ? '0.8rem' : undefined }}>{pin.description}</p>
               </div>
             )}
             {pin.tags && (
               <div className="d-flex flex-wrap gap-2">
                 {pin.tags.split(',').map((tag, i) => (
-                  <span
-                    key={i}
-                    className={`badge bg-secondary-subtle text-secondary ${isUsability ? 'small' : ''}`}
-                  >
-                    #{tag.trim()}
-                  </span>
+                  <span key={i} className={`badge bg-secondary-subtle text-secondary ${isUsability ? 'small' : ''}`}>#{tag.trim()}</span>
                 ))}
               </div>
             )}
           </div>
         )}
+      </div>
+
+      {/* Right: Code Editor & Sidebar Info */}
+      <div className={`d-flex flex-column border-start ${theme === 'no-usabilidad' ? 'overflow-auto' : 'overflow-hidden'}`} style={{ width: '100%', maxWidth: isUsability ? '420px' : '500px' }}>
+        {/* Anti-pattern: Hide sidebar details in no-usabilidad theme */}
+        {theme === 'no-usabilidad' && (
+          <div style={{ height: '1200px' }} className="d-flex flex-column align-items-center justify-content-center text-muted p-5 text-center">
+            <i className="bi bi-chevron-double-down fs-1 mb-3"></i>
+            <p className="fw-bold">Más abajo encontrarás la interacción</p>
+            <p className="small">Desliza para ver código y comentarios</p>
+          </div>
+        )}
 
         {/* Code Editor Section */}
-        {pin.codeSnippet && (
-          <div className="flex-grow-1 d-flex flex-column overflow-hidden" style={{ minHeight: isUsability ? '200px' : '300px' }}>
-            {/* Editor Header */}
-            <div className="d-flex align-items-center bg-dark border-bottom">
-              <div className={`px-4 small fw-bold border-bottom border-primary border-2 pin-language-label ${isUsability ? 'py-1' : 'py-2'}`} style={{ borderWidth: '2px' }}>
-                {getLanguageLabel(pin.language)}
-              </div>
-              <div className="flex-grow-1"></div>
-              <button 
-                onClick={handleCopyCode}
-                className="btn btn-link pin-copy-link p-2 me-2"
-                title="Copy Code"
-              >
-                <i className="bi bi-clipboard"></i>
-              </button>
-            </div>
-
-            {/* Code Content */}
-            <div className="flex-grow-1 overflow-auto pin-code-surface font-monospace position-relative" style={{ fontSize: isUsability ? '0.7rem' : '0.875rem', padding: isUsability ? '0.5rem' : '0.75rem' }}>
-              <button 
-                onClick={handleCopyCode}
-                className="btn btn-primary btn-sm position-absolute top-0 end-0 m-3 opacity-0"
-                style={{ transition: 'opacity 0.2s' }}
-                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-              >
-                {copied ? 'Copiado!' : 'Copiar'}
-              </button>
-              <div className="d-flex">
-                <div className="d-flex flex-column pin-code-lines user-select-none pe-3 text-end" style={{ minWidth: '2rem' }}>
-                  {pin.codeSnippet.split('\n').map((_, i) => (
-                    <span key={i}>{i + 1}</span>
+        {codeBlocks.length > 0 && (
+          <div className="flex-grow-1 d-flex flex-column overflow-hidden" style={{ minHeight: '350px' }}>
+            {isAuthenticated ? (
+              <>
+                {/* Tab bar */}
+                <div className="d-flex align-items-center pin-code-surface border-bottom">
+                  {codeBlocks.map((block) => (
+                    <button
+                      key={block.lang}
+                      onClick={() => setActiveCodeTab(block.lang)}
+                      className={`btn btn-sm px-3 rounded-0 border-0 fw-semibold small pin-code-tab ${isUsability ? 'py-1' : 'py-2'} ${activeCodeTab === block.lang ? 'pin-code-tab-active' : 'pin-code-tab-inactive'}`}
+                    >
+                      <span className={`pin-lang-dot pin-lang-dot-${block.lang}`}></span>
+                      {getLanguageLabel(block.lang)}
+                    </button>
                   ))}
+                  <div className="ms-auto">
+                    <button
+                      onClick={() => activeBlock && handleCopyBlock(activeBlock.lang, activeBlock.code)}
+                      className="btn btn-link pin-copy-link p-2 me-1"
+                      title="Copiar código"
+                    >
+                      <i className={`bi ${copiedBlock === activeCodeTab ? 'bi-check2' : 'bi-clipboard'}`}></i>
+                    </button>
+                  </div>
                 </div>
-                <pre className="pin-code-text mb-0" style={{ whiteSpace: 'pre', overflowX: 'auto' }}>
-                  <code>{renderHighlightedCode(pin.codeSnippet)}</code>
-                </pre>
+                {/* Active tab code */}
+                {activeBlock && (
+                  <div className="flex-grow-1 overflow-auto pin-code-surface font-monospace"
+                    style={{ fontSize: isUsability ? '0.78rem' : '0.9rem', padding: isUsability ? '0.6rem 0.75rem' : '1rem' }}
+                  >
+                    <div className="d-flex">
+                      <div className="d-flex flex-column pin-code-lines user-select-none pe-3 text-end" style={{ minWidth: '2.5rem' }}>
+                        {activeBlock.code.split('\n').map((_, i) => (
+                          <span key={i}>{i + 1}</span>
+                        ))}
+                      </div>
+                      <pre className="pin-code-text mb-0" style={{ whiteSpace: 'pre', overflowX: 'auto', flex: 1 }}>
+                        <code>{renderHighlightedCode(activeBlock.code)}</code>
+                      </pre>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="flex-grow-1 d-flex flex-column align-items-center justify-content-center p-4 text-center pin-code-surface">
+                <i className="bi bi-lock-fill fs-1 text-secondary opacity-50 mb-3"></i>
+                <p className="fw-semibold mb-1">Código restringido</p>
+                <p className="text-secondary small mb-3">Inicia sesión para ver el código de este pin.</p>
+                <Link href="/login" className="btn btn-primary btn-sm px-4">Iniciar sesión</Link>
               </div>
-            </div>
+            )}
           </div>
         )}
 
@@ -457,39 +683,6 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
         </div>
       </div>
 
-      {/* Related Pins Sidebar (xl screens) - Oculto en tema usabilidad para mejor uso del espacio */}
-      {!isUsability && relatedPins.length > 0 && (
-        <div className="d-none d-xl-flex flex-column border-start" style={{ width: '280px' }}>
-          <div className="p-3 border-bottom">
-            <h6 className="fw-semibold mb-0">Pins relacionados</h6>
-          </div>
-          <div className="flex-grow-1 overflow-auto p-3">
-            <div className="d-flex flex-column gap-3">
-              {relatedPins.map((relatedPin) => (
-                <Link key={relatedPin.id} href={`/pin/${relatedPin.id}`} className="text-decoration-none">
-                  <div className="rounded overflow-hidden mb-2" style={{ aspectRatio: '16/9', background: 'var(--db-card-bg)' }}>
-                    <img 
-                      src={relatedPin.imageUrl} 
-                      alt={relatedPin.title}
-                      className="w-100 h-100 object-fit-cover opacity-75"
-                      style={{ transition: 'opacity 0.2s' }}
-                      onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-                      onMouseLeave={(e) => e.currentTarget.style.opacity = '0.75'}
-                    />
-                  </div>
-                  <h6 className="small fw-medium mb-0 text-truncate">{relatedPin.title}</h6>
-                  <small className="text-muted">by @{getUsername(relatedPin.author.name)}</small>
-                </Link>
-              ))}
-            </div>
-          </div>
-          <div className="p-3 border-top text-center">
-            <Link href="/" className="small text-primary text-decoration-none fw-medium">
-              Ver todos los pins
-            </Link>
-          </div>
-        </div>
-      )}
       </div>
 
       {/* Save to Board Modal */}
@@ -498,7 +691,48 @@ export function PinDetail({ pin, relatedPins = [] }: PinDetailProps) {
           pinId={pin.id}
           isOpen={showSaveModal}
           onClose={() => setShowSaveModal(false)}
+          onSaved={handleSaved}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="modal d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered modal-sm">
+            <div className="modal-content">
+              <div className="modal-header border-0 pb-0">
+                <h5 className="modal-title fw-bold">Eliminar pin</h5>
+                <button type="button" className="btn-close" onClick={() => setShowDeleteConfirm(false)} disabled={deleting}></button>
+              </div>
+              <div className="modal-body">
+                <p className="text-secondary mb-0">¿Estás segura de que quieres eliminar <strong>{pin.title}</strong>? Esta acción no se puede deshacer.</p>
+              </div>
+              <div className="modal-footer border-0 pt-0">
+                <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowDeleteConfirm(false)} disabled={deleting}>
+                  Cancelar
+                </button>
+                <button type="button" className="btn btn-danger btn-sm d-flex align-items-center gap-2" onClick={handleDeletePin} disabled={deleting}>
+                  {deleting ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm"></span>
+                      Eliminando...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-trash"></i>
+                      Eliminar
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Anti-pattern: Unnecessary scroll padding for No Usability theme */}
+      {theme === 'no-usabilidad' && (
+        <div style={{ height: '3000px', pointerEvents: 'none' }}></div>
       )}
     </main>
   );
