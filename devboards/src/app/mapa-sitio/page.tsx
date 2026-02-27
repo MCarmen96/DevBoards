@@ -53,7 +53,7 @@ export default function MapaSitioPage() {
                         {/* Detalle de Pin — anidado aquí porque se accede desde el listado */}
                         <ul className="list-unstyled ms-4 mt-1">
                           <li className="mb-1">
-                            <span className="small fw-semibold text-body"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin <code className="fw-normal">/pin/[id]</code></span>
+                            <span className="small fw-semibold text-body"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin</span>
                             <ul className="list-unstyled ms-4 mt-1">
                               <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver imagen y código</li>
                               <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver comentarios</li>
@@ -64,7 +64,7 @@ export default function MapaSitioPage() {
                                 {/* Perfil — anidado aquí porque se accede desde el detalle */}
                                 <ul className="list-unstyled ms-4 mt-1">
                                   <li className="mb-1">
-                                    <span className="small fw-semibold text-body"><i className="bi bi-person-badge me-1 text-secondary"></i>Perfil de usuario <code className="fw-normal">/profile/[id]</code></span>
+                                    <span className="small fw-semibold text-body"><i className="bi bi-person-badge me-1 text-secondary"></i>Perfil de usuario</span>
                                     <ul className="list-unstyled ms-4 mt-1">
                                       <li className="small text-muted mb-1"><i className="bi bi-arrow-return-right me-1"></i>Ver pins del usuario</li>
                                       <li className="small text-muted mb-1"><i className="bi bi-arrow-return-right me-1"></i>Ver estadísticas</li>
@@ -160,7 +160,7 @@ export default function MapaSitioPage() {
                         <li className="mb-1">
                           <span className="small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver mis pins publicados</span>
                           <ul className="list-unstyled ms-4 mt-1">
-                            <li className="small fw-semibold text-body mb-1"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin <code className="fw-normal">/pin/[id]</code></li>
+                            <li className="small fw-semibold text-body mb-1"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin</li>
                           </ul>
                         </li>
                       </ul>
@@ -177,13 +177,13 @@ export default function MapaSitioPage() {
                           <span className="small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Abrir tablero</span>
                           <ul className="list-unstyled ms-4 mt-1">
                             <li className="mb-1">
-                              <span className="small fw-semibold text-body"><i className="bi bi-collection me-1 text-secondary"></i>Tablero <code className="fw-normal">/boards/[id]</code></span>
+                              <span className="small fw-semibold text-body"><i className="bi bi-collection me-1 text-secondary"></i>Tablero</span>
                               <ul className="list-unstyled ms-4 mt-1">
                                 <li className="mb-1 small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Ver pins del tablero</li>
                                 <li className="mb-1">
                                   <span className="small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Abrir pin</span>
                                   <ul className="list-unstyled ms-4 mt-1">
-                                    <li className="small fw-semibold text-body"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin <code className="fw-normal">/pin/[id]</code></li>
+                                    <li className="small fw-semibold text-body"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin</li>
                                   </ul>
                                 </li>
                               </ul>
@@ -202,7 +202,7 @@ export default function MapaSitioPage() {
                         <li className="mb-1">
                           <span className="small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Abrir pin</span>
                           <ul className="list-unstyled ms-4 mt-1">
-                            <li className="small fw-semibold text-body"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin <code className="fw-normal">/pin/[id]</code></li>
+                            <li className="small fw-semibold text-body"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin</li>
                           </ul>
                         </li>
                       </ul>
@@ -217,7 +217,7 @@ export default function MapaSitioPage() {
                         <li className="mb-1">
                           <span className="small text-muted"><i className="bi bi-arrow-return-right me-1"></i>Abrir pin</span>
                           <ul className="list-unstyled ms-4 mt-1">
-                            <li className="small fw-semibold text-body"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin <code className="fw-normal">/pin/[id]</code></li>
+                            <li className="small fw-semibold text-body"><i className="bi bi-eye me-1 text-secondary"></i>Detalle de Pin</li>
                           </ul>
                         </li>
                       </ul>

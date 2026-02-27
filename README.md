@@ -4,27 +4,32 @@
 
 ## Características Principales
 
-- **Feed de Pins**: Visualización estilo Pinterest con scroll infinito
-- **Sistema de Temas**: 3 modos de interfaz (Usabilidad, No Usabilidad, Accesibilidad)
-- **Código Integrado**: Cada pin puede incluir snippets de código con resaltado de sintaxis
-- **Tableros Personalizados**: Organiza pins en colecciones temáticas
-- **Autenticación Completa**: Login/Registro con NextAuth.js
-- **Diseño Responsive**: Adaptado a móvil, tablet y desktop
-- **Diseño Stitch**: Interfaz moderna con sistema de diseño consistente
-- **Likes y Comentarios**: Interacción social con pins
-- **Seguir Usuarios**: Sistema de seguimiento y feed personalizado
-- **Búsqueda Avanzada**: Por palabras clave, etiquetas y lenguaje
-- **Notificaciones**: Sistema de notificaciones en tiempo real
+- **Feed de Pins**: Visualización estilo Pinterest con scroll infinito.
+- **Sistema de Temas Dinámico**: 3 modos de interfaz (Usabilidad, No Usabilidad, Accesibilidad) seleccionables en la tarjeta de login/registro.
+- **No-Usabilidad UX**: Implementa anti-patrones como búsquedas silenciosas, desplazamientos de contenido exagerados y menús móviles erráticos.
+- **Accesibilidad WCAG**: IDs específicos en componentes interactivos y estructuras preparadas para lectores (con pruebas de jerarquía de encabezados).
+- **Diseño Responsive Progresivo**: 
+  - **Masonry Grid**: Rejilla fluida de 1 a 6 columnas según el ancho de pantalla.
+  - **Navegación Móvil**: Menú hamburguesa interactivo con enlaces de perfil.
+  - **Responsive Sidebar**: Detalles de pins con barra lateral que baja debajo de la imagen en móviles.
+  - **Media Queries Ultra-Wide**: Soporte hasta monitores de 2400px.
+- **Autenticación Completa**: Login/Registro con NextAuth.js.
+- **Diseño Stitch**: Interfaz moderna con sistema de diseño consistente basado en Bootstrap 5.
+- **Likes y Comentarios**: Interacción social con pins.
+- **Seguir Usuarios**: Sistema de seguimiento y feed personalizado.
+- **Notificaciones**: Sistema de alertas integradas.
 
 ## Sistema de Temas
 
 La aplicación incluye 3 temas seleccionables para demostrar diferentes enfoques de UX:
 
-| Tema | Color | Descripción |
-|------|-------|-------------|
-| **Usabilidad** | Azul (#0d33f2) | Diseño equilibrado y fácil de usar |
-| **No Usabilidad** | Naranja (#f59e0b) | Ejemplos de anti-patrones UX |
-| **Accesibilidad** | Verde (#10b981) | Optimizado para accesibilidad WCAG |
+| Tema | Color | Propósito | Características Clave |
+|------|-------|-----------|-----------------------|
+| **Usabilidad** | Azul (`#0d33f2`) | Diseño equilibrado | Sigue mejores prácticas de UX. |
+| **No Usabilidad** | Naranja (`#f59e0b`) | Anti-patrones UX | Búsqueda sin feedback, huecos gigantescos, menú móvil desubicado. |
+| **Accesibilidad** | Verde (`#10b981`) | Optimizado WCAG | IDs específicos de filtro, pruebas de jerarquía de encabezados (`h1` -> `h4`). |
+
+La elección del tema ahora se encuentra **dentro del cuadro de registro y login, en la parte inferior**, para que sea la primera y última decisión del usuario antes de entrar.
 
 ## Tech Stack
 

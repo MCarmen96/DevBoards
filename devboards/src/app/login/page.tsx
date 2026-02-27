@@ -77,33 +77,6 @@ export default function LoginPage() {
   return (
     <main className="flex-fill d-flex align-items-center justify-content-center p-4">
       <div className="w-100" style={{ maxWidth: '28rem' }}>
-        {/* Theme Selector */}
-        <div className="mb-4">
-          <p className="text-center text-secondary small mb-2">Selecciona un tema para la experiencia:</p>
-          <div className="d-flex justify-content-center gap-2 flex-wrap">
-            {themeOptions.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => setTheme(option.value)}
-                className={`btn btn-sm rounded-pill px-3 d-flex align-items-center gap-1 ${
-                  theme === option.value ? 'text-white' : 'btn-outline-secondary'
-                }`}
-                style={theme === option.value ? { backgroundColor: option.color, borderColor: option.color } : {}}
-              >
-                <span 
-                  className="rounded-circle d-inline-block" 
-                  style={{ 
-                    width: '8px', 
-                    height: '8px', 
-                    backgroundColor: option.color 
-                  }} 
-                />
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
         <div className="bg-body rounded-4 shadow p-4 border">
           {/* Header */}
           <div className="text-center mb-4">
@@ -203,6 +176,33 @@ export default function LoginPage() {
                 Regístrate
               </Link>
             </p>
+          </div>
+
+          {/* Theme Selector moved inside, now at the bottom */}
+          <div className="mt-4 pt-3 border-top">
+            <p className="text-center text-secondary small mb-2">Selecciona un tema para la experiencia:</p>
+            <div className="d-flex justify-content-center gap-2 flex-wrap">
+              {themeOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setTheme(option.value)}
+                  className={`btn btn-sm rounded-pill px-3 d-flex align-items-center gap-1 ${
+                    theme === option.value ? 'text-white' : 'btn-outline-secondary'
+                  }`}
+                  style={theme === option.value ? { backgroundColor: option.color, borderColor: option.color } : {}}
+                >
+                  <span 
+                    className="rounded-circle d-inline-block" 
+                    style={{ 
+                      width: '8px', 
+                      height: '8px', 
+                      backgroundColor: option.color 
+                    }} 
+                  />
+                  {option.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

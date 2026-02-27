@@ -31,7 +31,19 @@ export type AppTheme = 'usabilidad' | 'no-usabilidad' | 'accesibilidad';
 const { theme, setTheme, themeLabel, themeColor } = useAppTheme();
 ```
 
-El tema se selecciona en la página de login/registro y persiste durante toda la sesión.
+El tema se selecciona en la página de login/registro (dentro de la tarjeta de usuario, en la parte inferior) y persiste durante toda la sesión.
+
+### Características Específicas de los Temas
+
+#### 🔴 No Usabilidad (Bad UX)
+- **Búsqueda Silenciosa**: Al no encontrar resultados, no se muestra ningún mensaje de error ni "no hay resultados". Se muestra un espacio vacío.
+- **Scroll Infinito Falso**: En el detalle del pin, hay un scroll falso de 3000px al final de la página.
+- **Contenido Desplazado**: Se fuerzan espacios de 800px a 1200px antes de la descripción y comentarios para obligar al usuario a hacer scroll.
+- **Menú Móvil Errático**: El menú hamburguesa aparece fijo en la esquina inferior izquierda cuando se abre en este tema.
+
+#### 🟢 Accesibilidad (A11y)
+- **Jerarquía de Encabezados Alternativa**: Se rompe la jerarquía para pruebas (saltando de `h1` directamente a `h4`).
+- **IDs de Seguimiento**: Los chips de filtro (`all`, `animations`, `components`, etc.) tienen IDs específicos para facilitar el testing y rastreo.
 
 ---
 
