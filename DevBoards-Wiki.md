@@ -35,3 +35,11 @@ DevBoards es una aplicación tipo pinterest orientada a desarrolladores web tant
 
 - Como usuario(Explorer) quiero un buscador por palabras claves y etiquetas para filtrar pins por tecnolgias por ejemplo "TypeScript"
 - Como usuario quiero recibir notificaciones cuando un usuario al que sigo suba pins o actualize tableros para poder ver el nuevo contenido
+
+
+## Usuarios de Prueba
+
+| Email | Password |
+|-------|----------|
+| diego | admin |
+| Prieto*2 | Prieto*2 |

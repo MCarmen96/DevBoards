@@ -246,6 +246,18 @@ server {
         expires 30d;
         add_header Cache-Control "public, no-transform";
     }
+
+    # Vídeos estáticos (servidos directamente por Nginx)
+    location /videos {
+        alias ${APP_DIR}/devboards/public/videos;
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+        add_header Accept-Ranges bytes;
+        types {
+            video/mp4  mp4;
+            video/webm webm;
+        }
+    }
 }
 EOF
 
